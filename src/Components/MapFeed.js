@@ -2,7 +2,8 @@ import React from "react";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import catIcon from "../Icons/cat-50.png";
 import otterIcon from "../Icons/otter-60.png";
-import { AnimalMarker } from "./Marker";
+import { AnimalMarker } from "./AnimalMarker";
+import { Outlet } from "react-router-dom";
 
 const containerStyle = {
   width: "100vw",
@@ -14,9 +15,10 @@ const center = {
   lng: 103.815,
 };
 
+//After enabling user posting, the below data should come from either the realtime database, or the internal state/props.
 const PLACEHOLDER_DATA = [
   {
-    key: "0test",
+    id: "0test",
     type: "cat",
     icon: catIcon,
     position: {
@@ -27,7 +29,7 @@ const PLACEHOLDER_DATA = [
     downloadURL: "xxx",
   },
   {
-    key: "1test",
+    id: "1test",
     type: "otter",
     icon: otterIcon,
     position: {
@@ -39,20 +41,17 @@ const PLACEHOLDER_DATA = [
   },
 ];
 
-export default function MapWithMarkers() {
+export default function MapFeed() {
+  //The filterParam and filterVal parameters are optional. Nothing will be filtered if these arguments are left out. Otherwise, it will can filter data by any attribute (e.g. show me markers with type=cat only)
   const renderMarkers = (
     data,
     filterParam = undefined,
     filterVal = undefined
   ) => {
     let markers = data
-      .filter((item) => item.filterParam === filterVal)
+      .filter((item) => item[filterParam] === filterVal)
       .map((item) => (
-        <AnimalMarker
-          key={item.key}
-          position={item.position}
-          icon={item.icon}
-        />
+        <AnimalMarker id={item.id} position={item.position} icon={item.icon} />
       ));
     return markers;
   };
@@ -61,6 +60,7 @@ export default function MapWithMarkers() {
     <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
         {renderMarkers(PLACEHOLDER_DATA)}
+        <Outlet />
       </GoogleMap>
     </LoadScript>
   );
