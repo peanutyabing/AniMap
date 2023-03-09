@@ -1,6 +1,7 @@
 {
-  "name": "copyproject2",
+  "name": "animap-2deae",
   "version": "0.1.0",
+  "homepage":"https://animap-2deae.web.app/",
   "private": true,
   "dependencies": {
     "@react-google-maps/api": "^2.18.1",
@@ -11,6 +12,8 @@
     "firebase": "^9.17.2",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
+    "axios": "^1.3.4",
+    "google-map-react": "^2.2.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",

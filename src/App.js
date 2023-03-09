@@ -11,6 +11,7 @@ import MapFeed from "./Components/MapFeed.js";
 import Post from "./Components/Post.js";
 import LoginForm from "./Components/LoginForm.js";
 import NavBar from "./Components/NavBar.js";
+import PostForm from "./Components/PostForm";
 import "./App.css";
 
 export const UserContext = React.createContext({ email: null });
@@ -100,6 +101,17 @@ function App() {
                     email={emailInput}
                     password={passwordInput}
                     onClick={handleLoginOrSignUp}
+                  />
+                }
+              />
+              <Route
+                path="post-form"
+                element={
+                  <PostForm
+                    show={true}
+                    onHide={() => {
+                      navigate("/");
+                    }}
                   />
                 }
               />
