@@ -1,22 +1,109 @@
-import { Routes, Route, BrowserRouter } from "react-router-dom";
-import "./App.css";
+import { useState, useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { auth } from "./Firebase.js";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  // signOut,
+} from "firebase/auth";
 import MapFeed from "./Components/MapFeed.js";
 import Post from "./Components/Post.js";
+import LoginForm from "./Components/LoginForm.js";
+import "./App.css";
 
 function App() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState({});
+  const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+
+  useEffect(() => {
+    if (!user.email) {
+      navigate("/login-signup");
+    } else {
+      navigate("/");
+    }
+  }, [user.email]);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser({ email: null });
+      }
+    });
+  }, []);
+
+  const handleLoginInput = (name, value) => {
+    if (name === "email") {
+      setEmailInput(value);
+    } else if (name === "password") {
+      setPasswordInput(value);
+    }
+  };
+
+  const handleLoginOrSignUp = (e) => {
+    if (e.target.id === "login") {
+      signInUser(emailInput, passwordInput);
+      navigate("/");
+    } else if (e.target.id === "sign-up") {
+      signUpUser(emailInput, passwordInput);
+      navigate("/");
+    }
+  };
+
+  const signUpUser = (email, password) => {
+    createUserWithEmailAndPassword(auth, email, password).catch((error) => {
+      showAlert(error);
+    });
+  };
+
+  const signInUser = (email, password) => {
+    signInWithEmailAndPassword(auth, email, password).catch((error) => {
+      showAlert(error);
+    });
+  };
+
+  // const signOutUser = () => {
+  //   signOut(auth).catch((error) => {
+  //     showAlert(error);
+  //   });
+  // };
+
+  const showAlert = (error) => {
+    const errorCode = error.code;
+    const errorMessage = errorCode.split("/")[1].replaceAll("-", " ");
+    alert(`Wait a minute... an error occurred: ${errorMessage}`);
+  };
+
   return (
-    <BrowserRouter>
-      <div className="App">
-        <header className="App-header">
-          {/* Navbar placeholder */}
-          <Routes>
-            <Route path="/" element={<MapFeed />}>
-              <Route path="posts/:postId" element={<Post />} />
-            </Route>
-          </Routes>
-        </header>
-      </div>
-    </BrowserRouter>
+    <div className="App">
+      <header className="App-header">
+        {/* Navbar placeholder */}
+        <Routes>
+          <Route path="/" element={<MapFeed />}>
+            <Route
+              path="login-signup"
+              element={
+                <LoginForm
+                  show={true}
+                  onHide={() => {
+                    navigate("/");
+                  }}
+                  onChange={handleLoginInput}
+                  email={emailInput}
+                  password={passwordInput}
+                  onClick={handleLoginOrSignUp}
+                />
+              }
+            />
+            <Route path="posts/:postId" element={<Post />} />
+          </Route>
+        </Routes>
+      </header>
+    </div>
   );
 }
 

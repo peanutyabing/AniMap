@@ -51,7 +51,7 @@ export default function MapFeed() {
     let markers = data
       .filter((item) => item[filterParam] === filterVal)
       .map((item) => (
-        <AnimalMarker id={item.id} position={item.position} icon={item.icon} />
+        <AnimalMarker key={item.id} position={item.position} icon={item.icon} />
       ));
     return markers;
   };
