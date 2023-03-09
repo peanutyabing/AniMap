@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { auth } from "./Firebase.js";
 import {
@@ -10,7 +10,10 @@ import {
 import MapFeed from "./Components/MapFeed.js";
 import Post from "./Components/Post.js";
 import LoginForm from "./Components/LoginForm.js";
+import NavBar from "./Components/NavBar.js";
 import "./App.css";
+
+export const UserContext = React.createContext({ email: null });
 
 function App() {
   const navigate = useNavigate();
@@ -81,27 +84,29 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {/* Navbar placeholder */}
-        <Routes>
-          <Route path="/" element={<MapFeed />}>
-            <Route
-              path="login-signup"
-              element={
-                <LoginForm
-                  show={true}
-                  onHide={() => {
-                    navigate("/");
-                  }}
-                  onChange={handleLoginInput}
-                  email={emailInput}
-                  password={passwordInput}
-                  onClick={handleLoginOrSignUp}
-                />
-              }
-            />
-            <Route path="posts/:postId" element={<Post />} />
-          </Route>
-        </Routes>
+        <UserContext.Provider value={user}>
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<MapFeed />}>
+              <Route
+                path="login-signup"
+                element={
+                  <LoginForm
+                    show={true}
+                    onHide={() => {
+                      navigate("/");
+                    }}
+                    onChange={handleLoginInput}
+                    email={emailInput}
+                    password={passwordInput}
+                    onClick={handleLoginOrSignUp}
+                  />
+                }
+              />
+              <Route path="posts/:postId" element={<Post />} />
+            </Route>
+          </Routes>
+        </UserContext.Provider>
       </header>
     </div>
   );
