@@ -1,5 +1,7 @@
 import React from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import catIcon from "../Icons/cat-50.png";
+import otterIcon from "../Icons/otter-60.png";
 
 const containerStyle = {
   width: "100vw",
@@ -7,14 +9,20 @@ const containerStyle = {
 };
 
 const center = {
-  lat: -3.745,
-  lng: -38.523,
+  lat: 1.365,
+  lng: 103.815,
 };
 
-const position = {
-  lat: -3.745,
-  lng: -38.523,
-};
+const positions = [
+  {
+    lat: 1.2815487770095195,
+    lng: 103.79192417577524,
+  },
+  {
+    lat: 1.342987,
+    lng: 103.83072,
+  },
+];
 
 const onLoad = (marker) => {
   console.log("marker: ", marker);
@@ -23,10 +31,9 @@ const onLoad = (marker) => {
 export default function MapWithMarkers() {
   return (
     <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
-        {/* Child components, such as markers, info windows, etc. */}
-
-        <Marker onLoad={onLoad} position={position} />
+      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
+        <Marker onLoad={onLoad} position={positions[0]} icon={catIcon} />
+        <Marker onLoad={onLoad} position={positions[1]} icon={otterIcon} />
       </GoogleMap>
     </LoadScript>
   );
