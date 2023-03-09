@@ -6,8 +6,7 @@ export default function Post(props) {
   const navigate = useNavigate();
 
   return (
-    // <h1>@!!!!</h1>
-    <Modal centered show={true}>
+    <Modal centered show={true} backdrop="static">
       <Modal.Header>
         <Modal.Title>SPOTTED</Modal.Title>
         <CloseButton

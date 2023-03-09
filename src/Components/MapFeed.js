@@ -7,7 +7,7 @@ import { Outlet } from "react-router-dom";
 
 const containerStyle = {
   width: "100vw",
-  height: "90%",
+  height: "100%",
 };
 
 const center = {

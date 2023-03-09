@@ -11,7 +11,7 @@ export default function NavBar(props) {
   let location = useLocation();
 
   return (
-    <Navbar bg="dark" variant="dark" sticky="top">
+    <Navbar bg="light" variant="light" sticky="top">
       <Navbar.Brand href="#top">LOGO</Navbar.Brand>
       {user.email && location !== "/login-signup" && (
         <Nav id="logged-in-nav">

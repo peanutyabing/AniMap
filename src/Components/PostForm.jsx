@@ -68,7 +68,7 @@ export default function PostForm(props) {
 
   // [If implemented] public or friends-only
   return (
-    <Modal {...props} centered>
+    <Modal {...props} backdrop="static" centered>
       <Modal.Header>
         <Modal.Title>Submit a post</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />
