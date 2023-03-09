@@ -12,16 +12,18 @@ export default function NavBar(props) {
 
   return (
     <Navbar bg="dark" variant="dark" sticky="top">
-      <Navbar.Brand href="#top">PLACEHOLDER FOR LOGO</Navbar.Brand>
+      <Navbar.Brand href="#top">LOGO</Navbar.Brand>
       {user.email && location !== "/login-signup" && (
         <Nav id="logged-in-nav">
           <NavDropdown
             title={`Welcome, ${user.email}`}
             id="collasible-nav-dropdown"
           >
-            {/* Will come back and finish the sign out logic */}
-            <NavDropdown.Item onClick="">Sign out</NavDropdown.Item>
+            <NavDropdown.Item onClick={props.signOutUser}>
+              Sign out
+            </NavDropdown.Item>
           </NavDropdown>
+          <Nav.Link onClick={() => navigate("post-form")}>Post</Nav.Link>
         </Nav>
       )}
       {!user.email && location !== "/login-signup" && (

@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
-  // signOut,
+  signOut,
 } from "firebase/auth";
 import MapFeed from "./Components/MapFeed.js";
 import Post from "./Components/Post.js";
@@ -70,11 +70,11 @@ function App() {
     });
   };
 
-  // const signOutUser = () => {
-  //   signOut(auth).catch((error) => {
-  //     showAlert(error);
-  //   });
-  // };
+  const signOutUser = () => {
+    signOut(auth).catch((error) => {
+      showAlert(error);
+    });
+  };
 
   const showAlert = (error) => {
     const errorCode = error.code;
@@ -86,7 +86,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <UserContext.Provider value={user}>
-          <NavBar />
+          <NavBar signOutUser={signOutUser} />
           <Routes>
             <Route path="/" element={<MapFeed />}>
               <Route
@@ -94,9 +94,6 @@ function App() {
                 element={
                   <LoginForm
                     show={true}
-                    onHide={() => {
-                      navigate("/");
-                    }}
                     onChange={handleLoginInput}
                     email={emailInput}
                     password={passwordInput}
@@ -104,17 +101,7 @@ function App() {
                   />
                 }
               />
-              <Route
-                path="post-form"
-                element={
-                  <PostForm
-                    show={true}
-                    onHide={() => {
-                      navigate("/");
-                    }}
-                  />
-                }
-              />
+              <Route path="post-form" element={<PostForm show={true} />} />
               <Route path="posts/:postId" element={<Post />} />
             </Route>
           </Routes>

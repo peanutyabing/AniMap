@@ -2,8 +2,10 @@ import CloseButton from "react-bootstrap/CloseButton";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm(props) {
+  const navigate = useNavigate();
   const handleChange = (e) => {
     let { name, value } = e.target;
     props.onChange(name, value);
@@ -13,7 +15,7 @@ export default function LoginForm(props) {
     <Modal {...props} backdrop="static" centered>
       <Modal.Header>
         <Modal.Title>LOGIN / SIGN UP</Modal.Title>
-        <CloseButton onClick={props.onHide} />
+        <CloseButton onClick={() => navigate("/")} />
       </Modal.Header>
       <Modal.Body>
         <Form className="login-form">
