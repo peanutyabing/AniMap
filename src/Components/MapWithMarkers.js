@@ -14,34 +14,53 @@ const center = {
   lng: 103.815,
 };
 
-const positions = [
+const PLACEHOLDER_DATA = [
   {
-    lat: 1.2815487770095195,
-    lng: 103.79192417577524,
+    key: "0test",
+    type: "cat",
+    icon: catIcon,
+    position: {
+      lat: 1.2815487770095195,
+      lng: 103.79192417577524,
+    },
+    message: "Here's a cat!",
+    downloadURL: "xxx",
   },
   {
-    lat: 1.342987,
-    lng: 103.83072,
+    key: "1test",
+    type: "otter",
+    icon: otterIcon,
+    position: {
+      lat: 1.342987,
+      lng: 103.83072,
+    },
+    message: "I just saw an otter.",
+    downloadURL: "yyy",
   },
 ];
 
-const animals = {
-  cat: catIcon,
-  otter: otterIcon,
-};
-
-// const onLoad = (marker) => {
-//   console.log("marker: ", marker);
-// };
-
 export default function MapWithMarkers() {
+  const renderMarkers = (
+    data,
+    filterParam = undefined,
+    filterVal = undefined
+  ) => {
+    let markers = data
+      .filter((item) => item.filterParam === filterVal)
+      .map((item) => (
+        <AnimalMarker
+          key={item.key}
+          position={item.position}
+          icon={item.icon}
+        />
+      ));
+    return markers;
+  };
+
   return (
     <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
-        <AnimalMarker position={positions[0]} animal={animals.cat} />
-        <AnimalMarker position={positions[1]} animal={animals.otter} />
-        {/* <Marker onLoad={onLoad} position={positions[0]} icon={catIcon} />
-        <Marker onLoad={onLoad} position={positions[1]} icon={otterIcon} /> */}
+        {renderMarkers(PLACEHOLDER_DATA)}
       </GoogleMap>
     </LoadScript>
   );
