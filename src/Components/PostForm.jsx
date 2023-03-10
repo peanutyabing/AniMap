@@ -9,17 +9,23 @@ import {
 import CloseButton from "react-bootstrap/CloseButton";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
+import Geocode from "react-geocode";
+import { UserContext } from "../App";
 
 // This function allows user to post sightings with the input description, upload photo and the type of encounter.
 const POSTS_DATABASE_KEY = "posts";
 const POSTS_IMAGES_FOLDER_NAME = "images";
+Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
+Geocode.setRegion("sgp");
 
 export default function PostForm(props) {
+  const user = UserContext;
   const [userMessage, setUserMessage] = useState("");
   const [userInputFile, setUserInputFile] = useState("");
   const [userFileInputValue, setUserFileInputValue] = useState("");
-  const [lon, setLon] = useState(0);
+  const [lng, setLng] = useState(0);
   const [lat, setLat] = useState(0);
+  const [address, setAddress] = useState("");
   const navigate = useNavigate();
 
   // writing data into our database
@@ -30,12 +36,14 @@ export default function PostForm(props) {
     const postsListRef = databaseRef(database, POSTS_DATABASE_KEY);
     const newPostRef = push(postsListRef);
     set(newPostRef, {
+      authorEmail: user.email,
       content: userMessage,
       date: postDate,
+      location: { lng: lng, lat: lat },
       url: url,
-      location: { lon: lon, lat: lat },
     });
   };
+
   // reset the post form
   const resetPostForm = () => {
     setUserInputFile(null);
@@ -46,7 +54,7 @@ export default function PostForm(props) {
   //submit will store the images and execute write data
   const handleSubmit = (e) => {
     e.preventDefault();
-    // geocode();
+    getlatlng();
 
     const fileRef = storageRef(
       storage,
@@ -58,26 +66,24 @@ export default function PostForm(props) {
   };
 
   // every map pin will call this function to send lon and lat to the postform
-  const getLocationFromMap = (lon, lat) => {
-    setLon(lon);
+  const getLocationFromMap = (lat, lng) => {
+    setLng(lng);
     setLat(lat);
+    console.log(lng, lat);
   };
 
-  // const geocode = (request) => {
-  //   let geocoder = new google.maps.Geocoder();
-  //   let location = "jurong";
-  //   geocoder
-  //     .geocode(location)
-  //     .then((result) => {
-  //       const { results } = result;
-  //       console.log(results);
-
-  //       return results;
-  //     })
-  //     .catch((e) => {
-  //       alert("Geocode was not successful for the following reason: " + e);
-  //     });
-  // };
+  const getlatlng = () => {
+    Geocode.fromAddress(address).then(
+      (response) => {
+        console.log(response);
+        const { lat, lng } = response.results[0].geometry.location;
+        getLocationFromMap(lat, lng);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  };
 
   // type of encounter: :) or :(
   // need to implement how to capture this data and render out green or red pin
@@ -96,11 +102,21 @@ export default function PostForm(props) {
           <input
             type="text"
             value={userMessage}
+            placeholder="Description: e.g. I saw a cat!"
             onChange={(e) => setUserMessage(e.target.value)}
           ></input>
           <br />
           <div>
             {goodEncounter} {badEncounter}
+          </div>
+          <br />
+          <div>
+            <input
+              type="text"
+              value={address}
+              placeholder="Location"
+              onChange={(e) => setAddress(e.target.value)}
+            />
           </div>
           <br />
           <input
@@ -118,7 +134,3 @@ export default function PostForm(props) {
     </Modal>
   );
 }
-// let map;
-// let marker;
-// let geocoder;
-// let google;
