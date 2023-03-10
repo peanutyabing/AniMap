@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { onChildAdded, ref } from "firebase/database";
+import { database } from "../Firebase.js";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import catIcon from "../Icons/cat-50.png";
 import otterIcon from "../Icons/otter-60.png";
@@ -14,6 +16,13 @@ const center = {
   lat: 1.365,
   lng: 103.815,
 };
+
+const icons = {
+  cat: catIcon,
+  otter: otterIcon,
+};
+
+const DB_POSTS_KEY = "posts";
 
 //After enabling user posting, the below data should come from either the realtime database, or the internal state/props.
 const PLACEHOLDER_DATA = [
@@ -42,6 +51,26 @@ const PLACEHOLDER_DATA = [
 ];
 
 export default function MapFeed() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const postsRef = ref(database, DB_POSTS_KEY);
+    onChildAdded(postsRef, (data) => {
+      setPosts((posts) => [
+        ...posts,
+        {
+          id: data.key,
+          content: data.val().content,
+          date: data.val().date,
+          location: data.val().location,
+          // animal: data.val().animal,
+          // author: data.val().author,
+          // likedBy: data.val().likedBy,
+        },
+      ]);
+    });
+  }, []);
+
   //The filterParam and filterVal parameters are optional. Nothing will be filtered if these arguments are left out. Otherwise, it will can filter data by any attribute (e.g. show me markers with type=cat only)
   const renderMarkers = (
     data,
@@ -54,8 +83,8 @@ export default function MapFeed() {
         <AnimalMarker
           key={item.id}
           id={item.id}
-          position={item.position}
-          icon={item.icon}
+          location={item.location}
+          icon={icons[item.animal]}
         />
       ));
     return markers;
@@ -64,7 +93,7 @@ export default function MapFeed() {
   return (
     <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
-        {renderMarkers(PLACEHOLDER_DATA)}
+        {renderMarkers(posts)}
         <Outlet />
       </GoogleMap>
     </LoadScript>
