@@ -6,6 +6,9 @@ import {
   getDownloadURL,
   uploadBytes,
 } from "firebase/storage";
+import CloseButton from "react-bootstrap/CloseButton";
+import Modal from "react-bootstrap/Modal";
+import { useNavigate } from "react-router-dom";
 
 // This function allows user to post sightings with the input description, upload photo and the type of encounter.
 const POSTS_DATABASE_KEY = "posts";
@@ -17,6 +20,7 @@ export default function PostForm(props) {
   const [userFileInputValue, setUserFileInputValue] = useState("");
   const [lon, setLon] = useState(0);
   const [lat, setLat] = useState(0);
+  const navigate = useNavigate();
 
   // writing data into our database
   const writeData = (url) => {
@@ -82,30 +86,36 @@ export default function PostForm(props) {
 
   // [If implemented] public or friends-only
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={userMessage}
-          onChange={(e) => setUserMessage(e.target.value)}
-        ></input>
-        <br />
-        <div>
-          {goodEncounter} {badEncounter}
-        </div>
-        <br />
-        <input
-          type="file"
-          name="userFileInputValue"
-          value={userFileInputValue}
-          onChange={(e) => {
-            setUserInputFile(e.target.files[0]);
-            setUserFileInputValue(e.target.value);
-          }}
-        />
-        <input type="submit" value="submit" name="submit" />
-      </form>
-    </div>
+    <Modal {...props} backdrop="static" centered>
+      <Modal.Header>
+        <Modal.Title>Submit a post</Modal.Title>
+        <CloseButton onClick={() => navigate("/")} />
+      </Modal.Header>
+      <Modal.Body>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={userMessage}
+            onChange={(e) => setUserMessage(e.target.value)}
+          ></input>
+          <br />
+          <div>
+            {goodEncounter} {badEncounter}
+          </div>
+          <br />
+          <input
+            type="file"
+            name="userFileInputValue"
+            value={userFileInputValue}
+            onChange={(e) => {
+              setUserInputFile(e.target.files[0]);
+              setUserFileInputValue(e.target.value);
+            }}
+          />
+          <input type="submit" value="submit" name="submit" />
+        </form>
+      </Modal.Body>
+    </Modal>
   );
 }
 // let map;
