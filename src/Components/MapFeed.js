@@ -63,8 +63,8 @@ export default function MapFeed() {
           content: data.val().content,
           date: data.val().date,
           location: data.val().location,
+          authorEmail: data.val().authorEmail,
           // animal: data.val().animal,
-          // author: data.val().author,
           // likedBy: data.val().likedBy,
         },
       ]);
