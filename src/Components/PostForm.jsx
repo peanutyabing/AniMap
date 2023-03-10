@@ -8,6 +8,8 @@ import {
 } from "firebase/storage";
 import CloseButton from "react-bootstrap/CloseButton";
 import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import Geocode from "react-geocode";
 import { UserContext } from "../App";
@@ -20,11 +22,12 @@ Geocode.setRegion("sgp");
 
 export default function PostForm(props) {
   const user = useContext(UserContext);
+  const [userSelectedAnimal, setUserSelectedAnimal] = useState("");
   const [userMessage, setUserMessage] = useState("");
   const [userInputFile, setUserInputFile] = useState("");
   const [userFileInputValue, setUserFileInputValue] = useState("");
-  // const [lng, setLng] = useState(0);
-  // const [lat, setLat] = useState(0);
+  const [lng, setLng] = useState(null);
+  const [lat, setLat] = useState(null);
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
 
@@ -36,10 +39,11 @@ export default function PostForm(props) {
     const postsListRef = databaseRef(database, POSTS_DATABASE_KEY);
     const newPostRef = push(postsListRef);
     set(newPostRef, {
+      animal: userSelectedAnimal,
       authorEmail: user.email,
       content: userMessage,
       date: postDate,
-      location: location,
+      location: { lat: lat, lng: lng },
       url: url,
     });
   };
@@ -54,10 +58,10 @@ export default function PostForm(props) {
   //submit will store the images and execute write data
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let location = await getlatlng();
+    // let location = await getlatlng();
 
     uploadFile()
-      .then((url) => writeData(url, location))
+      .then((url) => writeData(url))
       .then(resetPostForm)
       .catch((error) => {
         console.log(error);
@@ -85,26 +89,32 @@ export default function PostForm(props) {
   //   console.log(lng, lat);
   // };
 
-  const getlatlng = () =>
+  const getLatLng = () =>
     Geocode.fromAddress(address).then(
-      (response) =>
+      (response) => {
         // console.log(response);
-        // const { lat, lng } =
-        {
-          console.log(response.results[0].geometry.location);
-          return response.results[0].geometry.location;
-        },
+        const { lat, lng } = response.results[0].geometry.location;
+        setLat(lat);
+        setLng(lng);
+      },
 
       // getLocationFromMap(lat, lng);
 
       (error) => {
         console.error(error);
+        setLat(null);
+        setLng(null);
       }
     );
   // type of encounter: :) or :(
   // need to implement how to capture this data and render out green or red pin
   const goodEncounter = <button>{`🙂`}</button>;
   const badEncounter = <button>{`🙁`}</button>;
+
+  const handleSelectAnimal = (e) => {
+    console.log(e.target.value);
+    setUserSelectedAnimal(e.target.value);
+  };
 
   // [If implemented] public or friends-only
   return (
@@ -114,38 +124,82 @@ export default function PostForm(props) {
         <CloseButton onClick={() => navigate("/")} />
       </Modal.Header>
       <Modal.Body>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={userMessage}
-            placeholder="Description: e.g. I saw a cat!"
-            onChange={(e) => setUserMessage(e.target.value)}
-          ></input>
-          <br />
-          <div>
-            {goodEncounter} {badEncounter}
-          </div>
-          <br />
-          <div>
-            <input
+        <Form onSubmit={handleSubmit}>
+          <Form.Group
+            className="form-group"
+            controlId="animal-type-input"
+            onChange={handleSelectAnimal}
+          >
+            <Form.Label>What animal did you see?</Form.Label>
+            <div className="radioButtons">
+              <Form.Check
+                inline
+                label="Cat"
+                value="cat"
+                name="animal"
+                type="radio"
+                id="radio-cat"
+              />
+              <Form.Check
+                inline
+                label="Otter"
+                value="otter"
+                name="animal"
+                type="radio"
+                id="radio-otter"
+              />
+            </div>
+          </Form.Group>
+          <Form.Group className="form-group" controlId="encounter-input">
+            <Form.Label>How was the encounter?</Form.Label>
+            <div>
+              {goodEncounter} {badEncounter}
+            </div>
+          </Form.Group>
+          <Form.Group className="form-group" controlId="message-input">
+            <Form.Label>Tell us more about the encounter:</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={2}
+              value={userMessage}
+              placeholder="Description: e.g. I saw a cat!"
+              onChange={(e) => setUserMessage(e.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group className="form-group">
+            <Form.Label>Where was the encounter?</Form.Label>
+            <Form.Control
               type="text"
               value={address}
-              placeholder="Location"
+              placeholder="Enter the address"
               onChange={(e) => setAddress(e.target.value)}
             />
-          </div>
-          <br />
-          <input
-            type="file"
-            name="userFileInputValue"
-            value={userFileInputValue}
-            onChange={(e) => {
-              setUserInputFile(e.target.files[0]);
-              setUserFileInputValue(e.target.value);
-            }}
-          />
-          <input type="submit" value="submit" name="submit" />
-        </form>
+            <Button variant="secondary" onClick={getLatLng}>
+              Look up coordinates
+            </Button>
+            {lat && lng ? (
+              <div>
+                {lat}, {lng}
+              </div>
+            ) : (
+              <div>Address not found</div>
+            )}
+          </Form.Group>
+          <Form.Group className="form-group">
+            <Form.Label>Upload a photo:</Form.Label>
+            <Form.Control
+              type="file"
+              name="userFileInputValue"
+              value={userFileInputValue}
+              onChange={(e) => {
+                setUserInputFile(e.target.files[0]);
+                setUserFileInputValue(e.target.value);
+              }}
+            />
+          </Form.Group>
+          <Button type="submit">Submit</Button>
+        </Form>
       </Modal.Body>
     </Modal>
   );

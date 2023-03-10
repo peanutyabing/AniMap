@@ -19,7 +19,7 @@ export function AnimalMarker(props) {
     <Marker
       key={props.id}
       className="animal-marker"
-      position={props.position}
+      position={props.location}
       icon={props.icon}
       onLoad={onLoad}
       onClick={handleClick(props.id)}

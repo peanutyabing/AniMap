@@ -31,6 +31,14 @@
   color: #1f2022;
 }
 
+.form-label {
+  font-weight: 600;
+}
+
+.form-group {
+  margin: 1.5vmin 0;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

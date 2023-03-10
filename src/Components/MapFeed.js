@@ -28,25 +28,25 @@ const POSTS_DATABASE_KEY = "posts";
 const PLACEHOLDER_DATA = [
   {
     id: "0test",
-    type: "cat",
-    icon: catIcon,
-    position: {
+    animal: "cat",
+    // icon: catIcon,
+    location: {
       lat: 1.2815487770095195,
       lng: 103.79192417577524,
     },
-    message: "Here's a cat!",
-    downloadURL: "xxx",
+    content: "Here's a cat!",
+    url: "xxx",
   },
   {
     id: "1test",
-    type: "otter",
-    icon: otterIcon,
-    position: {
+    animal: "otter",
+    // icon: otterIcon,
+    location: {
       lat: 1.342987,
       lng: 103.83072,
     },
-    message: "I just saw an otter.",
-    downloadURL: "yyy",
+    content: "I just saw an otter.",
+    url: "yyy",
   },
 ];
 
@@ -64,7 +64,7 @@ export default function MapFeed() {
           date: data.val().date,
           location: data.val().location,
           authorEmail: data.val().authorEmail,
-          // animal: data.val().animal,
+          animal: data.val().animal,
           // likedBy: data.val().likedBy,
         },
       ]);
