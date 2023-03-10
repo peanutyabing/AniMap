@@ -22,7 +22,7 @@ const icons = {
   otter: otterIcon,
 };
 
-const DB_POSTS_KEY = "posts";
+const POSTS_DATABASE_KEY = "posts";
 
 //After enabling user posting, the below data should come from either the realtime database, or the internal state/props.
 const PLACEHOLDER_DATA = [
@@ -54,7 +54,7 @@ export default function MapFeed() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const postsRef = ref(database, DB_POSTS_KEY);
+    const postsRef = ref(database, POSTS_DATABASE_KEY);
     onChildAdded(postsRef, (data) => {
       setPosts((posts) => [
         ...posts,

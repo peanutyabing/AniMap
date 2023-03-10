@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { database, storage } from "../Firebase";
 import { ref as databaseRef, push, set } from "firebase/database";
 import {
@@ -19,17 +19,17 @@ Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
 Geocode.setRegion("sgp");
 
 export default function PostForm(props) {
-  const user = UserContext;
+  const user = useContext(UserContext);
   const [userMessage, setUserMessage] = useState("");
   const [userInputFile, setUserInputFile] = useState("");
   const [userFileInputValue, setUserFileInputValue] = useState("");
-  const [lng, setLng] = useState(0);
-  const [lat, setLat] = useState(0);
+  // const [lng, setLng] = useState(0);
+  // const [lat, setLat] = useState(0);
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
 
   // writing data into our database
-  const writeData = (url) => {
+  const writeData = (url, location) => {
     // insert date into our post
     const postDate = new Date().toLocaleString();
     // ref to direct posts into database
@@ -39,7 +39,7 @@ export default function PostForm(props) {
       authorEmail: user.email,
       content: userMessage,
       date: postDate,
-      location: { lng: lng, lat: lat },
+      location: location,
       url: url,
     });
   };
@@ -52,39 +52,46 @@ export default function PostForm(props) {
   };
 
   //submit will store the images and execute write data
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    getlatlng();
+    let location = await getlatlng();
 
     const fileRef = storageRef(
       storage,
       `${POSTS_IMAGES_FOLDER_NAME}/${userInputFile.name}`
     );
     uploadBytes(fileRef, userInputFile)
-      .then(() => getDownloadURL(fileRef).then((url) => writeData(url)))
-      .then(resetPostForm);
+      .then(() => getDownloadURL(fileRef))
+      .then((url) => writeData(url, location))
+      .then(resetPostForm)
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   // every map pin will call this function to send lon and lat to the postform
-  const getLocationFromMap = (lat, lng) => {
-    setLng(lng);
-    setLat(lat);
-    console.log(lng, lat);
-  };
+  // const getLocationFromMap = (lat, lng) => {
+  //   setLng(lng);
+  //   setLat(lat);
+  //   console.log(lng, lat);
+  // };
 
-  const getlatlng = () => {
+  const getlatlng = () =>
     Geocode.fromAddress(address).then(
-      (response) => {
-        console.log(response);
-        const { lat, lng } = response.results[0].geometry.location;
-        getLocationFromMap(lat, lng);
-      },
+      (response) =>
+        // console.log(response);
+        // const { lat, lng } =
+        {
+          console.log(response.results[0].geometry.location);
+          return response.results[0].geometry.location;
+        },
+
+      // getLocationFromMap(lat, lng);
+
       (error) => {
         console.error(error);
       }
     );
-  };
-
   // type of encounter: :) or :(
   // need to implement how to capture this data and render out green or red pin
   const goodEncounter = <button>{`🙂`}</button>;
