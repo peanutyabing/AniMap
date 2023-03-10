@@ -24,32 +24,6 @@ const icons = {
 
 const POSTS_DATABASE_KEY = "posts";
 
-//After enabling user posting, the below data should come from either the realtime database, or the internal state/props.
-const PLACEHOLDER_DATA = [
-  {
-    id: "0test",
-    animal: "cat",
-    // icon: catIcon,
-    location: {
-      lat: 1.2815487770095195,
-      lng: 103.79192417577524,
-    },
-    content: "Here's a cat!",
-    url: "xxx",
-  },
-  {
-    id: "1test",
-    animal: "otter",
-    // icon: otterIcon,
-    location: {
-      lat: 1.342987,
-      lng: 103.83072,
-    },
-    content: "I just saw an otter.",
-    url: "yyy",
-  },
-];
-
 export default function MapFeed() {
   const [posts, setPosts] = useState([]);
 

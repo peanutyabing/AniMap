@@ -39,6 +39,10 @@
   margin: 1.5vmin 0;
 }
 
+.modal-body img {
+  max-width: 100%;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
