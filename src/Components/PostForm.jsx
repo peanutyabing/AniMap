@@ -56,17 +56,26 @@ export default function PostForm(props) {
     e.preventDefault();
     let location = await getlatlng();
 
-    const fileRef = storageRef(
-      storage,
-      `${POSTS_IMAGES_FOLDER_NAME}/${userInputFile.name}`
-    );
-    uploadBytes(fileRef, userInputFile)
-      .then(() => getDownloadURL(fileRef))
+    uploadFile()
       .then((url) => writeData(url, location))
       .then(resetPostForm)
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const uploadFile = () => {
+    if (userInputFile) {
+      const fileRef = storageRef(
+        storage,
+        `${POSTS_IMAGES_FOLDER_NAME}/${userInputFile.name}`
+      );
+      return uploadBytes(fileRef, userInputFile).then(() =>
+        getDownloadURL(fileRef)
+      );
+    } else {
+      return Promise.resolve("");
+    }
   };
 
   // every map pin will call this function to send lon and lat to the postform
