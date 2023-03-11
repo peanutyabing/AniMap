@@ -12,6 +12,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import Geocode from "react-geocode";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 import { UserContext } from "../App";
 
 // This function allows user to post sightings with the input description, upload photo and the type of encounter.
@@ -169,22 +170,43 @@ export default function PostForm(props) {
 
           <Form.Group className="form-group">
             <Form.Label>Where was the encounter?</Form.Label>
-            <Form.Control
-              type="text"
-              value={address}
-              placeholder="Enter the address"
-              onChange={(e) => setAddress(e.target.value)}
-            />
-            <Button variant="secondary" onClick={getLatLng}>
-              Look up coordinates
-            </Button>
-            {lat && lng ? (
-              <div>
-                {lat}, {lng}
-              </div>
-            ) : (
-              <div>Address not found</div>
-            )}
+            <div id="loc-option-1">
+              <Form.Control
+                type="text"
+                value={address}
+                placeholder="Enter the address"
+                onChange={(e) => setAddress(e.target.value)}
+              />
+              <Button variant="secondary" onClick={getLatLng}>
+                Look up coordinates
+              </Button>
+              {lat && lng ? (
+                <div>
+                  {lat}, {lng}
+                </div>
+              ) : (
+                <div>Address not found</div>
+              )}
+            </div>
+            <div id="loc-option-2">
+              <GoogleMap
+                onClick={(e) => {
+                  setLat(e.latLng.lat());
+                  setLng(e.latLng.lng());
+                }}
+                mapContainerStyle={{
+                  width: "100%",
+                  height: "20vh",
+                }}
+                center={{
+                  lat: 1.365,
+                  lng: 103.815,
+                }}
+                zoom={11}
+              >
+                <Marker position={{ lat: lat, lng: lng }} />
+              </GoogleMap>
+            </div>
           </Form.Group>
           <Form.Group className="form-group">
             <Form.Label>Upload a photo:</Form.Label>
