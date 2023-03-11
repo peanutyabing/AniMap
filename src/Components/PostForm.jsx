@@ -29,13 +29,19 @@ export default function PostForm(props) {
   const [userFileInputValue, setUserFileInputValue] = useState("");
   const [lng, setLng] = useState(null);
   const [lat, setLat] = useState(null);
+  const [happy, setHappy] = useState(false);
+  const [unhappy, setUnhappy] = useState(false);
   const [address, setAddress] = useState("");
+
   const navigate = useNavigate();
 
   // writing data into our database
   const writeData = (url, location) => {
     // insert date into our post
     const postDate = new Date().toLocaleString();
+    // record our encounter in string status
+    const encounter = happy ? "happy" : "unhappy";
+    console.log("encounter", encounter);
     // ref to direct posts into database
     const postsListRef = databaseRef(database, POSTS_DATABASE_KEY);
     const newPostRef = push(postsListRef);
@@ -44,6 +50,7 @@ export default function PostForm(props) {
       authorEmail: user.email,
       content: userMessage,
       date: postDate,
+      encounter: encounter,
       location: { lat: lat, lng: lng },
       url: url,
     });
@@ -67,6 +74,7 @@ export default function PostForm(props) {
       .catch((error) => {
         console.log(error);
       });
+    navigate("/");
   };
 
   const uploadFile = () => {
@@ -83,34 +91,41 @@ export default function PostForm(props) {
     }
   };
 
-  // every map pin will call this function to send lon and lat to the postform
-  // const getLocationFromMap = (lat, lng) => {
-  //   setLng(lng);
-  //   setLat(lat);
-  //   console.log(lng, lat);
-  // };
-
   const getLatLng = () =>
     Geocode.fromAddress(address).then(
       (response) => {
-        // console.log(response);
         const { lat, lng } = response.results[0].geometry.location;
         setLat(lat);
         setLng(lng);
       },
-
-      // getLocationFromMap(lat, lng);
-
       (error) => {
         console.error(error);
         setLat(null);
         setLng(null);
       }
     );
+
   // type of encounter: :) or :(
-  // need to implement how to capture this data and render out green or red pin
-  const goodEncounter = <button>{`🙂`}</button>;
-  const badEncounter = <button>{`🙁`}</button>;
+  const goodEncounter = (
+    <button
+      onClick={(e) => {
+        e.preventDefault();
+        setHappy(true);
+        setUnhappy(false);
+      }}
+      style={{ backgroundColor: happy ? "green" : null }}
+    >{`🙂`}</button>
+  );
+  const badEncounter = (
+    <button
+      onClick={(e) => {
+        e.preventDefault();
+        setUnhappy(true);
+        setHappy(false);
+      }}
+      style={{ backgroundColor: unhappy ? "red" : null }}
+    >{`🙁`}</button>
+  );
 
   const handleSelectAnimal = (e) => {
     console.log(e.target.value);
