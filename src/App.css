@@ -31,6 +31,12 @@
   color: #1f2022;
 }
 
+#logo {
+  max-width: 100%;
+  max-height: 6vh;
+  margin-left: 2vmin;
+}
+
 .form-label {
   font-weight: 600;
 }

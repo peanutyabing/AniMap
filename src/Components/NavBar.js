@@ -4,6 +4,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useLocation, useNavigate } from "react-router-dom";
+import logo from "../Icons/AniMap-2.png";
 
 export default function NavBar(props) {
   const user = useContext(UserContext);
@@ -12,11 +13,13 @@ export default function NavBar(props) {
 
   return (
     <Navbar bg="light" variant="light" sticky="top">
-      <Navbar.Brand href="#top">LOGO</Navbar.Brand>
+      <Navbar.Brand>
+        <img src={logo} alt="ANIMAP" id="logo" />
+      </Navbar.Brand>
       {user.email && location !== "/login-signup" && (
         <Nav id="logged-in-nav">
           <NavDropdown
-            title={`Welcome, ${user.email}`}
+            title={`Welcome, ${user.email.split("@")[0]}!`}
             id="collasible-nav-dropdown"
           >
             <NavDropdown.Item onClick={props.signOutUser}>
