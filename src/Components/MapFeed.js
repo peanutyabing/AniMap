@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { onChildAdded, ref } from "firebase/database";
 import { database } from "../Firebase.js";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
-import catIcon from "../Icons/cat-50.png";
-import otterIcon from "../Icons/otter-60.png";
+import catIconG from "../Icons/cat-pin-green.png";
+import otterIconG from "../Icons/otter-pin-green.png";
 import { AnimalMarker } from "./AnimalMarker";
 import { Outlet } from "react-router-dom";
 
@@ -17,9 +17,14 @@ const center = {
   lng: 103.815,
 };
 
+// const icons = {
+//   cat: { url: catIconG, scaledSize: new window.google.maps.Size(40, 55) },
+//   otter: { url: otterIconG, scaledSize: new window.google.maps.Size(40, 55) },
+// };
+
 const icons = {
-  cat: catIcon,
-  otter: otterIcon,
+  cat: catIconG,
+  otter: otterIconG,
 };
 
 const POSTS_DATABASE_KEY = "posts";
@@ -30,18 +35,20 @@ export default function MapFeed() {
   useEffect(() => {
     const postsRef = ref(database, POSTS_DATABASE_KEY);
     onChildAdded(postsRef, (data) => {
-      setPosts((posts) => [
-        ...posts,
-        {
-          id: data.key,
-          content: data.val().content,
-          date: data.val().date,
-          location: data.val().location,
-          authorEmail: data.val().authorEmail,
-          animal: data.val().animal,
-          // likedBy: data.val().likedBy,
-        },
-      ]);
+      if (!posts.map((post) => post.id).includes(data.key)) {
+        setPosts((posts) => [
+          ...posts,
+          {
+            id: data.key,
+            content: data.val().content,
+            date: data.val().date,
+            location: data.val().location,
+            authorEmail: data.val().authorEmail,
+            animal: data.val().animal,
+            // likedBy: data.val().likedBy,
+          },
+        ]);
+      }
     });
   }, []);
 
@@ -51,6 +58,7 @@ export default function MapFeed() {
     filterParam = undefined,
     filterVal = undefined
   ) => {
+    console.log(icons["cat"]);
     let markers = data
       .filter((item) => item[filterParam] === filterVal)
       .map((item) => (
