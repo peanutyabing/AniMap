@@ -198,10 +198,14 @@ export default function PostForm(props) {
                   width: "100%",
                   height: "20vh",
                 }}
-                center={{
-                  lat: 1.365,
-                  lng: 103.815,
-                }}
+                center={
+                  lat && lng
+                    ? { lat: lat, lng: lng }
+                    : {
+                        lat: 1.365,
+                        lng: 103.815,
+                      }
+                }
                 zoom={11}
               >
                 <Marker position={{ lat: lat, lng: lng }} />
