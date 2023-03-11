@@ -8,6 +8,7 @@ import Button from "react-bootstrap/Button";
 import { UserContext } from "../App.js";
 
 const POSTS_DATABASE_KEY = "posts";
+const COMMENTS_DATABASE_KEY = "comments";
 
 export default function Post(props) {
   const user = useContext(UserContext);
@@ -32,14 +33,15 @@ export default function Post(props) {
 
   const writeData = () => {
     const commentDate = new Date().toLocaleString();
-    const postsCommentsRef = ref(database, `${POSTS_DATABASE_KEY}/${postId}`);
+    const postsCommentsRef = ref(
+      database,
+      `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}`
+    );
     const newCommentsRef = push(postsCommentsRef);
     set(newCommentsRef, {
-      comments: {
-        userComment: comments,
-        userCommentDate: commentDate,
-        user: user.email,
-      },
+      userComment: comments,
+      userCommentDate: commentDate,
+      user: user.email,
     });
   };
 
