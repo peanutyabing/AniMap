@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { database } from "../Firebase.js";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, push, set } from "firebase/database";
 import { useNavigate, useLocation } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
 import Button from "react-bootstrap/Button";
+import { UserContext } from "../App.js";
 
 const POSTS_DATABASE_KEY = "posts";
 
 export default function Post(props) {
+  const user = useContext(UserContext);
   const navigate = useNavigate();
   let location = useLocation();
   let postId = location.pathname.split("/").slice(-1);
@@ -16,6 +18,7 @@ export default function Post(props) {
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
   const [authorEmail, setAuthorEmail] = useState("");
+  const [comments, setComments] = useState("");
 
   useEffect(() => {
     const postRef = ref(database, `${POSTS_DATABASE_KEY}/${postId}`);
@@ -26,6 +29,25 @@ export default function Post(props) {
       setAuthorEmail(snapshot.val().authorEmail);
     });
   }, []);
+
+  const writeData = () => {
+    const commentDate = new Date().toLocaleString();
+    const postsCommentsRef = ref(database, `${POSTS_DATABASE_KEY}/${postId}`);
+    const newCommentsRef = push(postsCommentsRef);
+    set(newCommentsRef, {
+      comments: {
+        userComment: comments,
+        userCommentDate: commentDate,
+        user: user.email,
+      },
+    });
+  };
+
+  const handleSend = (e) => {
+    e.preventDefault();
+    writeData();
+    setComments("");
+  };
 
   return (
     <Modal centered show={true} backdrop="static">
@@ -42,6 +64,16 @@ export default function Post(props) {
         <div>{content}</div>
         <div style={{ fontSize: "x-small", margin: "4vmin 0" }}>
           ...Placeholder for likes, a like button and comments...
+          <form onSubmit={handleSend}>
+            <input
+              type="text"
+              value={comments}
+              placeholder="Enter your comment"
+              onChange={(e) => setComments(e.target.value)}
+            />
+            <input type="submit" value="send"></input>
+          </form>
+          ;
         </div>
       </Modal.Body>
       <Modal.Footer>
