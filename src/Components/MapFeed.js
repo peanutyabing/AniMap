@@ -31,11 +31,11 @@ const POSTS_DATABASE_KEY = "posts";
 
 export default function MapFeed() {
   const [posts, setPosts] = useState([]);
-
   useEffect(() => {
     const postsRef = ref(database, POSTS_DATABASE_KEY);
     onChildAdded(postsRef, (data) => {
       if (!posts.map((post) => post.id).includes(data.key)) {
+        console.log(data.val());
         setPosts((posts) => [
           ...posts,
           {
@@ -45,6 +45,7 @@ export default function MapFeed() {
             location: data.val().location,
             authorEmail: data.val().authorEmail,
             animal: data.val().animal,
+            comments: data.val().comments,
             // likedBy: data.val().likedBy,
           },
         ]);
