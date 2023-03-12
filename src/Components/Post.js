@@ -1,11 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { database } from "../Firebase.js";
-import { ref, onValue, push, set, onChildAdded } from "firebase/database";
+import { ref, onValue, push, set, update } from "firebase/database";
 import { useNavigate, useLocation } from "react-router-dom";
-import Modal from "react-bootstrap/Modal";
-import CloseButton from "react-bootstrap/CloseButton";
-import Button from "react-bootstrap/Button";
 import { UserContext } from "../App.js";
+import { Modal, ButtonGroup, Button, CloseButton, Form } from "react-bootstrap";
 
 const POSTS_DATABASE_KEY = "posts";
 const COMMENTS_DATABASE_KEY = "comments";
@@ -15,12 +13,14 @@ export default function Post(props) {
   const navigate = useNavigate();
   let location = useLocation();
   let postId = location.pathname.split("/").slice(-1);
+
   const [url, setUrl] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
   const [authorEmail, setAuthorEmail] = useState("");
-  const [comments, setComments] = useState("");
-  const [postComments, setPostComments] = useState([]);
+  const [comment, setComment] = useState("");
+  const [reactions, setReactions] = useState({});
+  const [postComments, setPostComments] = useState({});
 
   useEffect(() => {
     const postRef = ref(database, `${POSTS_DATABASE_KEY}/${postId}`);
@@ -29,6 +29,7 @@ export default function Post(props) {
       setContent(snapshot.val().content);
       setDate(snapshot.val().date);
       setAuthorEmail(snapshot.val().authorEmail);
+      setReactions(snapshot.val().reactions);
       setPostComments(snapshot.val().comments);
     });
   }, []);
@@ -39,18 +40,74 @@ export default function Post(props) {
       database,
       `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}`
     );
-    const newCommentsRef = push(postsCommentsRef);
-    set(newCommentsRef, {
-      userComment: comments,
+    const newCommentRef = push(postsCommentsRef);
+    set(newCommentRef, {
+      userComment: comment,
       userCommentDate: commentDate,
       user: user.email,
     });
   };
 
+  const handleReaction = (e) => {
+    let emotion = e.target.name;
+    const reactionsToUpdate = { ...reactions };
+    const reactedUsers = reactionsToUpdate[emotion];
+    if (!reactedUsers.includes(user.email)) {
+      reactionsToUpdate[emotion] = [...reactedUsers, user.email];
+    } else {
+      reactionsToUpdate[emotion] = reactedUsers.filter(
+        (userEmail) => userEmail !== user.email
+      );
+    }
+    const postRef = ref(database, `${POSTS_DATABASE_KEY}/${postId}`);
+    update(postRef, { reactions: reactionsToUpdate });
+  };
+
   const handleSendComment = (e) => {
     e.preventDefault();
     writeData();
-    setComments("");
+    setComment("");
+  };
+
+  const renderReactionButtons = () => {
+    if (reactions.love && reactions.funny && reactions.shook && reactions.sad) {
+      return (
+        <ButtonGroup>
+          <Button
+            name="love"
+            variant={reactions.love.includes(user.email) ? "dark" : "light"}
+            onClick={handleReaction}
+            disabled={!user.email}
+          >
+            😍 {reactions.love.length - 1}
+          </Button>
+          <Button
+            name="funny"
+            variant={reactions.funny.includes(user.email) ? "dark" : "light"}
+            onClick={handleReaction}
+            disabled={!user.email}
+          >
+            🤣 {reactions.funny.length - 1}
+          </Button>
+          <Button
+            name="shook"
+            variant={reactions.shook.includes(user.email) ? "dark" : "light"}
+            onClick={handleReaction}
+            disabled={!user.email}
+          >
+            😱 {reactions.shook.length - 1}
+          </Button>
+          <Button
+            name="sad"
+            variant={reactions.sad.includes(user.email) ? "dark" : "light"}
+            onClick={handleReaction}
+            disabled={!user.email}
+          >
+            😢 {reactions.sad.length - 1}
+          </Button>
+        </ButtonGroup>
+      );
+    }
   };
 
   const renderComments = () => {
@@ -81,16 +138,22 @@ export default function Post(props) {
       <Modal.Body>
         <img src={url} alt={content} />
         <div>{content}</div>
+        <div className="reaction-btns">{renderReactionButtons()}</div>
         <div className="comments">{renderComments()}</div>
-        <form onSubmit={handleSendComment}>
-          <input
-            type="text"
-            value={comments}
-            placeholder="Enter your comment"
-            onChange={(e) => setComments(e.target.value)}
-          />
-          <input type="submit" value="send"></input>
-        </form>
+
+        {user.email && (
+          <Form onSubmit={handleSendComment}>
+            <Form.Control
+              type="text"
+              value={comment}
+              placeholder="Enter your comment"
+              onChange={(e) => setComment(e.target.value)}
+            />
+            <Button type="submit" variant="primary">
+              Send
+            </Button>
+          </Form>
+        )}
       </Modal.Body>
       <Modal.Footer>
         <Button
