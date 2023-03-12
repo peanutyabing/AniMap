@@ -4,6 +4,7 @@ import { ref, onValue, push, set, update } from "firebase/database";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../App.js";
 import { Modal, ButtonGroup, Button, CloseButton, Form } from "react-bootstrap";
+import userAvatar from "../Icons/user-avatar-bear.png";
 
 const POSTS_DATABASE_KEY = "posts";
 const COMMENTS_DATABASE_KEY = "comments";
@@ -115,10 +116,12 @@ export default function Post(props) {
     for (const commentKey in postComments) {
       comments = [
         ...comments,
-        <div key={commentKey}>
-          {postComments[commentKey].user} {""}{" "}
+        <div className="post-comment" key={commentKey}>
           {postComments[commentKey].userComment} {""}
-          {postComments[commentKey].userCommentDate}
+          <div className="comment-info">
+            {postComments[commentKey].user} {""}{" "}
+            {postComments[commentKey].userCommentDate}
+          </div>
         </div>,
       ];
     }
@@ -128,7 +131,13 @@ export default function Post(props) {
   return (
     <Modal centered show={true} backdrop="static">
       <Modal.Header>
-        <Modal.Title>SPOTTED</Modal.Title>
+        <div className="user-avatar">
+          <img src={userAvatar} alt={authorEmail} />
+        </div>
+        <div className="post-info">
+          <div className="author">{authorEmail}</div>
+          <div className="timestamp">{date}</div>
+        </div>
         <CloseButton
           onClick={() => {
             navigate("/");
@@ -136,36 +145,42 @@ export default function Post(props) {
         />
       </Modal.Header>
       <Modal.Body>
-        <img src={url} alt={content} />
-        <div>{content}</div>
-        <div className="reaction-btns">{renderReactionButtons()}</div>
-        <div className="comments">{renderComments()}</div>
+        <div className="post-body">
+          <div>{content}</div>
+          <div className="post-image">
+            <img src={url} alt={content} />
+          </div>
+          <div className="reaction-btns">{renderReactionButtons()}</div>
+        </div>
 
-        {user.email && (
-          <Form onSubmit={handleSendComment}>
-            <Form.Control
-              type="text"
-              value={comment}
-              placeholder="Enter your comment"
-              onChange={(e) => setComment(e.target.value)}
-            />
-            <Button type="submit" variant="primary">
-              Send
-            </Button>
-          </Form>
-        )}
+        <div className="post-comments">{renderComments()}</div>
       </Modal.Body>
       <Modal.Footer>
-        <Button
-          variant="dark"
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          Back to feed
-        </Button>
-        <div>{date}</div>
-        <div>{authorEmail}</div>
+        {user.email && (
+          <Form id="comment-form" onSubmit={handleSendComment}>
+            <Form.Control
+              as="textarea"
+              rows={2}
+              value={comment}
+              placeholder="Join the conversation"
+              onChange={(e) => setComment(e.target.value)}
+            />
+            <div className="side-by-side-btns">
+              <Button type="submit" variant="primary">
+                Send comment
+              </Button>
+              <Button
+                type={null}
+                variant="primary"
+                onClick={() => {
+                  navigate("/");
+                }}
+              >
+                Back to feed
+              </Button>
+            </div>
+          </Form>
+        )}
       </Modal.Footer>
     </Modal>
   );
