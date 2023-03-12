@@ -38,7 +38,7 @@ export default function LoginForm(props) {
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group id="login-buttons">
+          <Form.Group className="side-by-side-btns">
             <Button variant="primary" id="login" onClick={props.onClick}>
               Existing user | log in
             </Button>

@@ -6,10 +6,7 @@ import {
   getDownloadURL,
   uploadBytes,
 } from "firebase/storage";
-import CloseButton from "react-bootstrap/CloseButton";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+import { Modal, Button, CloseButton, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Geocode from "react-geocode";
 import { GoogleMap, Marker } from "@react-google-maps/api";
@@ -27,8 +24,8 @@ export default function PostForm(props) {
   const [userMessage, setUserMessage] = useState("");
   const [userInputFile, setUserInputFile] = useState("");
   const [userFileInputValue, setUserFileInputValue] = useState("");
-  const [lng, setLng] = useState(null);
-  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(0);
+  const [lat, setLat] = useState(0);
   const [happy, setHappy] = useState(false);
   const [unhappy, setUnhappy] = useState(false);
   const [address, setAddress] = useState("");
@@ -36,7 +33,7 @@ export default function PostForm(props) {
   const navigate = useNavigate();
 
   // writing data into our database
-  const writeData = (url, location) => {
+  const writeData = (url) => {
     // insert date into our post
     const postDate = new Date().toLocaleString();
     // record our encounter in string status
@@ -52,6 +49,7 @@ export default function PostForm(props) {
       date: postDate,
       encounter: encounter,
       location: { lat: lat, lng: lng },
+      reactions: { love: [""], funny: [""], shook: [""], sad: [""] },
       url: url,
     });
   };
@@ -107,24 +105,26 @@ export default function PostForm(props) {
 
   // type of encounter: :) or :(
   const goodEncounter = (
-    <button
+    <Button
       onClick={(e) => {
         e.preventDefault();
         setHappy(true);
         setUnhappy(false);
       }}
-      style={{ backgroundColor: happy ? "green" : null }}
-    >{`🙂`}</button>
+      variant={happy ? "success" : "light"}
+      // style={{ backgroundColor: happy ? "green" : null }}
+    >{`🙂`}</Button>
   );
   const badEncounter = (
-    <button
+    <Button
       onClick={(e) => {
         e.preventDefault();
         setUnhappy(true);
         setHappy(false);
       }}
-      style={{ backgroundColor: unhappy ? "red" : null }}
-    >{`🙁`}</button>
+      variant={unhappy ? "danger" : "light"}
+      // style={{ backgroundColor: unhappy ? "red" : null }}
+    >{`🙁`}</Button>
   );
 
   const handleSelectAnimal = (e) => {
