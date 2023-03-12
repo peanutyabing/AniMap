@@ -24,38 +24,14 @@ export default function Post(props) {
 
   useEffect(() => {
     const postRef = ref(database, `${POSTS_DATABASE_KEY}/${postId}`);
-    const postCommentRef = ref(
-      database,
-      `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}`
-    );
     onValue(postRef, (snapshot) => {
       setUrl(snapshot.val().url);
       setContent(snapshot.val().content);
       setDate(snapshot.val().date);
       setAuthorEmail(snapshot.val().authorEmail);
+      setPostComments(snapshot.val().comments);
     });
-    getComments();
-  }, [postComments.length]);
-
-  const getComments = () => {
-    const postCommentRef = ref(
-      database,
-      `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}`
-    );
-    onChildAdded(postCommentRef, (data) => {
-      if (!postComments.map((comment) => comment.id).includes(data.key)) {
-        setPostComments((comments) => [
-          ...postComments,
-          {
-            id: data.key,
-            user: data.val().user,
-            userComment: data.val().userComment,
-            userCommentDate: data.val().userCommentDate,
-          },
-        ]);
-      }
-    });
-  };
+  }, []);
 
   const writeData = () => {
     const commentDate = new Date().toLocaleString();
@@ -71,18 +47,26 @@ export default function Post(props) {
     });
   };
 
-  const handleSend = (e) => {
+  const handleSendComment = (e) => {
     e.preventDefault();
     writeData();
     setComments("");
   };
 
-  let postCommentsList = postComments.map((comment) => (
-    <div key={comment.id}>
-      {comment.user} {""} {comment.userComment} {""}
-      {comment.userCommentDate}
-    </div>
-  ));
+  const renderComments = () => {
+    let comments = [];
+    for (const commentKey in postComments) {
+      comments = [
+        ...comments,
+        <div key={commentKey}>
+          {postComments[commentKey].user} {""}{" "}
+          {postComments[commentKey].userComment} {""}
+          {postComments[commentKey].userCommentDate}
+        </div>,
+      ];
+    }
+    return comments;
+  };
 
   return (
     <Modal centered show={true} backdrop="static">
@@ -97,19 +81,16 @@ export default function Post(props) {
       <Modal.Body>
         <img src={url} alt={content} />
         <div>{content}</div>
-        <div style={{ fontSize: "x-small", margin: "4vmin 0" }}>
-          ...Placeholder for likes, a like button and comments...
-          {postCommentsList}
-          <form onSubmit={handleSend}>
-            <input
-              type="text"
-              value={comments}
-              placeholder="Enter your comment"
-              onChange={(e) => setComments(e.target.value)}
-            />
-            <input type="submit" value="send"></input>
-          </form>
-        </div>
+        <div className="comments">{renderComments()}</div>
+        <form onSubmit={handleSendComment}>
+          <input
+            type="text"
+            value={comments}
+            placeholder="Enter your comment"
+            onChange={(e) => setComments(e.target.value)}
+          />
+          <input type="submit" value="send"></input>
+        </form>
       </Modal.Body>
       <Modal.Footer>
         <Button
