@@ -34,6 +34,14 @@ export default function Post(props) {
       setDate(snapshot.val().date);
       setAuthorEmail(snapshot.val().authorEmail);
     });
+    getComments();
+  }, [postComments.length]);
+
+  const getComments = () => {
+    const postCommentRef = ref(
+      database,
+      `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}`
+    );
     onChildAdded(postCommentRef, (data) => {
       if (!postComments.map((comment) => comment.id).includes(data.key)) {
         setPostComments((comments) => [
@@ -47,7 +55,7 @@ export default function Post(props) {
         ]);
       }
     });
-  }, []);
+  };
 
   const writeData = () => {
     const commentDate = new Date().toLocaleString();
@@ -68,7 +76,7 @@ export default function Post(props) {
     writeData();
     setComments("");
   };
-  console.log("postComments", postComments);
+
   let postCommentsList = postComments.map((comment) => (
     <div key={comment.id}>
       {comment.user} {""} {comment.userComment} {""}
@@ -101,7 +109,6 @@ export default function Post(props) {
             />
             <input type="submit" value="send"></input>
           </form>
-          ;
         </div>
       </Modal.Body>
       <Modal.Footer>

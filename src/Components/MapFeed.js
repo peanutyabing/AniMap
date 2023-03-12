@@ -35,7 +35,6 @@ export default function MapFeed() {
     const postsRef = ref(database, POSTS_DATABASE_KEY);
     onChildAdded(postsRef, (data) => {
       if (!posts.map((post) => post.id).includes(data.key)) {
-        console.log(data.val());
         setPosts((posts) => [
           ...posts,
           {
