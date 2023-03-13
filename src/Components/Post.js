@@ -149,26 +149,34 @@ export default function Post(props) {
       comments = [
         ...comments,
         <div className="post-comment" key={commentKey}>
-          <div>
-            <div className="side-by-side-edit">
+          <div className="post-comment-info-status">
+            <div className="user-comment">
               {postComments[commentKey].userComment} {""}
             </div>{" "}
-            <div className="edit-btn">
-              {user.email === postComments[commentKey].user ? (
-                <Button id={commentKey} name="edit" onClick={handleEdit}>
-                  Edit
-                </Button>
-              ) : null}
+            <div className="info-status">
+              <div className="comment-info">
+                {postComments[commentKey].user} {""}{" "}
+                {postComments[commentKey].userCommentDate}
+              </div>
+              <div className="comment-status">
+                {postComments[commentKey].status
+                  ? postComments[commentKey].status
+                  : null}
+              </div>
             </div>
           </div>
-          <div className="comment-info">
-            {postComments[commentKey].user} {""}{" "}
-            {postComments[commentKey].userCommentDate}
-            <div className="comment-status">
-              {postComments[commentKey].status
-                ? postComments[commentKey].status
-                : null}
-            </div>
+          <div className="edit-btn">
+            {user.email === postComments[commentKey].user ? (
+              <Button
+                variant="contained"
+                size="sm"
+                id={commentKey}
+                name="edit"
+                onClick={handleEdit}
+              >
+                EDIT
+              </Button>
+            ) : null}
           </div>
         </div>,
       ];
