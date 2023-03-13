@@ -3,7 +3,9 @@ import { onChildAdded, ref } from "firebase/database";
 import { database } from "../Firebase.js";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import catIconG from "../Icons/cat-pin-green.png";
+import catIconR from "../Icons/cat-pin-red.png";
 import otterIconG from "../Icons/otter-pin-green.png";
+import otterIconR from "../Icons/otter-pin-red.png";
 import { AnimalMarker } from "./AnimalMarker";
 import { Outlet } from "react-router-dom";
 
@@ -22,11 +24,6 @@ const center = {
 //   otter: { url: otterIconG, scaledSize: new window.google.maps.Size(40, 55) },
 // };
 
-const icons = {
-  cat: catIconG,
-  otter: otterIconG,
-};
-
 const POSTS_DATABASE_KEY = "posts";
 
 export default function MapFeed() {
@@ -39,18 +36,24 @@ export default function MapFeed() {
           ...posts,
           {
             id: data.key,
-            content: data.val().content,
             date: data.val().date,
             location: data.val().location,
             authorEmail: data.val().authorEmail,
             animal: data.val().animal,
-            comments: data.val().comments,
-            // likedBy: data.val().likedBy,
+            encounter: data.val().encounter,
           },
         ]);
       }
     });
   }, []);
+
+  const getMarker = (animal, encounter) => {
+    const icons = {
+      cat: { happy: catIconG, unhappy: catIconR },
+      otter: { happy: otterIconG, unhappy: otterIconR },
+    };
+    return icons[animal][encounter];
+  };
 
   //The filterParam and filterVal parameters are optional. Nothing will be filtered if these arguments are left out. Otherwise, it will can filter data by any attribute (e.g. show me markers with type=cat only)
   const renderMarkers = (
@@ -58,7 +61,6 @@ export default function MapFeed() {
     filterParam = undefined,
     filterVal = undefined
   ) => {
-    console.log(icons["cat"]);
     let markers = data
       .filter((item) => item[filterParam] === filterVal)
       .map((item) => (
@@ -66,7 +68,8 @@ export default function MapFeed() {
           key={item.id}
           id={item.id}
           location={item.location}
-          icon={icons[item.animal]}
+          icon={getMarker(item.animal, item.encounter)}
+          // icon={icons[item.animal]}
         />
       ));
     return markers;
