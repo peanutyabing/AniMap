@@ -19,11 +19,6 @@ const center = {
   lng: 103.815,
 };
 
-// const icons = {
-//   cat: { url: catIconG, scaledSize: new window.google.maps.Size(40, 55) },
-//   otter: { url: otterIconG, scaledSize: new window.google.maps.Size(40, 55) },
-// };
-
 const POSTS_DATABASE_KEY = "posts";
 
 export default function MapFeed() {
@@ -47,12 +42,21 @@ export default function MapFeed() {
     });
   }, []);
 
-  const getMarker = (animal, encounter) => {
+  const setMarkerParams = (animal, encounter) => {
     const icons = {
-      cat: { happy: catIconG, unhappy: catIconR },
-      otter: { happy: otterIconG, unhappy: otterIconR },
+      happycat: { url: catIconG },
+      unhappycat: { url: catIconR },
+      happyotter: { url: otterIconG },
+      unhappyotter: { url: otterIconR },
     };
-    return icons[animal][encounter];
+    Object.keys(icons).forEach(
+      (key) => (icons[key].scaledSize = new window.google.maps.Size(40, 55))
+    );
+    return icons[`${encounter}${animal}`];
+    // const icons = {
+    //   cat: { url: catIconG, scaledSize: new window.google.maps.Size(40, 55) },
+    //   otter: { url: otterIconG, scaledSize: new window.google.maps.Size(40, 55) },
+    // };
   };
 
   //The filterParam and filterVal parameters are optional. Nothing will be filtered if these arguments are left out. Otherwise, it will can filter data by any attribute (e.g. show me markers with type=cat only)
@@ -68,7 +72,7 @@ export default function MapFeed() {
           key={item.id}
           id={item.id}
           location={item.location}
-          icon={getMarker(item.animal, item.encounter)}
+          icon={setMarkerParams(item.animal, item.encounter)}
         />
       ));
     return markers;
