@@ -69,7 +69,6 @@ export default function MapFeed() {
           id={item.id}
           location={item.location}
           icon={getMarker(item.animal, item.encounter)}
-          // icon={icons[item.animal]}
         />
       ));
     return markers;

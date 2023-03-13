@@ -42,6 +42,10 @@
   margin: 1.5vmin 0;
 }
 
+.modal {
+  padding-left: 0 !important;
+}
+
 .modal-header {
   display: flex;
 }
@@ -57,6 +61,17 @@
 }
 
 /* Posts */
+
+.modal-content-happy {
+  border-right: 6px #d1f7b1 solid;
+  border-bottom: 6px #d1f7b1 solid;
+}
+
+.modal-content-unhappy {
+  border-right: 6px #fbceb5 solid;
+  border-bottom: 6px #fbceb5 solid;
+}
+
 .user-avatar > img {
   width: 60px;
   max-width: 15vmin;
