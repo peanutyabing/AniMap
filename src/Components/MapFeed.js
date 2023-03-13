@@ -53,10 +53,6 @@ export default function MapFeed() {
       (key) => (icons[key].scaledSize = new window.google.maps.Size(40, 55))
     );
     return icons[`${encounter}${animal}`];
-    // const icons = {
-    //   cat: { url: catIconG, scaledSize: new window.google.maps.Size(40, 55) },
-    //   otter: { url: otterIconG, scaledSize: new window.google.maps.Size(40, 55) },
-    // };
   };
 
   //The filterParam and filterVal parameters are optional. Nothing will be filtered if these arguments are left out. Otherwise, it will can filter data by any attribute (e.g. show me markers with type=cat only)

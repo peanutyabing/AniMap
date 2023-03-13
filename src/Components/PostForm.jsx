@@ -62,17 +62,26 @@ export default function PostForm(props) {
   };
 
   //submit will store the images and execute write data
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // let location = await getlatlng();
-
-    uploadFile()
-      .then((url) => writeData(url))
-      .then(resetPostForm)
-      .catch((error) => {
-        console.log(error);
-      });
-    navigate("/");
+    let userHasSelectedEncounter = happy || unhappy;
+    if (
+      userSelectedAnimal &&
+      userHasSelectedEncounter &&
+      userMessage &&
+      lat &&
+      lng
+    ) {
+      uploadFile()
+        .then((url) => writeData(url))
+        .then(resetPostForm)
+        .catch((error) => {
+          console.log(error);
+        });
+      navigate("/");
+    } else {
+      alert("Please complete the post!");
+    }
   };
 
   const uploadFile = () => {
@@ -173,35 +182,36 @@ export default function PostForm(props) {
             </div>
           </Form.Group>
           <Form.Group className="form-group" controlId="message-input">
-            <Form.Label>Tell us more about the encounter:</Form.Label>
+            <Form.Label>Tell us more about the encounter</Form.Label>
             <Form.Control
               as="textarea"
               rows={2}
               value={userMessage}
-              placeholder="Description: e.g. I saw a cat!"
+              placeholder=""
               onChange={(e) => setUserMessage(e.target.value)}
             />
           </Form.Group>
-
           <Form.Group className="form-group">
             <Form.Label>Where was the encounter?</Form.Label>
-            <div id="loc-option-1">
+            {lat && lng ? (
+              <div className="coordinates-display coordinates-display-found">
+                {lat}, {lng}
+              </div>
+            ) : (
+              <div className="coordinates-display coordinates-display-not-found">
+                Address not found
+              </div>
+            )}
+            <div id="address-look-up">
               <Form.Control
                 type="text"
                 value={address}
-                placeholder="Enter the address"
+                placeholder="Enter address or click on the map"
                 onChange={(e) => setAddress(e.target.value)}
               />
-              <Button variant="secondary" onClick={getLatLng}>
-                Look up coordinates
+              <Button variant="secondary" id="look-up-btn" onClick={getLatLng}>
+                Look up
               </Button>
-              {lat && lng ? (
-                <div>
-                  {lat}, {lng}
-                </div>
-              ) : (
-                <div>Address not found</div>
-              )}
             </div>
             <div id="loc-option-2">
               <GoogleMap
@@ -228,7 +238,9 @@ export default function PostForm(props) {
             </div>
           </Form.Group>
           <Form.Group className="form-group">
-            <Form.Label>Upload a photo:</Form.Label>
+            <Form.Label>
+              Upload a photo<span id="optional-text">{" (optional)"}</span>
+            </Form.Label>
             <Form.Control
               type="file"
               name="userFileInputValue"
@@ -239,7 +251,7 @@ export default function PostForm(props) {
               }}
             />
           </Form.Group>
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Submit ⏎</Button>
         </Form>
       </Modal.Body>
     </Modal>
