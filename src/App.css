@@ -34,12 +34,8 @@
   margin-left: 2vmin;
 }
 
-.form-label {
-  font-weight: 600;
-}
-
-.form-group {
-  margin: 1.5vmin 0;
+.modal {
+  padding-left: 0 !important;
 }
 
 .modal-header {
@@ -56,7 +52,60 @@
   margin-top: 2vmin;
 }
 
+/* Post Form */
+.form-label {
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.form-group {
+  margin: 2vmin 0;
+}
+
+.coordinates-display {
+  background-color: #f8f9fa;
+  padding: 0.5vmin;
+  font-style: italic;
+  border-radius: 4px;
+}
+
+.coordinates-display-found {
+  color: #5bb12d;
+}
+
+.coordinates-display-not-found {
+  color: #ff5d6c;
+}
+
+#address-look-up {
+  display: flex;
+  height: calc(25px + 2vmin);
+  margin-bottom: 0.5vmin;
+}
+
+#address-look-up #look-up-btn {
+  width: calc(110px + 3vmin);
+  margin-left: 0.5vmin;
+}
+
+#optional-text {
+  color: rgb(145, 145, 145);
+  font-style: italic;
+  font-weight: 400;
+}
+
 /* Posts */
+
+.modal-content-happy {
+  border-right: 6px #d1f7b1 solid;
+  border-bottom: 6px #d1f7b1 solid;
+}
+
+.modal-content-unhappy {
+  border-right: 6px #fbceb5 solid;
+  border-bottom: 6px #fbceb5 solid;
+}
+
 .user-avatar > img {
   width: 60px;
   max-width: 15vmin;

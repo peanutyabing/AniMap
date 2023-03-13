@@ -20,6 +20,7 @@ export default function Post(props) {
   const [date, setDate] = useState("");
   const [authorEmail, setAuthorEmail] = useState("");
   const [comment, setComment] = useState("");
+  const [encounter, setEncounter] = useState("");
   const [reactions, setReactions] = useState({});
   const [postComments, setPostComments] = useState({});
 
@@ -30,6 +31,7 @@ export default function Post(props) {
       setContent(snapshot.val().content);
       setDate(snapshot.val().date);
       setAuthorEmail(snapshot.val().authorEmail);
+      setEncounter(snapshot.val().encounter);
       setReactions(snapshot.val().reactions);
       setPostComments(snapshot.val().comments);
     });
@@ -129,7 +131,12 @@ export default function Post(props) {
   };
 
   return (
-    <Modal centered show={true} backdrop="static">
+    <Modal
+      contentClassName={`modal-content-${encounter}`}
+      centered
+      show={true}
+      backdrop="static"
+    >
       <Modal.Header>
         <div className="user-avatar">
           <img src={userAvatar} alt={authorEmail} />
