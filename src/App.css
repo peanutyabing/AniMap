@@ -26,6 +26,7 @@
 .navbar {
   width: 100vw;
   color: #1f2022;
+  padding: 0;
 }
 
 #logo {
@@ -200,4 +201,27 @@
 
 #comment-form {
   width: 100%;
+}
+
+/* Friend finder */
+#friend-search-container {
+  min-width: 300px;
+}
+
+.friend-search-input,
+.search-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2vmin 0;
+}
+
+.friend-search-form input {
+  margin-right: calc(4px + 0.5vmin);
+}
+
+.search-results {
+  padding: 0.2vmin 1vmin;
+  margin-bottom: 1vmin;
+  border-radius: 4px;
 }

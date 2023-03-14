@@ -22,6 +22,14 @@ export default function NavBar(props) {
             title={`Welcome, ${user.email.split("@")[0]}!`}
             id="collasible-nav-dropdown"
           >
+            <NavDropdown.Item>Friend requests</NavDropdown.Item>
+            <NavDropdown.Item
+              onClick={() => {
+                navigate("friend-finder");
+              }}
+            >
+              Find friends
+            </NavDropdown.Item>
             <NavDropdown.Item onClick={props.signOutUser}>
               Sign out
             </NavDropdown.Item>
