@@ -94,19 +94,30 @@ export default function FriendFinder() {
   const renderFriendRequestBtn = (searchResult) => {
     if (searchResult.friended) {
       return (
-        <Button variant="secondary" size="sm" disabled={true}>
+        <Button
+          className="friend-btn"
+          variant="secondary"
+          size="sm"
+          disabled={true}
+        >
           Friends
         </Button>
       );
     } else if (searchResult.requested) {
       return (
-        <Button variant="secondary" size="sm" disabled={true}>
+        <Button
+          className="friend-btn"
+          variant="secondary"
+          size="sm"
+          disabled={true}
+        >
           Request pending
         </Button>
       );
     } else {
       return (
         <Button
+          className="friend-btn"
           variant="secondary"
           size="sm"
           id={searchResult.id}
