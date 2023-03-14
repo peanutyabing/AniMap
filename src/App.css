@@ -26,6 +26,7 @@
 .navbar {
   width: 100vw;
   color: #1f2022;
+  padding: 0;
 }
 
 #logo {
@@ -200,4 +201,37 @@
 
 #comment-form {
   width: 100%;
+}
+
+/* Friend finder */
+#friend-search-container {
+  min-width: 300px;
+}
+
+.friend-search-input,
+.search-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1vmin 0;
+}
+
+.friend-search-form input {
+  margin-right: calc(4px + 0.5vmin);
+}
+
+#results-found {
+  font-style: italic;
+  color: rgb(145, 145, 145);
+  margin-top: 2vmin;
+}
+
+.search-results {
+  margin-bottom: 1vmin;
+  border-radius: 4px;
+}
+
+.search-result .friend-btn {
+  width: 32%;
+  font-size: calc(8px + 0.7vmin);
 }

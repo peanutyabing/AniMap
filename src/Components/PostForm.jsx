@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { database, storage } from "../Firebase";
+import { database, storage } from "../Firebase.js";
 import { ref as databaseRef, push, set } from "firebase/database";
 import {
   ref as storageRef,
@@ -18,7 +18,7 @@ const POSTS_IMAGES_FOLDER_NAME = "images";
 Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
 Geocode.setRegion("sgp");
 
-export default function PostForm(props) {
+export default function PostForm() {
   const user = useContext(UserContext);
   const [userSelectedAnimal, setUserSelectedAnimal] = useState("");
   const [userMessage, setUserMessage] = useState("");
@@ -143,7 +143,7 @@ export default function PostForm(props) {
 
   // [If implemented] public or friends-only
   return (
-    <Modal {...props} backdrop="static" centered>
+    <Modal show={true} backdrop="static" centered>
       <Modal.Header>
         <Modal.Title>Submit a post</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />
