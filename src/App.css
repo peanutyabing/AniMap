@@ -42,6 +42,10 @@
   display: flex;
 }
 
+.modal-body {
+  padding: 0.5rem 1rem;
+}
+
 .modal-body img {
   max-width: 100%;
 }
@@ -139,7 +143,7 @@
 }
 
 .post-comments {
-  margin: 1vh;
+  margin: 1vh 0;
   font-weight: 600;
   margin-bottom: 1vmin;
 }
@@ -149,35 +153,53 @@
   justify-content: space-between;
   font-weight: 400;
   margin: 0.5vmin 0;
-  border: solid 1px #faedcd;
+}
+
+.modal-content-happy .post-comments .post-comment {
+  background-color: #d1f7b130;
+  border-right: 2px #d1f7b1 solid;
+  border-bottom: 2px #d1f7b1 solid;
+}
+
+.modal-content-unhappy .post-comments .post-comment {
+  background-color: #fbceb530;
+  border-right: 2px #fbceb5 solid;
+  border-bottom: 2px #fbceb5 solid;
 }
 
 .post-comments .post-comment .comment-info {
   font-size: calc(8px + 0.5vmin);
   font-weight: 300;
 }
-.post-comments .post-comment .post-comment-info-status {
+.post-comments .post-comment .post-comment-data {
   display: block;
   padding-left: 0.5vmin;
   margin: 0.3vmin;
 }
-.post-comments .post-comment .post-comment-info-status .user-comment {
+.post-comments .post-comment .post-comment-data .user-comment {
   margin-bottom: 0.7vh;
+  font-size: calc(8px + 0.8vmin);
 }
 
-.post-comments .post-comment .post-comment-info-status .info-status {
+.post-comments .post-comment .post-comment-data .info-status {
   display: flex;
 }
 
-.post-comments .post-comment .post-comment-info-status .comment-status {
+.post-comments .post-comment .post-comment-data .comment-status {
   font-style: italic;
   margin-left: 0.5vmin;
   font-size: calc(8px + 0.5vmin);
   font-weight: 300;
 }
-.post-comments .post-comment .edit-btn {
+
+.comment-section-btns {
   color: #8779ee;
 }
+
+.comment-section-btns button {
+  font-size: calc(8px + 0.5vmin);
+}
+
 #comment-form {
   width: 100%;
 }
