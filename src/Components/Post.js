@@ -25,6 +25,7 @@ export default function Post(props) {
   const [postComments, setPostComments] = useState({});
   const [editComment, setEditComment] = useState(false);
   const [editCommentKey, setEditCommentKey] = useState("");
+  const [commentSectionLen, setCommentSectionLen] = useState(5);
 
   useEffect(() => {
     const postRef = ref(database, `${POSTS_DATABASE_KEY}/${postId}`);
@@ -143,45 +144,49 @@ export default function Post(props) {
     }
   };
 
-  const renderComments = () => {
+  const renderComments = (len = 5) => {
     let comments = [];
-    for (const commentKey in postComments) {
-      comments = [
-        ...comments,
-        <div className="post-comment" key={commentKey}>
-          <div className="post-comment-info-status">
-            <div className="user-comment">
-              {postComments[commentKey].userComment} {""}
-            </div>{" "}
-            <div className="info-status">
-              <div className="comment-info">
-                {postComments[commentKey].user} {""}{" "}
-                {postComments[commentKey].userCommentDate}
+    if (postComments) {
+      Object.keys(postComments)
+        .reverse()
+        .forEach((commentKey) => {
+          comments = [
+            ...comments,
+            <div className="post-comment" key={commentKey}>
+              <div className="post-comment-data">
+                <div className="user-comment">
+                  {postComments[commentKey].userComment} {""}
+                </div>{" "}
+                <div className="info-status">
+                  <div className="comment-info">
+                    {postComments[commentKey].user} {""}{" "}
+                    {postComments[commentKey].userCommentDate}
+                  </div>
+                  <div className="comment-status">
+                    {postComments[commentKey].status
+                      ? postComments[commentKey].status
+                      : null}
+                  </div>
+                </div>
               </div>
-              <div className="comment-status">
-                {postComments[commentKey].status
-                  ? postComments[commentKey].status
-                  : null}
+              <div className="edit-btn comment-section-btns">
+                {user.email === postComments[commentKey].user ? (
+                  <Button
+                    variant="contained"
+                    size="sm"
+                    id={commentKey}
+                    name="edit"
+                    onClick={handleEdit}
+                  >
+                    EDIT
+                  </Button>
+                ) : null}
               </div>
-            </div>
-          </div>
-          <div className="edit-btn">
-            {user.email === postComments[commentKey].user ? (
-              <Button
-                variant="contained"
-                size="sm"
-                id={commentKey}
-                name="edit"
-                onClick={handleEdit}
-              >
-                EDIT
-              </Button>
-            ) : null}
-          </div>
-        </div>,
-      ];
+            </div>,
+          ];
+        });
     }
-    return comments;
+    return comments.slice(0, len);
   };
 
   return (
@@ -214,7 +219,28 @@ export default function Post(props) {
           <div className="reaction-btns">{renderReactionButtons()}</div>
         </div>
 
-        <div className="post-comments">{renderComments()}</div>
+        <div className="post-comments">{renderComments(commentSectionLen)}</div>
+        <div className="comment-section-btns">
+          {postComments &&
+            Object.keys(postComments).length > commentSectionLen && (
+              <Button
+                variant="contained"
+                size="sm"
+                onClick={() => setCommentSectionLen((prevLen) => prevLen + 5)}
+              >
+                More comments ↓
+              </Button>
+            )}
+          {commentSectionLen > 5 && (
+            <Button
+              variant="contained"
+              size="sm"
+              onClick={() => setCommentSectionLen((prevLen) => prevLen - 5)}
+            >
+              Fewer comments ↑
+            </Button>
+          )}
+        </div>
       </Modal.Body>
       <Modal.Footer>
         {user.email && (
