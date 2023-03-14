@@ -146,41 +146,45 @@ export default function Post(props) {
 
   const renderComments = (len = 5) => {
     let comments = [];
-    for (const commentKey in postComments) {
-      comments = [
-        ...comments,
-        <div className="post-comment" key={commentKey}>
-          <div className="post-comment-data">
-            <div className="user-comment">
-              {postComments[commentKey].userComment} {""}
-            </div>{" "}
-            <div className="info-status">
-              <div className="comment-info">
-                {postComments[commentKey].user} {""}{" "}
-                {postComments[commentKey].userCommentDate}
+    if (postComments) {
+      Object.keys(postComments)
+        .reverse()
+        .forEach((commentKey) => {
+          comments = [
+            ...comments,
+            <div className="post-comment" key={commentKey}>
+              <div className="post-comment-data">
+                <div className="user-comment">
+                  {postComments[commentKey].userComment} {""}
+                </div>{" "}
+                <div className="info-status">
+                  <div className="comment-info">
+                    {postComments[commentKey].user} {""}{" "}
+                    {postComments[commentKey].userCommentDate}
+                  </div>
+                  <div className="comment-status">
+                    {postComments[commentKey].status
+                      ? postComments[commentKey].status
+                      : null}
+                  </div>
+                </div>
               </div>
-              <div className="comment-status">
-                {postComments[commentKey].status
-                  ? postComments[commentKey].status
-                  : null}
+              <div className="edit-btn comment-section-btns">
+                {user.email === postComments[commentKey].user ? (
+                  <Button
+                    variant="contained"
+                    size="sm"
+                    id={commentKey}
+                    name="edit"
+                    onClick={handleEdit}
+                  >
+                    EDIT
+                  </Button>
+                ) : null}
               </div>
-            </div>
-          </div>
-          <div className="edit-btn comment-section-btns">
-            {user.email === postComments[commentKey].user ? (
-              <Button
-                variant="contained"
-                size="sm"
-                id={commentKey}
-                name="edit"
-                onClick={handleEdit}
-              >
-                EDIT
-              </Button>
-            ) : null}
-          </div>
-        </div>,
-      ];
+            </div>,
+          ];
+        });
     }
     return comments.slice(0, len);
   };
