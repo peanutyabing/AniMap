@@ -42,7 +42,10 @@ export default function FriendFinder() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let results = users.filter((user) => user.email.includes(searchTerm));
+    let results = users.filter(
+      (eachUser) =>
+        eachUser.email.includes(searchTerm) && eachUser.email !== user.email
+    );
     setSearchResults(results);
     setSearchTerm("");
   };
@@ -65,7 +68,6 @@ export default function FriendFinder() {
       },
       { onlyOnce: true }
     );
-
     updateSearchResults(e);
   };
 
@@ -139,6 +141,10 @@ export default function FriendFinder() {
               </Button>
             </Form.Group>
           </Form>
+          <div id="results-found">
+            {searchResults.length}{" "}
+            {searchResults.length > 1 ? "users found" : "user found"}
+          </div>
           <div className="search-results">{renderSearchResults()}</div>
         </div>
       </Modal.Body>

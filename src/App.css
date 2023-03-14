@@ -213,15 +213,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 2vmin 0;
+  margin: 1vmin 0;
 }
 
 .friend-search-form input {
   margin-right: calc(4px + 0.5vmin);
 }
 
+#results-found {
+  font-style: italic;
+  color: rgb(145, 145, 145);
+  margin-top: 2vmin;
+}
+
 .search-results {
-  padding: 0.2vmin 1vmin;
   margin-bottom: 1vmin;
   border-radius: 4px;
 }
