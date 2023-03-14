@@ -157,14 +157,12 @@
 
 .modal-content-happy .post-comments .post-comment {
   background-color: #d1f7b130;
-  border-right: 2px #d1f7b1 solid;
-  border-bottom: 2px #d1f7b1 solid;
+  border: 1px #d1f7b150 solid;
 }
 
 .modal-content-unhappy .post-comments .post-comment {
   background-color: #fbceb530;
-  border-right: 2px #fbceb5 solid;
-  border-bottom: 2px #fbceb5 solid;
+  border: 1px #fbceb550 solid;
 }
 
 .post-comments .post-comment .comment-info {

@@ -217,15 +217,16 @@ export default function Post(props) {
 
         <div className="post-comments">{renderComments(commentSectionLen)}</div>
         <div className="comment-section-btns">
-          {Object.keys(postComments).length > commentSectionLen && (
-            <Button
-              variant="contained"
-              size="sm"
-              onClick={() => setCommentSectionLen((prevLen) => prevLen + 5)}
-            >
-              More comments ↓
-            </Button>
-          )}
+          {postComments &&
+            Object.keys(postComments).length > commentSectionLen && (
+              <Button
+                variant="contained"
+                size="sm"
+                onClick={() => setCommentSectionLen((prevLen) => prevLen + 5)}
+              >
+                More comments ↓
+              </Button>
+            )}
           {commentSectionLen > 5 && (
             <Button
               variant="contained"
