@@ -139,20 +139,45 @@
 }
 
 .post-comments {
+  margin: 1vh;
   font-weight: 600;
   margin-bottom: 1vmin;
 }
 
 .post-comments .post-comment {
+  display: flex;
+  justify-content: space-between;
   font-weight: 400;
   margin: 0.5vmin 0;
+  border: solid 1px #faedcd;
 }
 
 .post-comments .post-comment .comment-info {
-  font-size: calc(10px + 0.5vmin);
+  font-size: calc(8px + 0.5vmin);
   font-weight: 300;
 }
+.post-comments .post-comment .post-comment-info-status {
+  display: block;
+  padding-left: 0.5vmin;
+  margin: 0.3vmin;
+}
+.post-comments .post-comment .post-comment-info-status .user-comment {
+  margin-bottom: 0.7vh;
+}
 
+.post-comments .post-comment .post-comment-info-status .info-status {
+  display: flex;
+}
+
+.post-comments .post-comment .post-comment-info-status .comment-status {
+  font-style: italic;
+  margin-left: 0.5vmin;
+  font-size: calc(8px + 0.5vmin);
+  font-weight: 300;
+}
+.post-comments .post-comment .edit-btn {
+  color: #8779ee;
+}
 #comment-form {
   width: 100%;
 }
