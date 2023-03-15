@@ -7,7 +7,8 @@ import catIconR from "../Icons/cat-pin-red.png";
 import otterIconG from "../Icons/otter-pin-green.png";
 import otterIconR from "../Icons/otter-pin-red.png";
 import { AnimalMarker } from "./AnimalMarker";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import Filter from "./Filter";
 
 const containerStyle = {
   width: "100vw",
@@ -21,8 +22,10 @@ const center = {
 
 const POSTS_DATABASE_KEY = "posts";
 
-export default function MapFeed() {
+export default function MapFeed(props) {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
+
   useEffect(() => {
     const postsRef = ref(database, POSTS_DATABASE_KEY);
     onChildAdded(postsRef, (data) => {
@@ -58,8 +61,8 @@ export default function MapFeed() {
   //The filterParam and filterVal parameters are optional. Nothing will be filtered if these arguments are left out. Otherwise, it will can filter data by any attribute (e.g. show me markers with type=cat only)
   const renderMarkers = (
     data,
-    filterParam = undefined,
-    filterVal = undefined
+    filterParam = props.filterParam ? props.filterParam : undefined,
+    filterVal = props.filterVal ? props.filterVal : undefined
   ) => {
     let markers = data
       .filter((item) => item[filterParam] === filterVal)
