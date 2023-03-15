@@ -7,12 +7,8 @@ import { useNavigate } from "react-router-dom";
 export default function Filter(props) {
   const navigate = useNavigate();
 
-  const [show, setShow] = useState(false);
   const [filterParam, setFilterParam] = useState("");
   const [filterVal, setFilterVal] = useState("");
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const handleChange = (e) => {
     setFilterParam(e.target.name);
@@ -22,18 +18,17 @@ export default function Filter(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     props.handleDataFromFilter(filterParam, filterVal);
+    navigate("/");
+  };
+  const handleReset = (e) => {
+    e.preventDefault();
+    props.handleDataFromFilter(undefined, undefined);
+    navigate("/");
   };
 
   return (
     <div>
-      {/* <Button
-        variant="secondary"
-        onClick={handleShow}
-        className="filter-main-btm"
-      >
-        Filter
-      </Button> */}
-      <Offcanvas show={true} onHide={handleClose} className="offcanvas">
+      <Offcanvas show={true} className="offcanvas">
         <Offcanvas.Header>
           <Offcanvas.Title>Filter Options</Offcanvas.Title>
           <CloseButton
@@ -49,6 +44,25 @@ export default function Filter(props) {
               controlId="filter-input"
               onChange={handleChange}
             >
+              <Form.Label>Animals</Form.Label>
+              <div className="radioButtons">
+                <Form.Check
+                  inline
+                  label="cat"
+                  value="cat"
+                  name="animal"
+                  type="radio"
+                  id="radio-cat"
+                />
+                <Form.Check
+                  inline
+                  label="otter"
+                  value="otter"
+                  name="animal"
+                  type="radio"
+                  id="radio-otter"
+                />
+              </div>
               <Form.Label>Encounters</Form.Label>
               <div className="radioButtons">
                 <Form.Check
@@ -69,7 +83,10 @@ export default function Filter(props) {
                 />
               </div>
             </Form.Group>
-            <Button type="submit">Filter</Button>
+            <Button type="submit">Filter</Button>{" "}
+            <Button type="reset" onClick={handleReset}>
+              Remove Filter
+            </Button>
           </Form>
         </Offcanvas.Body>
       </Offcanvas>
