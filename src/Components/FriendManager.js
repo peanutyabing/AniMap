@@ -8,20 +8,31 @@ import { Modal, CloseButton, Button } from "react-bootstrap";
 
 export default function FriendManager() {
   const user = useContext(UserContext);
-  const [userDatabaseKey, setUserDatabaseKey] = useState();
-  const [requests, setRequests] = useState();
-
-  useEffect(() => {}, [user.email]);
+  const [userDatabaseKey, setUserDatabaseKey] = useState("");
+  const [requests, setRequests] = useState([]);
+  const [friends, setFriends] = useState([]);
 
   useEffect(() => {
-    const requestsRef = ref(
-      database,
-      `${USERS_DATABASE_KEY}/${userDatabaseKey}`
-    );
-    onValue(requestsRef, (snapshot) => {
-      // setRequests...
+    const usersRef = ref(database, USERS_DATABASE_KEY);
+    onChildAdded(usersRef, (userData) => {
+      if (userData.val().email === user.email) {
+        setUserDatabaseKey(userData.key);
+        setRequests(userData.val().requestsReceived.slice(1));
+        setFriends(userData.val().friends.slice(1));
+      }
     });
-  }, []);
+  }, [user.email]);
+
+  const renderPendingRequests = () => {
+    const pendingRequests = requests.filter(
+      (request) => request.status === false
+    );
+    return pendingRequests.map((request) => (
+      <div>
+        {request.email} <Button>Accept</Button>
+      </div>
+    ));
+  };
 
   const navigate = useNavigate();
   return (
@@ -31,11 +42,7 @@ export default function FriendManager() {
         <CloseButton onClick={() => navigate("/")} />
       </Modal.Header>
       <Modal.Body>
-        <div id="friend-requests-container">
-          {/* <div className="friend-request">placeholder: lala@abc.com</div>
-          <Button>Accept</Button>
-          <Button>Decline</Button> */}
-        </div>
+        <div id="friend-requests-container">{renderPendingRequests()}</div>
       </Modal.Body>
     </Modal>
   );
