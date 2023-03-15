@@ -17,21 +17,67 @@ export default function FriendManager() {
     onChildAdded(usersRef, (userData) => {
       if (userData.val().email === user.email) {
         setUserDatabaseKey(userData.key);
-        setRequests(userData.val().requestsReceived.slice(1));
-        setFriends(userData.val().friends.slice(1));
+        setRequests(userData.val().requestsReceived);
+        setFriends(userData.val().friends);
       }
     });
   }, [user.email]);
 
-  const renderPendingRequests = () => {
-    const pendingRequests = requests.filter(
-      (request) => request.status === false
+  const handleAccept = (e) => {
+    const receiverRef = ref(
+      database,
+      `${USERS_DATABASE_KEY}/${userDatabaseKey}`
     );
-    return pendingRequests.map((request) => (
-      <div>
-        {request.email} <Button>Accept</Button>
-      </div>
-    ));
+    updateRequestsReceived(receiverRef, e.target.id);
+    updateFriends(receiverRef, e.target.id);
+  };
+
+  const updateRequestsReceived = (receiverRef, requestorKey) => {
+    const updatedRequest = requests.filter(
+      (request) => request.userDatabaseKey === requestorKey
+    )[0];
+    updatedRequest.status = true;
+
+    const updatedRequests = [
+      ...requests.filter((request) => request.userDatabaseKey !== requestorKey),
+      updatedRequest,
+    ];
+    update(receiverRef, {
+      requestsReceived: updatedRequests,
+    });
+  };
+
+  const updateFriends = (receiverRef, requestorKey) => {
+    const request = requests.filter(
+      (request) => request.userDatabaseKey === requestorKey
+    )[0];
+    const requestor = { email: request.email };
+    const requestorRef = ref(database, `${USERS_DATABASE_KEY}/${requestorKey}`);
+    // update(requestorRef, {friends: })
+
+    const receiver = { email: user.email };
+  };
+
+  const renderPendingRequests = () => {
+    return requests
+      .filter((request) => request.status === false)
+      .map((request) => (
+        <div key={request.email}>
+          {request.email}{" "}
+          <Button id={request.userDatabaseKey} onClick={handleAccept}>
+            Accept
+          </Button>
+          <Button id={request.userDatabaseKey}>Reject</Button>
+        </div>
+      ));
+  };
+
+  const renderMyFriends = () => {
+    if (friends.slice(1).length > 0) {
+      return friends.slice(1).map((friend) => <div>{friend.email}</div>);
+    } else {
+      return <div>You don't have any friends yet!</div>;
+    }
   };
 
   const navigate = useNavigate();
@@ -43,6 +89,7 @@ export default function FriendManager() {
       </Modal.Header>
       <Modal.Body>
         <div id="friend-requests-container">{renderPendingRequests()}</div>
+        <div id="friends-container">{renderMyFriends()}</div>
       </Modal.Body>
     </Modal>
   );

@@ -16,11 +16,11 @@ export default function FriendFinder() {
   useEffect(() => {
     const usersRef = ref(database, USERS_DATABASE_KEY);
     onChildAdded(usersRef, (data) => {
-      if (!users.map((user) => user.id).includes(data.key)) {
+      if (!users.map((user) => user.userDatabaseKey).includes(data.key)) {
         setUsers((users) => [
           ...users,
           {
-            id: data.key,
+            userDatabaseKey: data.key,
             email: data.val().email,
             friended: data
               .val()
@@ -60,6 +60,9 @@ export default function FriendFinder() {
           requestsReceived: [
             ...existingRequests,
             {
+              userDatabaseKey: users.filter(
+                (eachUser) => eachUser.email === user.email
+              )[0].userDatabaseKey,
               email: user.email,
               status: false,
             },
@@ -74,7 +77,7 @@ export default function FriendFinder() {
   const updateSearchResults = (e) => {
     const searchResultsToUpdate = [...searchResults];
     for (const result of searchResultsToUpdate) {
-      if (result.id === e.target.id) {
+      if (result.userDatabaseKey === e.target.id) {
         result.requested = true;
         break;
       }
@@ -84,7 +87,7 @@ export default function FriendFinder() {
 
   const renderSearchResults = () => {
     return searchResults.map((result) => (
-      <div key={result.id} className="search-result">
+      <div key={result.userDatabaseKey} className="search-result">
         <div className="search-result-email">{result.email}</div>
         {renderFriendRequestBtn(result)}
       </div>
@@ -120,7 +123,7 @@ export default function FriendFinder() {
           className="friend-btn"
           variant="secondary"
           size="sm"
-          id={searchResult.id}
+          id={searchResult.userDatabaseKey}
           onClick={sendFriendRequest}
         >
           Add friend
