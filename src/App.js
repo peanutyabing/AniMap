@@ -15,6 +15,7 @@ import NavBar from "./Components/NavBar.js";
 import PostForm from "./Components/PostForm.jsx";
 import FriendFinder from "./Components/FriendFinder.js";
 import "./App.css";
+import Filter from "./Components/Filter.js";
 
 export const UserContext = React.createContext({ email: null });
 export const USERS_DATABASE_KEY = "users";
@@ -24,6 +25,8 @@ function App() {
   const [user, setUser] = useState({});
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
+  const [filterParam, setFilterParam] = useState("");
+  const [filterVal, setFilterVal] = useState("");
 
   useEffect(() => {
     if (!user.email) {
@@ -102,13 +105,23 @@ function App() {
     alert(`Wait a minute... an error occurred: ${errorMessage}`);
   };
 
+  const handleDataFromFilter = (filterParam, filterVal) => {
+    setFilterParam(filterParam);
+    setFilterVal(filterVal);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
         <UserContext.Provider value={user}>
           <NavBar signOutUser={signOutUser} />
           <Routes>
-            <Route path="/" element={<MapFeed />}>
+            <Route
+              path="/"
+              element={
+                <MapFeed filterParam={filterParam} filterVal={filterVal} />
+              }
+            >
               <Route
                 path="login-signup"
                 element={
@@ -123,6 +136,10 @@ function App() {
               />
               <Route path="post-form" element={<PostForm />} />
               <Route path="posts/:postId" element={<Post />} />
+              <Route
+                path="q"
+                element={<Filter handleDataFromFilter={handleDataFromFilter} />}
+              />
               <Route path="friend-finder" element={<FriendFinder />} />
             </Route>
           </Routes>

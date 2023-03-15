@@ -5,6 +5,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../Icons/AniMap-2.png";
+import { Button } from "react-bootstrap";
 
 export default function NavBar(props) {
   const user = useContext(UserContext);
@@ -30,11 +31,19 @@ export default function NavBar(props) {
             >
               Find friends
             </NavDropdown.Item>
+
             <NavDropdown.Item onClick={props.signOutUser}>
               Sign out
             </NavDropdown.Item>
           </NavDropdown>
-          <Nav.Link onClick={() => navigate("post-form")}>Post</Nav.Link>
+          <Nav.Link onClick={() => navigate("post-form")}>Posts</Nav.Link>
+          <Nav.Link
+            onClick={() => {
+              navigate("q");
+            }}
+          >
+            Posts Filter
+          </Nav.Link>
         </Nav>
       )}
       {!user.email && location !== "/login-signup" && (
