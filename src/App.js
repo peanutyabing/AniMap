@@ -14,6 +14,7 @@ import LoginForm from "./Components/LoginForm.js";
 import NavBar from "./Components/NavBar.js";
 import PostForm from "./Components/PostForm.jsx";
 import FriendFinder from "./Components/FriendFinder.js";
+import FriendManager from "./Components/FriendManager.js";
 import "./App.css";
 
 export const UserContext = React.createContext({ email: null });
@@ -124,6 +125,7 @@ function App() {
               <Route path="post-form" element={<PostForm />} />
               <Route path="posts/:postId" element={<Post />} />
               <Route path="friend-finder" element={<FriendFinder />} />
+              <Route path="friend-manager" element={<FriendManager />} />
             </Route>
           </Routes>
         </UserContext.Provider>
