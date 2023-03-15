@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { database, auth } from "./Firebase.js";
-import { ref, push, set } from "firebase/database";
+import { ref, push, set, onChildAdded } from "firebase/database";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -24,6 +24,7 @@ export const USERS_DATABASE_KEY = "users";
 function App() {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
+  const [userDatabaseKey, setUserDatabaseKey] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [filterParam, setFilterParam] = useState("");
@@ -46,6 +47,15 @@ function App() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    const usersRef = ref(database, USERS_DATABASE_KEY);
+    onChildAdded(usersRef, (data) => {
+      if (user.email === data.val().email) {
+        setUserDatabaseKey(data.key);
+      }
+    });
+  }, [user.email]);
 
   const handleLoginInput = (name, value) => {
     if (name === "email") {
@@ -83,8 +93,8 @@ function App() {
     set(newUserRef, {
       uid: user.uid,
       email: user.email,
-      requestsReceived: [{ email: "", status: null }],
-      friends: [{ email: "", status: null }],
+      requestsReceived: { userKey: { email: "", status: null } },
+      friends: { userKey: { email: "", status: null } },
     });
   };
 
@@ -141,8 +151,14 @@ function App() {
                 path="q"
                 element={<Filter handleDataFromFilter={handleDataFromFilter} />}
               />
-              <Route path="friend-finder" element={<FriendFinder />} />
-              <Route path="friend-manager" element={<FriendManager />} />
+              <Route
+                path="friend-finder"
+                element={<FriendFinder userDatabaseKey={userDatabaseKey} />}
+              />
+              <Route
+                path="friend-manager"
+                element={<FriendManager userDatabaseKey={userDatabaseKey} />}
+              />
             </Route>
           </Routes>
         </UserContext.Provider>

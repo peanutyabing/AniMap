@@ -2,11 +2,11 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { database } from "../Firebase.js";
 import { USERS_DATABASE_KEY } from "../App.js";
-import { onChildAdded, ref, onValue, update } from "firebase/database";
+import { onChildAdded, ref, set } from "firebase/database";
 import { UserContext } from "../App.js";
 import { Modal, Form, CloseButton, Button } from "react-bootstrap";
 
-export default function FriendFinder() {
+export default function FriendFinder(props) {
   const user = useContext(UserContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -22,19 +22,17 @@ export default function FriendFinder() {
           {
             userDatabaseKey: data.key,
             email: data.val().email,
-            friended: data
-              .val()
-              .friends.map((friend) => friend.email)
+            friended: Object.values(data.val().friends)
+              .map((friend) => friend.email)
               .includes(user.email),
-            requested: data
-              .val()
-              .requestsReceived.map((req) => req.email)
+            requested: Object.values(data.val().requestsReceived)
+              .map((req) => req.email)
               .includes(user.email),
           },
         ]);
       }
     });
-  }, []);
+  }, [user.email]);
 
   const handleChange = (e) => {
     setSearchTerm(e.target.value);
@@ -51,26 +49,14 @@ export default function FriendFinder() {
   };
 
   const sendFriendRequest = (e) => {
-    const userRef = ref(database, `${USERS_DATABASE_KEY}/${e.target.id}`);
-    onValue(
-      userRef,
-      (snapshot) => {
-        let existingRequests = snapshot.val().requestsReceived;
-        update(userRef, {
-          requestsReceived: [
-            ...existingRequests,
-            {
-              userDatabaseKey: users.filter(
-                (eachUser) => eachUser.email === user.email
-              )[0].userDatabaseKey,
-              email: user.email,
-              status: false,
-            },
-          ],
-        });
-      },
-      { onlyOnce: true }
+    const requestRef = ref(
+      database,
+      `${USERS_DATABASE_KEY}/${e.target.id}/requestsReceived/${props.userDatabaseKey}`
     );
+    set(requestRef, {
+      email: user.email,
+      status: false,
+    });
     updateSearchResults(e);
   };
 
