@@ -39,12 +39,33 @@ export default function FriendManager(props) {
       const requestToUpdate = { ...requests };
       delete requestToUpdate[e.target.id];
       setRequests(requestToUpdate);
-    } else {
-      return;
     }
   };
 
-  const handleUnfriend = (e) => {};
+  const handleUnfriend = (e) => {
+    let message =
+      "Are you sure? Your friend will not be notified that you unfriended them.";
+    if (window.confirm(message) === true) {
+      updateRequestReceived(e, { [e.target.id]: null });
+      updateRequestSent(e, { [props.userDatabaseKey]: null });
+      console.log("updated requests");
+      const receiverFriendRef = ref(
+        database,
+        `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/friends`
+      );
+      update(receiverFriendRef, { [e.target.id]: null });
+
+      const requestorFriendRef = ref(
+        database,
+        `${USERS_DATABASE_KEY}/${e.target.id}/friends`
+      );
+      update(requestorFriendRef, { [props.userDatabaseKey]: null });
+
+      const friendsToUpdate = { ...friends };
+      delete friendsToUpdate[e.target.id];
+      setFriends(friendsToUpdate);
+    }
+  };
 
   const handleAccept = (e) => {
     const updatedRequestReceived = {
@@ -74,19 +95,19 @@ export default function FriendManager(props) {
   };
 
   const updateRequestReceived = (e, data) => {
-    const requestReceivedRef = ref(
+    const requestsReceivedRef = ref(
       database,
       `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsReceived`
     );
-    update(requestReceivedRef, data);
+    update(requestsReceivedRef, data);
   };
 
   const updateRequestSent = (e, data) => {
-    const requestSentRef = ref(
+    const requestsSentRef = ref(
       database,
       `${USERS_DATABASE_KEY}/${e.target.id}/requestsSent`
     );
-    update(requestSentRef, data);
+    update(requestsSentRef, data);
   };
 
   const updateFriends = (e, receiverData, requestorData) => {
@@ -136,20 +157,29 @@ export default function FriendManager(props) {
   };
 
   const renderMyFriends = () => {
-    if (Object.values(friends).length > 1) {
-      return Object.values(friends)
-        .filter((friend) => friend.email !== "")
-        .map((friend) => (
-          <div className="friend" key={friend.email}>
-            <div>{friend.email}</div>
-            <Button variant="danger" size="sm" onClick={handleUnfriend}>
+    const friendsRender = [];
+    for (const key in friends) {
+      if (friends[key].email !== "") {
+        friendsRender.push(
+          <div className="friend" key={friends[key].email}>
+            <div>{friends[key].email}</div>
+            <Button
+              id={key}
+              variant="danger"
+              size="sm"
+              onClick={handleUnfriend}
+            >
               Unfriend
             </Button>
           </div>
-        ));
-    } else {
-      return <div>You don't have any friends yet!</div>;
+        );
+      }
     }
+    return friendsRender.length > 0 ? (
+      friendsRender
+    ) : (
+      <div className="grey-italics">You don't have any friends yet!</div>
+    );
   };
 
   const navigate = useNavigate();
