@@ -126,7 +126,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <UserContext.Provider value={user}>
-          <NavBar signOutUser={signOutUser} />
+          <NavBar signOutUser={signOutUser} userDatabaseKey={userDatabaseKey} />
           <Routes>
             <Route
               path="/"
