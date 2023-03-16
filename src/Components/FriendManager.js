@@ -2,7 +2,13 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { database } from "../Firebase.js";
 import { USERS_DATABASE_KEY } from "../App.js";
-import { onChildAdded, ref, set, update } from "firebase/database";
+import {
+  onChildAdded,
+  onChildChanged,
+  ref,
+  set,
+  update,
+} from "firebase/database";
 import { UserContext } from "../App.js";
 import { Modal, CloseButton, Button, ButtonGroup } from "react-bootstrap";
 
@@ -14,6 +20,16 @@ export default function FriendManager(props) {
   useEffect(() => {
     const usersRef = ref(database, USERS_DATABASE_KEY);
     onChildAdded(usersRef, (userData) => {
+      if (userData.val().email === user.email) {
+        setRequests(userData.val().requestsReceived);
+        setFriends(userData.val().friends);
+      }
+    });
+  }, [user.email]);
+
+  useEffect(() => {
+    const usersRef = ref(database, USERS_DATABASE_KEY);
+    onChildChanged(usersRef, (userData) => {
       if (userData.val().email === user.email) {
         setRequests(userData.val().requestsReceived);
         setFriends(userData.val().friends);
