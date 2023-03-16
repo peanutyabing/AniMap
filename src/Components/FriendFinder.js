@@ -2,11 +2,11 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { database } from "../Firebase.js";
 import { USERS_DATABASE_KEY } from "../App.js";
-import { onChildAdded, ref, onValue, update } from "firebase/database";
+import { onChildAdded, ref, set } from "firebase/database";
 import { UserContext } from "../App.js";
 import { Modal, Form, CloseButton, Button } from "react-bootstrap";
 
-export default function FriendFinder() {
+export default function FriendFinder(props) {
   const user = useContext(UserContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -16,25 +16,27 @@ export default function FriendFinder() {
   useEffect(() => {
     const usersRef = ref(database, USERS_DATABASE_KEY);
     onChildAdded(usersRef, (data) => {
-      if (!users.map((user) => user.id).includes(data.key)) {
+      if (!users.map((user) => user.userDatabaseKey).includes(data.key)) {
         setUsers((users) => [
           ...users,
           {
-            id: data.key,
+            userDatabaseKey: data.key,
             email: data.val().email,
-            friended: data
-              .val()
-              .friends.map((friend) => friend.email)
+            friended: Object.values(data.val().friends)
+              .map((friend) => friend.email)
               .includes(user.email),
-            requested: data
-              .val()
-              .requestsReceived.map((req) => req.email)
-              .includes(user.email),
+            requested:
+              Object.values(data.val().requestsReceived)
+                .map((req) => req.email)
+                .includes(user.email) ||
+              Object.values(data.val().requestsSent)
+                .map((req) => req.email)
+                .includes(user.email),
           },
         ]);
       }
     });
-  }, []);
+  }, [user.email]);
 
   const handleChange = (e) => {
     setSearchTerm(e.target.value);
@@ -51,30 +53,32 @@ export default function FriendFinder() {
   };
 
   const sendFriendRequest = (e) => {
-    const userRef = ref(database, `${USERS_DATABASE_KEY}/${e.target.id}`);
-    onValue(
-      userRef,
-      (snapshot) => {
-        let existingRequests = snapshot.val().requestsReceived;
-        update(userRef, {
-          requestsReceived: [
-            ...existingRequests,
-            {
-              email: user.email,
-              status: false,
-            },
-          ],
-        });
-      },
-      { onlyOnce: true }
+    const requestsReceivedRef = ref(
+      database,
+      `${USERS_DATABASE_KEY}/${e.target.id}/requestsReceived/${props.userDatabaseKey}`
     );
+    set(requestsReceivedRef, {
+      email: user.email,
+      status: false,
+    });
+
+    const requestsSentRef = ref(
+      database,
+      `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsSent/${e.target.id}`
+    );
+    set(requestsSentRef, {
+      email: searchResults.filter(
+        (result) => result.userDatabaseKey === e.target.id
+      )[0].email,
+      status: false,
+    });
     updateSearchResults(e);
   };
 
   const updateSearchResults = (e) => {
     const searchResultsToUpdate = [...searchResults];
     for (const result of searchResultsToUpdate) {
-      if (result.id === e.target.id) {
+      if (result.userDatabaseKey === e.target.id) {
         result.requested = true;
         break;
       }
@@ -84,7 +88,7 @@ export default function FriendFinder() {
 
   const renderSearchResults = () => {
     return searchResults.map((result) => (
-      <div key={result.id} className="search-result">
+      <div key={result.userDatabaseKey} className="search-result">
         <div className="search-result-email">{result.email}</div>
         {renderFriendRequestBtn(result)}
       </div>
@@ -96,7 +100,7 @@ export default function FriendFinder() {
       return (
         <Button
           className="friend-btn"
-          variant="secondary"
+          variant="success"
           size="sm"
           disabled={true}
         >
@@ -107,7 +111,7 @@ export default function FriendFinder() {
       return (
         <Button
           className="friend-btn"
-          variant="secondary"
+          variant="success"
           size="sm"
           disabled={true}
         >
@@ -118,9 +122,9 @@ export default function FriendFinder() {
       return (
         <Button
           className="friend-btn"
-          variant="secondary"
+          variant="success"
           size="sm"
-          id={searchResult.id}
+          id={searchResult.userDatabaseKey}
           onClick={sendFriendRequest}
         >
           Add friend
@@ -147,12 +151,12 @@ export default function FriendFinder() {
                 onChange={handleChange}
                 autoFocus
               />
-              <Button variant="primary" type="submit" onClick={null}>
+              <Button variant="secondary" type="submit" onClick={null}>
                 Search
               </Button>
             </Form.Group>
           </Form>
-          <div id="results-found">
+          <div className="grey-italics">
             {searchResults.length}{" "}
             {searchResults.length > 1 ? "users found" : "user found"}
           </div>
