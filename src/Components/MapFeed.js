@@ -24,6 +24,8 @@ const POSTS_DATABASE_KEY = "posts";
 export default function MapFeed(props) {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
+  const [map, setMap] = useState(null);
+  const [zoom, setZoom] = useState(12);
 
   useEffect(() => {
     const postsRef = ref(database, POSTS_DATABASE_KEY);
@@ -44,6 +46,17 @@ export default function MapFeed(props) {
     });
   }, []);
 
+  const handleLoad = (mapInstance) => {
+    setMap(mapInstance);
+  };
+
+  const handleZoomChanged = () => {
+    if (map) {
+      console.log(map.getZoom());
+      setZoom(map.getZoom());
+    }
+  };
+
   const setMarkerParams = (animal, encounter) => {
     const icons = {
       happycat: { url: catIconG },
@@ -52,7 +65,11 @@ export default function MapFeed(props) {
       unhappyotter: { url: otterIconR },
     };
     Object.keys(icons).forEach(
-      (key) => (icons[key].scaledSize = new window.google.maps.Size(40, 55))
+      (key) =>
+        (icons[key].scaledSize = new window.google.maps.Size(
+          Math.pow(zoom / 15, 2) * 40,
+          Math.pow(zoom / 15, 2) * 55
+        ))
     );
     return icons[`${encounter}${animal}`];
   };
@@ -93,7 +110,13 @@ export default function MapFeed(props) {
 
   return (
     <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={12}
+        onLoad={handleLoad}
+        onZoomChanged={handleZoomChanged}
+      >
         {renderMarkers(posts)}
         <Outlet />
       </GoogleMap>
