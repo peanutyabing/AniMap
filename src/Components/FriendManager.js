@@ -4,7 +4,7 @@ import { database } from "../Firebase.js";
 import { USERS_DATABASE_KEY } from "../App.js";
 import { onChildAdded, ref, set, update } from "firebase/database";
 import { UserContext } from "../App.js";
-import { Modal, CloseButton, Button } from "react-bootstrap";
+import { Modal, CloseButton, Button, ButtonGroup } from "react-bootstrap";
 
 export default function FriendManager(props) {
   const user = useContext(UserContext);
@@ -21,17 +21,44 @@ export default function FriendManager(props) {
     });
   }, [user.email]);
 
+  useEffect(() => {
+    renderPendingRequests();
+  }, [requests]);
+
+  useEffect(() => {
+    renderMyFriends();
+  }, [friends]);
+
   const handleAccept = (e) => {
     updateRequestReceived(e);
+    updateRequestSent(e);
+    const requestToUpdate = { ...requests };
+    requestToUpdate[e.target.id].status = true;
+    setRequests(requestToUpdate);
+
     updateFriends(e);
+    const friendsToUpdate = { ...friends };
+    friendsToUpdate[e.target.id] = { email: requests[e.target.id].email };
+    setFriends(friendsToUpdate);
   };
 
   const updateRequestReceived = (e) => {
-    const requestRef = ref(
+    const requestReceivedRef = ref(
       database,
       `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsReceived/${e.target.id}`
     );
-    update(requestRef, { email: requests[e.target.id].email, status: true });
+    update(requestReceivedRef, {
+      email: requests[e.target.id].email,
+      status: true,
+    });
+  };
+
+  const updateRequestSent = (e) => {
+    const requestSentRef = ref(
+      database,
+      `${USERS_DATABASE_KEY}/${e.target.id}/requestsSent/${props.userDatabaseKey}`
+    );
+    update(requestSentRef, { email: user.email, status: true });
   };
 
   const updateFriends = (e) => {
@@ -53,14 +80,21 @@ export default function FriendManager(props) {
     for (const key in requests) {
       if (requests[key].status === false) {
         requestsRender.push(
-          <div key={key}>
+          <div key={key} className="friend-request">
             {requests[key].email}
-            <Button id={key} onClick={handleAccept}>
-              Accept
-            </Button>
-            <Button id={key} disabled={true}>
-              Reject
-            </Button>
+            <ButtonGroup>
+              <Button
+                id={key}
+                variant="success"
+                size="sm"
+                onClick={handleAccept}
+              >
+                Accept
+              </Button>
+              <Button id={key} variant="danger" size="sm" disabled={true}>
+                Reject
+              </Button>
+            </ButtonGroup>
           </div>
         );
       }
@@ -82,14 +116,20 @@ export default function FriendManager(props) {
   return (
     <Modal show={true}>
       <Modal.Header>
-        <Modal.Title>FRIEND REQUESTS</Modal.Title>
+        <Modal.Title>FRIENDS</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />
       </Modal.Header>
       <Modal.Body>
-        <div id="friend-requests-container">
-          Pending requests: {renderPendingRequests()}
+        {renderPendingRequests().length > 0 && (
+          <div className="friends-container" id="friend-requests">
+            <div className="header">Pending requests:</div>
+            {renderPendingRequests()}
+          </div>
+        )}
+        <div className="friends-container" id="my-friends">
+          <div className="header">My friends:</div>
+          {renderMyFriends()}
         </div>
-        <div id="friends-container">My friends: {renderMyFriends()}</div>
       </Modal.Body>
     </Modal>
   );

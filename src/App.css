@@ -8,11 +8,6 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
 .App-header {
   background-color: #282c34;
   height: 100vh;
@@ -58,12 +53,24 @@
   padding: 0;
 }
 
-#num-of-pending-requests {
-  background-color: rgb(255, 130, 130);
-  width: 20px;
-  margin-left: 2vmin;
-  padding: 0.3vmin 1vmin 0 1vmin;
-  border-radius: 3vmin;
+.dropdown-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.num-of-requests {
+  padding: 0.2vmin 1.2vmin;
+  border-radius: 2vmin;
+  font-size: calc(10px + 0.8vmin);
+}
+
+#pending-requests {
+  background-color: #ff5d6c;
+  color: #ffffff;
+}
+
+#no-pending-requests {
+  background-color: rgb(210, 210, 210);
 }
 
 /* Post Form */
@@ -109,7 +116,6 @@
 }
 
 /* Posts */
-
 .modal-content-happy {
   border-right: 6px #d1f7b1 solid;
   border-bottom: 6px #d1f7b1 solid;
@@ -243,4 +249,19 @@
 .search-result .friend-btn {
   width: 32%;
   font-size: calc(8px + 0.7vmin);
+}
+
+/* Friend manager */
+.friends-container {
+  margin: 1vmin 0;
+}
+
+.friends-container .header {
+  font-weight: 600;
+}
+
+.friend-request {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

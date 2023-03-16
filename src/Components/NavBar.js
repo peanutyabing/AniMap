@@ -44,17 +44,26 @@ export default function NavBar(props) {
       </Navbar.Brand>
       {user.email && location !== "/login-signup" && (
         <Nav id="logged-in-nav">
-          <NavDropdown
-            title={`Welcome, ${user.email.split("@")[0]}!`}
-            id="collasible-nav-dropdown"
-          >
+          <NavDropdown title="Account" id="collasible-nav-dropdown">
+            <NavDropdown.Header>{`Welcome, ${
+              user.email.split("@")[0]
+            }!`}</NavDropdown.Header>
+            <NavDropdown.Divider />
             <NavDropdown.Item
               onClick={() => {
                 navigate("friend-manager");
               }}
             >
-              Friend requests
-              <span id="num-of-pending-requests">{pendingRequests.length}</span>
+              My friends
+              {pendingRequests.length > 0 ? (
+                <span className="num-of-requests" id="pending-requests">
+                  {pendingRequests.length}
+                </span>
+              ) : (
+                <span className="num-of-requests" id="no-pending-requests">
+                  0
+                </span>
+              )}
             </NavDropdown.Item>
             <NavDropdown.Item
               onClick={() => {
