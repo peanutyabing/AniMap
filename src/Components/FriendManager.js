@@ -120,12 +120,20 @@ export default function FriendManager(props) {
         <CloseButton onClick={() => navigate("/")} />
       </Modal.Header>
       <Modal.Body>
-        {renderPendingRequests().length > 0 && (
-          <div className="friends-container" id="friend-requests">
-            <div className="header">Pending requests:</div>
-            {renderPendingRequests()}
-          </div>
-        )}
+        <div className="friends-container" id="friend-requests">
+          {renderPendingRequests().length > 0 ? (
+            <>
+              <div className="header">Pending requests:</div>
+              {renderPendingRequests()}
+            </>
+          ) : (
+            <div className="grey-italics">
+              No pending friend requests at the moment
+            </div>
+          )}
+        </div>
+      </Modal.Body>
+      <Modal.Body>
         <div className="friends-container" id="my-friends">
           <div className="header">My friends:</div>
           {renderMyFriends()}

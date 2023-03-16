@@ -100,7 +100,7 @@ export default function FriendFinder(props) {
       return (
         <Button
           className="friend-btn"
-          variant="secondary"
+          variant="success"
           size="sm"
           disabled={true}
         >
@@ -111,7 +111,7 @@ export default function FriendFinder(props) {
       return (
         <Button
           className="friend-btn"
-          variant="secondary"
+          variant="success"
           size="sm"
           disabled={true}
         >
@@ -122,7 +122,7 @@ export default function FriendFinder(props) {
       return (
         <Button
           className="friend-btn"
-          variant="secondary"
+          variant="success"
           size="sm"
           id={searchResult.userDatabaseKey}
           onClick={sendFriendRequest}
@@ -151,12 +151,12 @@ export default function FriendFinder(props) {
                 onChange={handleChange}
                 autoFocus
               />
-              <Button variant="primary" type="submit" onClick={null}>
+              <Button variant="secondary" type="submit" onClick={null}>
                 Search
               </Button>
             </Form.Group>
           </Form>
-          <div id="results-found">
+          <div className="grey-italics">
             {searchResults.length}{" "}
             {searchResults.length > 1 ? "users found" : "user found"}
           </div>

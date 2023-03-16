@@ -235,10 +235,9 @@
   margin-right: calc(4px + 0.5vmin);
 }
 
-#results-found {
+.grey-italics {
   font-style: italic;
   color: rgb(145, 145, 145);
-  margin-top: 2vmin;
 }
 
 .search-results {
