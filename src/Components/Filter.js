@@ -23,7 +23,7 @@ export default function Filter(props) {
 
   const handleReset = (e) => {
     e.preventDefault();
-    props.handleResetFromFilter(undefined, undefined);
+    props.handleResetFromFilter(false);
     navigate("/");
   };
 
@@ -49,8 +49,14 @@ export default function Filter(props) {
     const encounterFilterVal = Object.entries(tags.encounter).filter(
       ([key, value]) => value === true
     );
-    filterVal.push(animalFilterVal[0][0]);
-    filterVal.push(encounterFilterVal[0][0]);
+
+    if (animalFilterVal.length > 0) {
+      filterVal.push(animalFilterVal[0][0]);
+    }
+
+    if (encounterFilterVal.length > 0) {
+      filterVal.push(encounterFilterVal[0][0]);
+    }
   };
 
   return (

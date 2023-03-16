@@ -74,30 +74,30 @@ export default function MapFeed(props) {
     return icons[`${encounter}${animal}`];
   };
 
-  const displayAfterFilter = (filterVal) => {
-    console.log("this is running");
-    const userFilterVal = filterVal;
-    // [cat,happy]
-    const filterParam = ["animal", "encounter"];
-    for (let i = 0; i < filterParam.length; i++) {
-      for (let j = 0; j < userFilterVal.length; j++) {
-        posts.filter((item) => item[filterParam[i]] === userFilterVal[j]);
-        console.log(posts);
-      }
+  const filterFeature = (data, userFilterVal) => {
+    if (userFilterVal.length <= 1) {
+      let filteredData = data.filter(
+        (item) =>
+          item["animal"] === userFilterVal[0] ||
+          item["encounter"] === userFilterVal[0]
+      );
+      return filteredData;
     }
-    return posts;
+    let filteredData = data.filter(
+      (item) =>
+        item["animal"] === userFilterVal[0] &&
+        item["encounter"] === userFilterVal[1]
+    );
+    return filteredData;
   };
 
   //The filterParam and filterVal parameters are optional. Nothing will be filtered if these arguments are left out. Otherwise, it will can filter data by any attribute (e.g. show me markers with type=cat only)
 
-  const renderMarkers = (
-    data,
-    filterParam = props.filterParam ? props.filterParam : undefined,
-    filterVal = props.filterVal ? props.filterVal : undefined
-  ) => {
-    let markers = data
-      .filter((item) => item[filterParam] === filterVal)
-      .map((item) => (
+  const renderMarkers = (data) => {
+    const userFilterVal = props.userFilterVal;
+
+    if (props.filterStatus === false) {
+      let markers = data.map((item) => (
         <AnimalMarker
           key={item.id}
           id={item.id}
@@ -105,8 +105,32 @@ export default function MapFeed(props) {
           icon={setMarkerParams(item.animal, item.encounter)}
         />
       ));
-    return markers;
+      return markers;
+    } else {
+      let filteredMarkers = filterFeature(data, userFilterVal).map((item) => (
+        <AnimalMarker
+          key={item.id}
+          id={item.id}
+          location={item.location}
+          icon={setMarkerParams(item.animal, item.encounter)}
+        />
+      ));
+      return filteredMarkers;
+    }
   };
+
+  //   let markers = data
+  //     .filter((item) => item[filterParam] === filterVal)
+  //     .map((item) => (
+  //       <AnimalMarker
+  //         key={item.id}
+  //         id={item.id}
+  //         location={item.location}
+  //         icon={setMarkerParams(item.animal, item.encounter)}
+  //       />
+  //     ));
+  //   return markers;
+  // };
 
   return (
     <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
