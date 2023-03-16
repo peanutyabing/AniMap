@@ -52,7 +52,6 @@ export default function MapFeed(props) {
 
   const handleZoomChanged = () => {
     if (map) {
-      console.log(map.getZoom());
       setZoom(map.getZoom());
     }
   };
