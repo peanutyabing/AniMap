@@ -29,50 +29,78 @@ export default function FriendManager(props) {
     renderMyFriends();
   }, [friends]);
 
+  const handleReject = (e) => {
+    let message =
+      "Are you sure? The requestor will not be notified that you rejected their friend request.";
+    if (window.confirm(message) === true) {
+      updateRequestReceived(e, { [e.target.id]: null });
+      updateRequestSent(e, { [props.userDatabaseKey]: null });
+
+      const requestToUpdate = { ...requests };
+      delete requestToUpdate[e.target.id];
+      setRequests(requestToUpdate);
+    } else {
+      return;
+    }
+  };
+
+  const handleUnfriend = (e) => {};
+
   const handleAccept = (e) => {
-    updateRequestReceived(e);
-    updateRequestSent(e);
+    const updatedRequestReceived = {
+      [e.target.id]: {
+        email: requests[e.target.id].email,
+        status: true,
+      },
+    };
+    updateRequestReceived(e, updatedRequestReceived);
+
+    const updatedRequestSent = {
+      [props.userDatabaseKey]: { email: user.email, status: true },
+    };
+    updateRequestSent(e, updatedRequestSent);
+
     const requestToUpdate = { ...requests };
     requestToUpdate[e.target.id].status = true;
     setRequests(requestToUpdate);
 
-    updateFriends(e);
+    const receiverData = { email: requests[e.target.id].email };
+    const requestorData = { email: user.email };
+    updateFriends(e, receiverData, requestorData);
+
     const friendsToUpdate = { ...friends };
     friendsToUpdate[e.target.id] = { email: requests[e.target.id].email };
     setFriends(friendsToUpdate);
   };
 
-  const updateRequestReceived = (e) => {
+  const updateRequestReceived = (e, data) => {
     const requestReceivedRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsReceived/${e.target.id}`
+      `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsReceived`
     );
-    update(requestReceivedRef, {
-      email: requests[e.target.id].email,
-      status: true,
-    });
+    update(requestReceivedRef, data);
   };
 
-  const updateRequestSent = (e) => {
+  const updateRequestSent = (e, data) => {
     const requestSentRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${e.target.id}/requestsSent/${props.userDatabaseKey}`
+      `${USERS_DATABASE_KEY}/${e.target.id}/requestsSent`
     );
-    update(requestSentRef, { email: user.email, status: true });
+    update(requestSentRef, data);
   };
 
-  const updateFriends = (e) => {
-    const receiverNewFriendRef = ref(
+  const updateFriends = (e, receiverData, requestorData) => {
+    const receiverFriendRef = ref(
       database,
       `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/friends/${e.target.id}`
     );
-    set(receiverNewFriendRef, { email: requests[e.target.id].email });
+    set(receiverFriendRef, receiverData);
 
-    const requestorNewFriendRef = ref(
+    const requestorFriendRef = ref(
       database,
       `${USERS_DATABASE_KEY}/${e.target.id}/friends/${props.userDatabaseKey}`
     );
-    set(requestorNewFriendRef, { email: user.email });
+    set(requestorFriendRef, requestorData);
   };
 
   const renderPendingRequests = () => {
@@ -80,7 +108,7 @@ export default function FriendManager(props) {
     for (const key in requests) {
       if (requests[key].status === false) {
         requestsRender.push(
-          <div key={key} className="friend-request">
+          <div key={key} className="friend">
             {requests[key].email}
             <ButtonGroup>
               <Button
@@ -91,7 +119,12 @@ export default function FriendManager(props) {
               >
                 Accept
               </Button>
-              <Button id={key} variant="danger" size="sm" disabled={true}>
+              <Button
+                id={key}
+                variant="danger"
+                size="sm"
+                onClick={handleReject}
+              >
                 Reject
               </Button>
             </ButtonGroup>
@@ -104,9 +137,16 @@ export default function FriendManager(props) {
 
   const renderMyFriends = () => {
     if (Object.values(friends).length > 1) {
-      return Object.values(friends).map((friend) => (
-        <div key={friend.email}>{friend.email}</div>
-      ));
+      return Object.values(friends)
+        .filter((friend) => friend.email !== "")
+        .map((friend) => (
+          <div className="friend" key={friend.email}>
+            <div>{friend.email}</div>
+            <Button variant="danger" size="sm" onClick={handleUnfriend}>
+              Unfriend
+            </Button>
+          </div>
+        ));
     } else {
       return <div>You don't have any friends yet!</div>;
     }
