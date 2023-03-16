@@ -48,7 +48,6 @@ export default function FriendManager(props) {
     if (window.confirm(message) === true) {
       updateRequestReceived(e, { [e.target.id]: null });
       updateRequestSent(e, { [props.userDatabaseKey]: null });
-      console.log("updated requests");
       const receiverFriendRef = ref(
         database,
         `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/friends`
