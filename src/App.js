@@ -27,8 +27,8 @@ function App() {
   const [userDatabaseKey, setUserDatabaseKey] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
-  const [filterParam, setFilterParam] = useState("");
-  const [filterVal, setFilterVal] = useState("");
+  const [filterStatus, setFilterStatus] = useState(false);
+  const [userFilterVal, setUserFilterVal] = useState("");
 
   useEffect(() => {
     if (!user.email) {
@@ -117,9 +117,14 @@ function App() {
     alert(`Wait a minute... an error occurred: ${errorMessage}`);
   };
 
-  const handleDataFromFilter = (filterParam, filterVal) => {
-    setFilterParam(filterParam);
-    setFilterVal(filterVal);
+  const handleResetFromFilter = (boolean) => {
+    setFilterStatus(boolean);
+  };
+
+  const handleDataFromFilter = (filterVal) => {
+    let filterValFromFilter = filterVal;
+    setUserFilterVal(filterValFromFilter);
+    setFilterStatus(true);
   };
 
   return (
@@ -131,7 +136,10 @@ function App() {
             <Route
               path="/"
               element={
-                <MapFeed filterParam={filterParam} filterVal={filterVal} />
+                <MapFeed
+                  userFilterVal={userFilterVal}
+                  filterStatus={filterStatus}
+                />
               }
             >
               <Route
@@ -150,7 +158,12 @@ function App() {
               <Route path="posts/:postId" element={<Post />} />
               <Route
                 path="q"
-                element={<Filter handleDataFromFilter={handleDataFromFilter} />}
+                element={
+                  <Filter
+                    handleDataFromFilter={handleDataFromFilter}
+                    handleResetFromFilter={handleResetFromFilter}
+                  />
+                }
               />
               <Route
                 path="friend-finder"
