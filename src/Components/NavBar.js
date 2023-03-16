@@ -68,13 +68,13 @@ export default function NavBar(props) {
               Sign out
             </NavDropdown.Item>
           </NavDropdown>
-          <Nav.Link onClick={() => navigate("post-form")}>Posts</Nav.Link>
+          <Nav.Link onClick={() => navigate("post-form")}>Post</Nav.Link>
           <Nav.Link
             onClick={() => {
               navigate("q");
             }}
           >
-            Posts Filter
+            Filter
           </Nav.Link>
         </Nav>
       )}
