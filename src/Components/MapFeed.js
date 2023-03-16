@@ -8,7 +8,6 @@ import otterIconG from "../Icons/otter-pin-green.png";
 import otterIconR from "../Icons/otter-pin-red.png";
 import { AnimalMarker } from "./AnimalMarker";
 import { Outlet, useNavigate } from "react-router-dom";
-import Filter from "./Filter";
 
 const containerStyle = {
   width: "100vw",
@@ -58,7 +57,22 @@ export default function MapFeed(props) {
     return icons[`${encounter}${animal}`];
   };
 
+  const displayAfterFilter = (filterVal) => {
+    console.log("this is running");
+    const userFilterVal = filterVal;
+    // [cat,happy]
+    const filterParam = ["animal", "encounter"];
+    for (let i = 0; i < filterParam.length; i++) {
+      for (let j = 0; j < userFilterVal.length; j++) {
+        posts.filter((item) => item[filterParam[i]] === userFilterVal[j]);
+        console.log(posts);
+      }
+    }
+    return posts;
+  };
+
   //The filterParam and filterVal parameters are optional. Nothing will be filtered if these arguments are left out. Otherwise, it will can filter data by any attribute (e.g. show me markers with type=cat only)
+
   const renderMarkers = (
     data,
     filterParam = props.filterParam ? props.filterParam : undefined,
