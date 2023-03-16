@@ -94,6 +94,7 @@ function App() {
       uid: user.uid,
       email: user.email,
       requestsReceived: { userKey: { email: "", status: null } },
+      requestsSent: { userKey: { email: "", status: null } },
       friends: { userKey: { email: "", status: null } },
     });
   };

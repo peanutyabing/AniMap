@@ -25,9 +25,13 @@ export default function FriendFinder(props) {
             friended: Object.values(data.val().friends)
               .map((friend) => friend.email)
               .includes(user.email),
-            requested: Object.values(data.val().requestsReceived)
-              .map((req) => req.email)
-              .includes(user.email),
+            requested:
+              Object.values(data.val().requestsReceived)
+                .map((req) => req.email)
+                .includes(user.email) ||
+              Object.values(data.val().requestsSent)
+                .map((req) => req.email)
+                .includes(user.email),
           },
         ]);
       }
@@ -49,12 +53,23 @@ export default function FriendFinder(props) {
   };
 
   const sendFriendRequest = (e) => {
-    const requestRef = ref(
+    const requestsReceivedRef = ref(
       database,
       `${USERS_DATABASE_KEY}/${e.target.id}/requestsReceived/${props.userDatabaseKey}`
     );
-    set(requestRef, {
+    set(requestsReceivedRef, {
       email: user.email,
+      status: false,
+    });
+
+    const requestsSentRef = ref(
+      database,
+      `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsSent/${e.target.id}`
+    );
+    set(requestsSentRef, {
+      email: searchResults.filter(
+        (result) => result.userDatabaseKey === e.target.id
+      )[0].email,
       status: false,
     });
     updateSearchResults(e);

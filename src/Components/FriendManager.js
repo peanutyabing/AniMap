@@ -27,11 +27,6 @@ export default function FriendManager(props) {
   };
 
   const updateRequestReceived = (e) => {
-    // const updatedRequest = {};
-    // update[
-    //   `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsReceived/${e.target.id}`
-    // ] = { email: requests[e.target.id].email, status: true };
-    // update(ref(database), updatedRequest);
     const requestRef = ref(
       database,
       `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsReceived/${e.target.id}`
@@ -63,7 +58,9 @@ export default function FriendManager(props) {
             <Button id={key} onClick={handleAccept}>
               Accept
             </Button>
-            <Button id={key}>Reject</Button>
+            <Button id={key} disabled={true}>
+              Reject
+            </Button>
           </div>
         );
       }
@@ -89,7 +86,9 @@ export default function FriendManager(props) {
         <CloseButton onClick={() => navigate("/")} />
       </Modal.Header>
       <Modal.Body>
-        <div id="friend-requests-container">{renderPendingRequests()}</div>
+        <div id="friend-requests-container">
+          Pending requests: {renderPendingRequests()}
+        </div>
         <div id="friends-container">My friends: {renderMyFriends()}</div>
       </Modal.Body>
     </Modal>
