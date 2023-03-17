@@ -14,6 +14,12 @@ export default function FriendFinder(props) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user.email) {
+      navigate("../login-signup");
+    }
+  });
+
+  useEffect(() => {
     const usersRef = ref(database, USERS_DATABASE_KEY);
     onChildAdded(usersRef, (data) => {
       if (!users.map((user) => user.userDatabaseKey).includes(data.key)) {

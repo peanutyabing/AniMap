@@ -10,6 +10,10 @@
   user-select: none;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .grey-italics {
   font-style: italic;
   font-weight: 400;
@@ -189,6 +193,28 @@
   display: flex;
   justify-content: center;
   margin-top: 1vmin;
+}
+
+.text-overlay {
+  position: absolute;
+  bottom: 3vmin;
+  right: 2vmin;
+  left: 2vmin;
+  text-align: justify;
+}
+
+.fade-off:before {
+  content: "";
+  background-image: linear-gradient(
+    to top,
+    #ffffff 25%,
+    rgba(255, 255, 255, 0)
+  );
+  position: absolute;
+  height: 80%;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .post-body .btn-group {

@@ -166,13 +166,49 @@ export default function Post(props) {
     } else {
       return (
         <div className="grey-smaller bold">
-          📍 Location is available to friends
+          📍 Location is only available to friends
+        </div>
+      );
+    }
+  };
+
+  const renderImage = () => {
+    if (
+      publicPost ||
+      Object.values(friends).includes({ email: authorEmail }) ||
+      user.email === authorEmail
+    ) {
+      return (
+        <div className="post-image">
+          <img src={url} alt={content} />
+        </div>
+      );
+    } else {
+      return (
+        <div className="post-image fade-off">
+          <img src={url} alt={content} />
+          <div
+            className="grey-smaller prevent-select text-overlay cursor-pointer"
+            onClick={() => {
+              navigate("../friend-finder");
+            }}
+          >
+            Become {authorEmail}'s friend to view this post!
+          </div>
         </div>
       );
     }
   };
 
   const renderReactionButtons = () => {
+    if (
+      !publicPost &&
+      !Object.values(friends).includes({ email: authorEmail }) &&
+      user.email !== authorEmail
+    ) {
+      return;
+    }
+
     if (reactions.love && reactions.funny && reactions.shook && reactions.sad) {
       return (
         <ButtonGroup>
@@ -275,7 +311,7 @@ export default function Post(props) {
     }
     return (
       <Modal.Footer>
-        {user.email && (
+        {user.email ? (
           <Form
             id="comment-form"
             onSubmit={editComment ? handleEditComment : handleSendComment}
@@ -302,6 +338,13 @@ export default function Post(props) {
               </Button>
             </div>
           </Form>
+        ) : (
+          <div
+            className="grey-smaller prevent-select cursor-pointer"
+            onClick={() => navigate("../login-signup")}
+          >
+            Log in or sign up to join the conversation!
+          </div>
         )}
       </Modal.Footer>
     );
@@ -332,9 +375,7 @@ export default function Post(props) {
         {renderLocation()}
         <div className="post-body">
           <div className="post-content">{content}</div>
-          <div className="post-image">
-            <img src={url} alt={content} />
-          </div>
+          {renderImage()}
           <div className="reaction-btns">{renderReactionButtons()}</div>
         </div>
 
