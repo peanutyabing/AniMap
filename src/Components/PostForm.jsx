@@ -39,7 +39,7 @@ export default function PostForm() {
     const postDate = new Date().toLocaleString();
     // record our encounter in string status
     const encounter = happy ? "happy" : "unhappy";
-    console.log("encounter", encounter);
+
     // ref to direct posts into database
     const postsListRef = databaseRef(database, POSTS_DATABASE_KEY);
     const newPostRef = push(postsListRef);
