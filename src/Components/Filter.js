@@ -4,10 +4,11 @@ import Button from "react-bootstrap/Button";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { useNavigate } from "react-router-dom";
 import RangeSlider from "react-bootstrap-range-slider";
+import userEvent from "@testing-library/user-event";
 
 export default function Filter(props) {
   const navigate = useNavigate();
-  const [value1, setValue1] = useState(0);
+  const [userFilterDays, setUserFilterDays] = useState(0);
   const [filterDate, setFilterDate] = useState("");
   const [filter, setFilter] = useState({
     tags: {
@@ -20,7 +21,7 @@ export default function Filter(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     filterFunction(filter);
-    filterDates(value1);
+    filterDates(userFilterDays);
     props.handleDataFromFilter(filterVal);
     navigate("/");
   };
@@ -63,10 +64,9 @@ export default function Filter(props) {
     }
   };
 
-  const filterDates = (value1) => {
-    let x = value1;
+  const filterDates = (userFilterDays) => {
     const startDate = new Date();
-    const endDate = startDate.setDate(startDate.getDate() - x);
+    const endDate = startDate.setDate(startDate.getDate() - userFilterDays);
     const newEndDate = new Date(endDate).toLocaleString();
     filterVal.push(newEndDate);
   };
@@ -125,8 +125,8 @@ export default function Filter(props) {
                 <br />
                 <Form.Label>Filter Posts By Days</Form.Label>
                 <RangeSlider
-                  value={value1}
-                  onChange={(e) => setValue1(e.target.value)}
+                  value={userFilterDays}
+                  onChange={(e) => setUserFilterDays(e.target.value)}
                   min={0}
                   max={7}
                 />

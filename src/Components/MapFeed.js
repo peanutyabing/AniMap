@@ -80,7 +80,8 @@ export default function MapFeed(props) {
           (item["animal"] === userFilterVal[0] &&
             item["date"] >= userFilterVal[1]) ||
           (item["encounter"] === userFilterVal[0] &&
-            item["date"] >= userFilterVal[1])
+            item["date"] >= userFilterVal[1]) ||
+          item["date"] >= userFilterVal[0]
       );
       return filteredData;
     }
