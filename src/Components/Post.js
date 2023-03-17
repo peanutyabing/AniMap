@@ -155,7 +155,9 @@ export default function Post(props) {
   const renderLocation = () => {
     if (
       publicPost ||
-      Object.values(friends).includes({ email: authorEmail }) ||
+      Object.values(friends)
+        .map((friend) => friend.email)
+        .includes(authorEmail) ||
       user.email === authorEmail
     ) {
       return address ? (
@@ -175,7 +177,9 @@ export default function Post(props) {
   const renderImage = () => {
     if (
       publicPost ||
-      Object.values(friends).includes({ email: authorEmail }) ||
+      Object.values(friends)
+        .map((friend) => friend.email)
+        .includes(authorEmail) ||
       user.email === authorEmail
     ) {
       return (
@@ -203,7 +207,9 @@ export default function Post(props) {
   const renderReactionButtons = () => {
     if (
       !publicPost &&
-      !Object.values(friends).includes({ email: authorEmail }) &&
+      !Object.values(friends)
+        .map((friend) => friend.email)
+        .includes(authorEmail) &&
       user.email !== authorEmail
     ) {
       return;
@@ -252,7 +258,9 @@ export default function Post(props) {
   const renderComments = (len = 5) => {
     if (
       !publicPost &&
-      !Object.values(friends).includes({ email: authorEmail }) &&
+      !Object.values(friends)
+        .map((friend) => friend.email)
+        .includes(authorEmail) &&
       user.email !== authorEmail
     ) {
       return;
@@ -304,7 +312,9 @@ export default function Post(props) {
   const renderCommentForm = () => {
     if (
       !publicPost &&
-      !Object.values(friends).includes({ email: authorEmail }) &&
+      !Object.values(friends)
+        .map((friend) => friend.email)
+        .includes(authorEmail) &&
       user.email !== authorEmail
     ) {
       return;
