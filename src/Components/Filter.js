@@ -3,9 +3,12 @@ import { CloseButton, Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { useNavigate } from "react-router-dom";
+import RangeSlider from "react-bootstrap-range-slider";
 
 export default function Filter(props) {
   const navigate = useNavigate();
+  const [value1, setValue1] = useState(0);
+  const [filterDate, setFilterDate] = useState("");
   const [filter, setFilter] = useState({
     tags: {
       animal: { cat: false, otter: false },
@@ -17,6 +20,7 @@ export default function Filter(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     filterFunction(filter);
+    filterDates(value1);
     props.handleDataFromFilter(filterVal);
     navigate("/");
   };
@@ -59,6 +63,14 @@ export default function Filter(props) {
     }
   };
 
+  const filterDates = (value1) => {
+    let x = value1;
+    const startDate = new Date();
+    const endDate = startDate.setDate(startDate.getDate() - x);
+    const newEndDate = new Date(endDate).toLocaleString();
+    filterVal.push(newEndDate);
+  };
+  console.log(filterVal);
   return (
     <div>
       <Offcanvas show={true} className="offcanvas">
@@ -110,6 +122,14 @@ export default function Filter(props) {
                 >
                   unhappy
                 </Button>
+                <br />
+                <Form.Label>Filter Posts By Days</Form.Label>
+                <RangeSlider
+                  value={value1}
+                  onChange={(e) => setValue1(e.target.value)}
+                  min={0}
+                  max={7}
+                />
               </div>
             </Form.Group>
             <Button type="submit">Filter</Button>{" "}

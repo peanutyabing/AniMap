@@ -52,7 +52,6 @@ export default function MapFeed(props) {
 
   const handleZoomChanged = () => {
     if (map) {
-      console.log(map.getZoom());
       setZoom(map.getZoom());
     }
   };
@@ -75,18 +74,21 @@ export default function MapFeed(props) {
   };
 
   const filterFeature = (data, userFilterVal) => {
-    if (userFilterVal.length <= 1) {
+    if (userFilterVal.length <= 2) {
       let filteredData = data.filter(
         (item) =>
-          item["animal"] === userFilterVal[0] ||
-          item["encounter"] === userFilterVal[0]
+          (item["animal"] === userFilterVal[0] &&
+            item["date"] >= userFilterVal[1]) ||
+          (item["encounter"] === userFilterVal[0] &&
+            item["date"] >= userFilterVal[1])
       );
       return filteredData;
     }
     let filteredData = data.filter(
       (item) =>
         item["animal"] === userFilterVal[0] &&
-        item["encounter"] === userFilterVal[1]
+        item["encounter"] === userFilterVal[1] &&
+        item["date"] >= userFilterVal[2]
     );
     return filteredData;
   };
@@ -118,19 +120,6 @@ export default function MapFeed(props) {
       return filteredMarkers;
     }
   };
-
-  //   let markers = data
-  //     .filter((item) => item[filterParam] === filterVal)
-  //     .map((item) => (
-  //       <AnimalMarker
-  //         key={item.id}
-  //         id={item.id}
-  //         location={item.location}
-  //         icon={setMarkerParams(item.animal, item.encounter)}
-  //       />
-  //     ));
-  //   return markers;
-  // };
 
   return (
     <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
