@@ -14,8 +14,8 @@ import { Modal, CloseButton, Button, ButtonGroup } from "react-bootstrap";
 
 export default function FriendManager(props) {
   const user = useContext(UserContext);
-  const [requests, setRequests] = useState([]);
-  const [friends, setFriends] = useState([]);
+  const [requests, setRequests] = useState({});
+  const [friends, setFriends] = useState({});
 
   useEffect(() => {
     const usersRef = ref(database, USERS_DATABASE_KEY);
@@ -201,7 +201,7 @@ export default function FriendManager(props) {
   return (
     <Modal show={true}>
       <Modal.Header>
-        <Modal.Title>FRIENDS</Modal.Title>
+        <Modal.Title>Friends</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />
       </Modal.Header>
       <Modal.Body>

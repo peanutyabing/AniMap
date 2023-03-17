@@ -83,7 +83,7 @@ export default function Filter(props) {
         <Offcanvas.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="form-group" controlId="filter-input">
-              <Form.Label>Animals</Form.Label>
+              <Form.Label>By animal:</Form.Label>
               <div className="radioButtons">
                 <Button
                   value="cat"
@@ -102,7 +102,7 @@ export default function Filter(props) {
                   otter
                 </Button>
                 <br />
-                <Form.Label>Encounters</Form.Label>
+                <Form.Label>By encounter:</Form.Label>
                 <br />
                 <Button
                   value="happy"
@@ -132,7 +132,7 @@ export default function Filter(props) {
             </Form.Group>
             <Button type="submit">Filter</Button>{" "}
             <Button type="reset" onClick={handleReset}>
-              Remove Filter
+              Remove filter
             </Button>
           </Form>
         </Offcanvas.Body>
