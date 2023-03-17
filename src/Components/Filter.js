@@ -4,12 +4,10 @@ import Button from "react-bootstrap/Button";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { useNavigate } from "react-router-dom";
 import RangeSlider from "react-bootstrap-range-slider";
-import userEvent from "@testing-library/user-event";
 
 export default function Filter(props) {
   const navigate = useNavigate();
   const [userFilterDays, setUserFilterDays] = useState(0);
-  const [filterDate, setFilterDate] = useState("");
   const [filter, setFilter] = useState({
     tags: {
       animal: { cat: false, otter: false },
