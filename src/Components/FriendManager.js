@@ -14,8 +14,8 @@ import { Modal, CloseButton, Button, ButtonGroup } from "react-bootstrap";
 
 export default function FriendManager(props) {
   const user = useContext(UserContext);
-  const [requests, setRequests] = useState([]);
-  const [friends, setFriends] = useState([]);
+  const [requests, setRequests] = useState({});
+  const [friends, setFriends] = useState({});
 
   useEffect(() => {
     const usersRef = ref(database, USERS_DATABASE_KEY);

@@ -1,9 +1,19 @@
 import { useState, useEffect, useContext } from "react";
 import { database } from "../Firebase.js";
-import { ref, onValue, push, set, update } from "firebase/database";
+import {
+  ref,
+  onValue,
+  onChildAdded,
+  onChildChanged,
+  push,
+  set,
+  update,
+} from "firebase/database";
+import { USERS_DATABASE_KEY } from "../App.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../App.js";
 import { Modal, ButtonGroup, Button, CloseButton, Form } from "react-bootstrap";
+import Geocode from "react-geocode";
 import userAvatar from "../Icons/user-avatar-bear.png";
 
 const POSTS_DATABASE_KEY = "posts";
@@ -15,8 +25,12 @@ export default function Post(props) {
   let location = useLocation();
   let postId = location.pathname.split("/").slice(-1);
 
-  const [url, setUrl] = useState("");
+  const [publicPost, setPublicPost] = useState(false);
+  const [lng, setLng] = useState(0);
+  const [lat, setLat] = useState(0);
+  const [address, setAddress] = useState(null);
   const [content, setContent] = useState("");
+  const [url, setUrl] = useState("");
   const [date, setDate] = useState("");
   const [authorEmail, setAuthorEmail] = useState("");
   const [comment, setComment] = useState("");
@@ -26,12 +40,16 @@ export default function Post(props) {
   const [editComment, setEditComment] = useState(false);
   const [editCommentKey, setEditCommentKey] = useState("");
   const [commentSectionLen, setCommentSectionLen] = useState(5);
+  const [friends, setFriends] = useState({});
 
   useEffect(() => {
     const postRef = ref(database, `${POSTS_DATABASE_KEY}/${postId}`);
     onValue(postRef, (snapshot) => {
-      setUrl(snapshot.val().url);
+      setPublicPost(snapshot.val().public === "true");
+      setLng(snapshot.val().location.lng);
+      setLat(snapshot.val().location.lat);
       setContent(snapshot.val().content);
+      setUrl(snapshot.val().url);
       setDate(snapshot.val().date);
       setAuthorEmail(snapshot.val().authorEmail);
       setEncounter(snapshot.val().encounter);
@@ -39,6 +57,37 @@ export default function Post(props) {
       setPostComments(snapshot.val().comments);
     });
   }, []);
+
+  useEffect(() => {
+    const usersRef = ref(database, USERS_DATABASE_KEY);
+    onChildAdded(usersRef, (userData) => {
+      if (userData.val().email === user.email) {
+        setFriends(userData.val().friends);
+      }
+    });
+  }, [user.email]);
+
+  useEffect(() => {
+    const usersRef = ref(database, USERS_DATABASE_KEY);
+    onChildChanged(usersRef, (userData) => {
+      if (userData.val().email === user.email) {
+        setFriends(userData.val().friends);
+      }
+    });
+  }, [user.email]);
+
+  useEffect(() => {
+    if (lat || lng) {
+      Geocode.fromLatLng(lat, lng).then(
+        (response) => {
+          setAddress(response.results[0].formatted_address);
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }, [lat, lng]);
 
   const writeData = () => {
     const commentDate = new Date().toLocaleString();
@@ -103,6 +152,26 @@ export default function Post(props) {
     setEditCommentKey("");
   };
 
+  const renderLocation = () => {
+    if (
+      publicPost ||
+      Object.values(friends).includes({ email: authorEmail }) ||
+      user.email === authorEmail
+    ) {
+      return address ? (
+        <div className="grey-smaller bold">📍 {address}</div>
+      ) : (
+        <div>Loading location...</div>
+      );
+    } else {
+      return (
+        <div className="grey-smaller bold">
+          📍 Location is available to friends
+        </div>
+      );
+    }
+  };
+
   const renderReactionButtons = () => {
     if (reactions.love && reactions.funny && reactions.shook && reactions.sad) {
       return (
@@ -145,6 +214,13 @@ export default function Post(props) {
   };
 
   const renderComments = (len = 5) => {
+    if (
+      !publicPost &&
+      !Object.values(friends).includes({ email: authorEmail }) &&
+      user.email !== authorEmail
+    ) {
+      return;
+    }
     let comments = [];
     if (postComments) {
       Object.keys(postComments)
@@ -155,14 +231,14 @@ export default function Post(props) {
             <div className="post-comment" key={commentKey}>
               <div className="post-comment-data">
                 <div className="user-comment">
-                  {postComments[commentKey].userComment} {""}
-                </div>{" "}
+                  {postComments[commentKey].userComment}
+                </div>
                 <div className="info-status">
                   <div className="comment-info">
-                    {postComments[commentKey].user} {""}{" "}
+                    {postComments[commentKey].user}
                     {postComments[commentKey].userCommentDate}
                   </div>
-                  <div className="comment-status">
+                  <div className="comment-status grey-italics">
                     {postComments[commentKey].status
                       ? postComments[commentKey].status
                       : null}
@@ -189,59 +265,15 @@ export default function Post(props) {
     return comments.slice(0, len);
   };
 
-  return (
-    <Modal
-      contentClassName={`modal-content-${encounter}`}
-      centered
-      show={true}
-      backdrop="static"
-    >
-      <Modal.Header>
-        <div className="user-avatar">
-          <img src={userAvatar} alt={authorEmail} />
-        </div>
-        <div className="post-info">
-          <div className="author">{authorEmail}</div>
-          <div className="timestamp">{date}</div>
-        </div>
-        <CloseButton
-          onClick={() => {
-            navigate("/");
-          }}
-        />
-      </Modal.Header>
-      <Modal.Body>
-        <div className="post-body">
-          <div>{content}</div>
-          <div className="post-image">
-            <img src={url} alt={content} />
-          </div>
-          <div className="reaction-btns">{renderReactionButtons()}</div>
-        </div>
-
-        <div className="post-comments">{renderComments(commentSectionLen)}</div>
-        <div className="comment-section-btns">
-          {postComments &&
-            Object.keys(postComments).length > commentSectionLen && (
-              <Button
-                variant="contained"
-                size="sm"
-                onClick={() => setCommentSectionLen((prevLen) => prevLen + 5)}
-              >
-                More comments ↓
-              </Button>
-            )}
-          {commentSectionLen > 5 && (
-            <Button
-              variant="contained"
-              size="sm"
-              onClick={() => setCommentSectionLen((prevLen) => prevLen - 5)}
-            >
-              Fewer comments ↑
-            </Button>
-          )}
-        </div>
-      </Modal.Body>
+  const renderCommentForm = () => {
+    if (
+      !publicPost &&
+      !Object.values(friends).includes({ email: authorEmail }) &&
+      user.email !== authorEmail
+    ) {
+      return;
+    }
+    return (
       <Modal.Footer>
         {user.email && (
           <Form
@@ -272,6 +304,64 @@ export default function Post(props) {
           </Form>
         )}
       </Modal.Footer>
+    );
+  };
+
+  return (
+    <Modal
+      contentClassName={`modal-content-${encounter}`}
+      centered
+      show={true}
+      backdrop="static"
+    >
+      <Modal.Header>
+        <div className="user-avatar">
+          <img src={userAvatar} alt={authorEmail} />
+        </div>
+        <div className="post-info">
+          <div className="author">{authorEmail}</div>
+          <div className="timestamp">{date}</div>
+        </div>
+        <CloseButton
+          onClick={() => {
+            navigate("/");
+          }}
+        />
+      </Modal.Header>
+      <Modal.Body>
+        {renderLocation()}
+        <div className="post-body">
+          <div className="post-content">{content}</div>
+          <div className="post-image">
+            <img src={url} alt={content} />
+          </div>
+          <div className="reaction-btns">{renderReactionButtons()}</div>
+        </div>
+
+        <div className="post-comments">{renderComments(commentSectionLen)}</div>
+        <div className="comment-section-btns">
+          {postComments &&
+            Object.keys(postComments).length > commentSectionLen && (
+              <Button
+                variant="contained"
+                size="sm"
+                onClick={() => setCommentSectionLen((prevLen) => prevLen + 5)}
+              >
+                More comments ↓
+              </Button>
+            )}
+          {commentSectionLen > 5 && (
+            <Button
+              variant="contained"
+              size="sm"
+              onClick={() => setCommentSectionLen((prevLen) => prevLen - 5)}
+            >
+              Fewer comments ↑
+            </Button>
+          )}
+        </div>
+      </Modal.Body>
+      {renderCommentForm()}
     </Modal>
   );
 }

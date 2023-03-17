@@ -29,6 +29,7 @@ export default function PostForm() {
   const [happy, setHappy] = useState(false);
   const [unhappy, setUnhappy] = useState(false);
   const [address, setAddress] = useState("");
+  const [publicPost, setPublicPost] = useState(true);
 
   const navigate = useNavigate();
 
@@ -51,6 +52,7 @@ export default function PostForm() {
       location: { lat: lat, lng: lng },
       reactions: { love: [""], funny: [""], shook: [""], sad: [""] },
       url: url,
+      public: publicPost,
     });
   };
 
@@ -137,8 +139,11 @@ export default function PostForm() {
   );
 
   const handleSelectAnimal = (e) => {
-    console.log(e.target.value);
     setUserSelectedAnimal(e.target.value);
+  };
+
+  const handleSelectPrivacy = (e) => {
+    setPublicPost(e.target.value);
   };
 
   // [If implemented] public or friends-only
@@ -151,33 +156,23 @@ export default function PostForm() {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group
-            className="form-group"
+            className="form-group flex-form"
             controlId="animal-type-input"
             onChange={handleSelectAnimal}
           >
             <Form.Label>What animal did you see?</Form.Label>
-            <div className="radioButtons">
-              <Form.Check
-                inline
-                label="Cat"
-                value="cat"
-                name="animal"
-                type="radio"
-                id="radio-cat"
-              />
-              <Form.Check
-                inline
-                label="Otter"
-                value="otter"
-                name="animal"
-                type="radio"
-                id="radio-otter"
-              />
-            </div>
+            <Form.Select id="select-animal" size="sm">
+              <option></option>
+              <option value="cat">Cat</option>
+              <option value="otter">Otter</option>
+            </Form.Select>
           </Form.Group>
-          <Form.Group className="form-group" controlId="encounter-input">
+          <Form.Group
+            className="form-group flex-form"
+            controlId="encounter-input"
+          >
             <Form.Label>How was the encounter?</Form.Label>
-            <div>
+            <div id="encounter-btns">
               {goodEncounter} {badEncounter}
             </div>
           </Form.Group>
@@ -187,29 +182,33 @@ export default function PostForm() {
               as="textarea"
               rows={2}
               value={userMessage}
-              placeholder=""
               onChange={(e) => setUserMessage(e.target.value)}
             />
           </Form.Group>
           <Form.Group className="form-group">
             <Form.Label>Where was the encounter?</Form.Label>
+
             {lat && lng ? (
-              <div className="coordinates-display coordinates-display-found">
+              <div className="coordinates-display green">
                 {lat}, {lng}
               </div>
             ) : (
-              <div className="coordinates-display coordinates-display-not-found">
-                Address not found
-              </div>
+              <div className="coordinates-display red">Address not found</div>
             )}
             <div id="address-look-up">
               <Form.Control
                 type="text"
+                size="sm"
                 value={address}
                 placeholder="Enter address or click on the map"
                 onChange={(e) => setAddress(e.target.value)}
               />
-              <Button variant="secondary" id="look-up-btn" onClick={getLatLng}>
+              <Button
+                variant="secondary"
+                size="sm"
+                id="look-up-btn"
+                onClick={getLatLng}
+              >
                 Look up
               </Button>
             </div>
@@ -239,10 +238,12 @@ export default function PostForm() {
           </Form.Group>
           <Form.Group className="form-group">
             <Form.Label>
-              Upload a photo<span id="optional-text">{" (optional)"}</span>
+              Upload a photo
+              <span className="grey-italics">{" (optional)"}</span>
             </Form.Label>
             <Form.Control
               type="file"
+              size="sm"
               name="userFileInputValue"
               value={userFileInputValue}
               onChange={(e) => {
@@ -250,6 +251,20 @@ export default function PostForm() {
                 setUserFileInputValue(e.target.value);
               }}
             />
+          </Form.Group>
+          <Form.Group
+            className="form-group flex-form"
+            controlId="privacy-input"
+            onChange={handleSelectPrivacy}
+          >
+            <Form.Label>Who can see this post?</Form.Label>
+            <Form.Select id="select-privacy" size="sm">
+              <option value={true}>Everyone</option>
+              <option value={false}>Only my friends</option>
+            </Form.Select>
+            <div id="help" className="grey-smaller prevent-select">
+              ?
+            </div>
           </Form.Group>
           <Button type="submit">Submit ⏎</Button>
         </Form>
