@@ -25,6 +25,11 @@
   color: rgb(130, 130, 130);
 }
 
+.smallest {
+  font-size: calc(8px + 0.5vmin) !important;
+  font-weight: 300;
+}
+
 .bold {
   font-weight: 600;
 }
@@ -87,7 +92,7 @@
 }
 
 .dropdown-item {
-  display: flex;
+  display: flex !important;
   justify-content: space-between;
 }
 
@@ -109,7 +114,7 @@
 /* Post Form */
 .form-label {
   font-weight: 600;
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
 .form-group {
@@ -131,17 +136,17 @@
 .coordinates-display {
   padding: 0.5vmin;
   font-style: italic;
+  font-size: calc(10px + 0.8vmin);
   border-radius: 4px;
 }
 
 #address-look-up {
   display: flex;
-  height: calc(25px + 2vmin);
   margin-bottom: 0.5vmin;
 }
 
 #address-look-up #look-up-btn {
-  width: calc(110px + 3vmin);
+  min-width: calc(70px + 2vmin);
   margin-left: 0.5vmin;
 }
 
@@ -149,6 +154,11 @@
   background-color: #e7e7e7;
   padding: 0 calc(3px + 0.5vmin);
   border-radius: 100%;
+}
+
+.tooltip-inner {
+  font-size: calc(10px + 0.4vmin);
+  line-height: 120%;
 }
 
 /* Posts */
@@ -239,8 +249,6 @@
 
 .post-comments .post-comment .comment-info,
 .comment-status {
-  font-size: calc(8px + 0.5vmin);
-  font-weight: 300;
   line-height: calc(5px + 0.5vmin);
 }
 .post-comments .post-comment .post-comment-data {
@@ -262,10 +270,6 @@
 
 .comment-section-btns {
   color: #8779ee;
-}
-
-.comment-section-btns button {
-  font-size: calc(8px + 0.5vmin);
 }
 
 #comment-form {

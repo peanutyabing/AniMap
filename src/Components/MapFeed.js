@@ -8,8 +8,12 @@ import catIconG from "../Icons/cat-pin-green.png";
 import catIconR from "../Icons/cat-pin-red.png";
 import otterIconG from "../Icons/otter-pin-green.png";
 import otterIconR from "../Icons/otter-pin-red.png";
+// import birdIconG from "../Icons/bird-pin-green.png";
+// import birdIconR from "../Icons/bird-pin-red.png";
+// import dogIconG from "../Icons/dog-pin-green.png";
+// import dogIconR from "../Icons/dog-pin-red.png";
 import { AnimalMarker } from "./AnimalMarker.js";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 const containerStyle = {
   width: "100vw",
@@ -25,7 +29,6 @@ const POSTS_DATABASE_KEY = "posts";
 
 export default function MapFeed(props) {
   const user = useContext(UserContext);
-  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [friends, setFriends] = useState({});
   const [map, setMap] = useState(null);
@@ -86,6 +89,10 @@ export default function MapFeed(props) {
       unhappycat: { url: catIconR },
       happyotter: { url: otterIconG },
       unhappyotter: { url: otterIconR },
+      // happybird: { url: birdIconG },
+      // unhappybird: { url: birdIconR },
+      // happydog: { url: dogIconG },
+      // unhappydog: { url: dogIconR },
     };
     Object.keys(icons).forEach(
       (key) =>
@@ -117,8 +124,6 @@ export default function MapFeed(props) {
     );
     return filteredData;
   };
-
-  //The filterParam and filterVal parameters are optional. Nothing will be filtered if these arguments are left out. Otherwise, it will can filter data by any attribute (e.g. show me markers with type=cat only)
 
   const renderMarkers = (data) => {
     const userFilterVal = props.userFilterVal;

@@ -6,7 +6,14 @@ import {
   getDownloadURL,
   uploadBytes,
 } from "firebase/storage";
-import { Modal, Button, CloseButton, Form } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  CloseButton,
+  Form,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Geocode from "react-geocode";
 import { GoogleMap, Marker } from "@react-google-maps/api";
@@ -163,7 +170,9 @@ export default function PostForm() {
             <Form.Label>What animal did you see?</Form.Label>
             <Form.Select id="select-animal" size="sm">
               <option></option>
+              {/* <option value="bird">Bird</option> */}
               <option value="cat">Cat</option>
+              {/* <option value="dog">Dog</option> */}
               <option value="otter">Otter</option>
             </Form.Select>
           </Form.Group>
@@ -258,13 +267,24 @@ export default function PostForm() {
             onChange={handleSelectPrivacy}
           >
             <Form.Label>Who can see this post?</Form.Label>
+            <OverlayTrigger
+              trigger={["hover", "focus"]}
+              placement="bottom"
+              overlay={
+                <Tooltip>
+                  If you select "only my friends", no one else will be able to
+                  see the exact location of your post
+                </Tooltip>
+              }
+            >
+              <div id="help" className="grey-smaller prevent-select">
+                ?
+              </div>
+            </OverlayTrigger>
             <Form.Select id="select-privacy" size="sm">
               <option value={true}>Everyone</option>
               <option value={false}>Only my friends</option>
             </Form.Select>
-            <div id="help" className="grey-smaller prevent-select">
-              ?
-            </div>
           </Form.Group>
           <Button type="submit">Submit ⏎</Button>
         </Form>

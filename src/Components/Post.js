@@ -278,27 +278,28 @@ export default function Post(props) {
                   {postComments[commentKey].userComment}
                 </div>
                 <div className="info-status">
-                  <div className="comment-info">
+                  <div className="comment-info smallest">
                     {postComments[commentKey].user}
                     {postComments[commentKey].userCommentDate}
                   </div>
-                  <div className="comment-status grey-italics">
+                  <div className="comment-status grey-italics smallest">
                     {postComments[commentKey].status
                       ? postComments[commentKey].status
                       : null}
                   </div>
                 </div>
               </div>
-              <div className="edit-btn comment-section-btns">
+              <div className="comment-section-btns">
                 {user.email === postComments[commentKey].user ? (
                   <Button
                     variant="contained"
                     size="sm"
                     id={commentKey}
+                    className="smallest"
                     name="edit"
                     onClick={handleEdit}
                   >
-                    EDIT
+                    Edit
                   </Button>
                 ) : null}
               </div>
@@ -396,6 +397,7 @@ export default function Post(props) {
               <Button
                 variant="contained"
                 size="sm"
+                className="smallest"
                 onClick={() => setCommentSectionLen((prevLen) => prevLen + 5)}
               >
                 More comments ↓
@@ -405,6 +407,7 @@ export default function Post(props) {
             <Button
               variant="contained"
               size="sm"
+              className="smallest"
               onClick={() => setCommentSectionLen((prevLen) => prevLen - 5)}
             >
               Fewer comments ↑
