@@ -201,7 +201,7 @@ export default function FriendManager(props) {
   return (
     <Modal show={true}>
       <Modal.Header>
-        <Modal.Title>FRIENDS</Modal.Title>
+        <Modal.Title>Friends</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />
       </Modal.Header>
       <Modal.Body>
