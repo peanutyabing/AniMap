@@ -68,7 +68,7 @@ export default function Filter(props) {
     const newEndDate = new Date(endDate).toLocaleString();
     filterVal.push(newEndDate);
   };
-  console.log(filterVal);
+
   return (
     <div>
       <Offcanvas show={true} className="offcanvas">
