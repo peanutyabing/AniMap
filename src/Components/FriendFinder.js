@@ -14,6 +14,12 @@ export default function FriendFinder(props) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user.email) {
+      navigate("../login-signup");
+    }
+  });
+
+  useEffect(() => {
     const usersRef = ref(database, USERS_DATABASE_KEY);
     onChildAdded(usersRef, (data) => {
       if (!users.map((user) => user.userDatabaseKey).includes(data.key)) {
@@ -136,7 +142,7 @@ export default function FriendFinder(props) {
   return (
     <Modal show={true}>
       <Modal.Header>
-        <Modal.Title>FIND FRIENDS</Modal.Title>
+        <Modal.Title>Find Friends</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />
       </Modal.Header>
       <Modal.Body>

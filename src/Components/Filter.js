@@ -154,7 +154,7 @@ export default function Filter(props) {
             </Form.Group>
             <Button type="submit">Filter</Button>{" "}
             <Button type="reset" onClick={handleReset}>
-              Remove Filter
+              Remove filter
             </Button>
           </Form>
         </Offcanvas.Body>

@@ -54,11 +54,11 @@ export default function NavBar(props) {
                 navigate("friend-manager");
               }}
             >
-              My friends
+              <div>My friends</div>
               {pendingRequests.length > 0 ? (
-                <span className="num-of-requests" id="pending-requests">
+                <div className="num-of-requests" id="pending-requests">
                   {pendingRequests.length}
-                </span>
+                </div>
               ) : (
                 <span className="num-of-requests" id="no-pending-requests">
                   0
