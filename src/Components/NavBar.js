@@ -67,7 +67,9 @@ export default function NavBar(props) {
             >
               Find friends
             </NavDropdown.Item>
-
+            <NavDropdown.Item onClick={() => navigate("reset-password")}>
+              Reset password
+            </NavDropdown.Item>
             <NavDropdown.Item onClick={props.signOutUser}>
               Sign out
             </NavDropdown.Item>

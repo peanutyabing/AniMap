@@ -15,6 +15,7 @@ import NavBar from "./Components/NavBar.js";
 import PostForm from "./Components/PostForm.jsx";
 import FriendFinder from "./Components/FriendFinder.js";
 import FriendManager from "./Components/FriendManager.js";
+import PasswordReset from "./Components/PasswordReset.js";
 import "./App.css";
 import Filter from "./Components/Filter.js";
 
@@ -168,6 +169,7 @@ function App() {
               />
               <Route path="friend-finder" element={<FriendFinder />} />
               <Route path="friend-manager" element={<FriendManager />} />
+              <Route path="reset-password" element={<PasswordReset />} />
             </Route>
           </Routes>
         </UserContext.Provider>

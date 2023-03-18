@@ -77,7 +77,23 @@
 .side-by-side-btns {
   display: flex;
   justify-content: space-evenly;
-  margin-top: 2vmin;
+  margin: 2vmin 0;
+}
+
+/* Log in sign up */
+.login-input {
+  margin: 2vmin 0;
+}
+
+.forgot-password {
+  text-align: center;
+  margin: 1vmin;
+  cursor: pointer;
+}
+
+#forgot-password:hover {
+  color: #8779ee;
+  text-decoration: underline 0.5px;
 }
 
 /* Nav Bar */
@@ -108,7 +124,7 @@
 }
 
 /* Post Form */
-.form-label {
+.compact-label {
   font-weight: 600;
   margin-bottom: 0;
 }
