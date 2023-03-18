@@ -14,13 +14,19 @@ export default function Filter(props) {
       encounter: { happy: false, unhappy: false },
     },
   });
-  const filterVal = [];
+  const filterAnimalVal = [];
+  const filterEncounterVal = [];
+  const filterDateVal = [];
 
   const handleSubmit = (e) => {
     e.preventDefault();
     filterFunction(filterData);
     filterDates(userFilterDays);
-    props.handleDataFromFilter(filterVal);
+    props.handleDataFromFilter(
+      filterAnimalVal,
+      filterEncounterVal,
+      filterDateVal
+    );
     navigate("/");
   };
 
@@ -54,21 +60,21 @@ export default function Filter(props) {
     );
 
     for (let i = 0; i < animalFilterVal.length; i++) {
-      filterVal.push(animalFilterVal[i][0]);
+      filterAnimalVal.push(animalFilterVal[i][0]);
     }
     for (let j = 0; j < encounterFilterVal.length; j++) {
-      filterVal.push(encounterFilterVal[j][0]);
+      filterEncounterVal.push(encounterFilterVal[j][0]);
     }
-    return filterVal;
+    return;
   };
 
   const filterDates = (userFilterDays) => {
     const startDate = new Date();
-    const endDate = new Date(startDate.getTime() - userFilterDays);
+    const endDate = startDate.setDate(startDate.getDate() - userFilterDays);
     const newEndDate = new Date(endDate).toLocaleString();
-    filterVal.push(newEndDate);
+    filterDateVal.push(newEndDate);
   };
-  console.log("filterVal", filterVal);
+
   return (
     <div>
       <Offcanvas show={true} className="offcanvas">
@@ -139,8 +145,8 @@ export default function Filter(props) {
                   max={7}
                   tooltipLabel={(currentValue) =>
                     currentValue === 1
-                      ? `${currentValue}day ago`
-                      : `${currentValue}days ago`
+                      ? `Last 24hr`
+                      : `Last ${currentValue} days`
                   }
                   tooltip="on"
                 />
