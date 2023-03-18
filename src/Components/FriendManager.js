@@ -64,17 +64,7 @@ export default function FriendManager() {
     if (window.confirm(message) === true) {
       updateRequestReceived(e, { [e.target.id]: null });
       updateRequestSent(e, { [user.userDatabaseKey]: null });
-      const receiverFriendRef = ref(
-        database,
-        `${USERS_DATABASE_KEY}/${user.userDatabaseKey}/friends`
-      );
-      update(receiverFriendRef, { [e.target.id]: null });
-
-      const requestorFriendRef = ref(
-        database,
-        `${USERS_DATABASE_KEY}/${e.target.id}/friends`
-      );
-      update(requestorFriendRef, { [user.userDatabaseKey]: null });
+      updateFriends(e, null, null);
 
       const friendsToUpdate = { ...friends };
       delete friendsToUpdate[e.target.id];
@@ -128,15 +118,15 @@ export default function FriendManager() {
   const updateFriends = (e, receiverData, requestorData) => {
     const receiverFriendRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${user.userDatabaseKey}/friends/${e.target.id}`
+      `${USERS_DATABASE_KEY}/${user.userDatabaseKey}/friends/`
     );
-    set(receiverFriendRef, receiverData);
+    update(receiverFriendRef, { [e.target.id]: receiverData });
 
     const requestorFriendRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${e.target.id}/friends/${user.userDatabaseKey}`
+      `${USERS_DATABASE_KEY}/${e.target.id}/friends/`
     );
-    set(requestorFriendRef, requestorData);
+    update(requestorFriendRef, { [user.userDatabaseKey]: requestorData });
   };
 
   const renderPendingRequests = () => {
