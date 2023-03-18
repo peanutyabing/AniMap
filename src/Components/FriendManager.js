@@ -12,7 +12,7 @@ import {
 import { UserContext } from "../App.js";
 import { Modal, CloseButton, Button, ButtonGroup } from "react-bootstrap";
 
-export default function FriendManager(props) {
+export default function FriendManager() {
   const user = useContext(UserContext);
   const [requests, setRequests] = useState({});
   const [friends, setFriends] = useState({});
@@ -50,7 +50,7 @@ export default function FriendManager(props) {
       "Are you sure? The requestor will not be notified that you rejected their friend request.";
     if (window.confirm(message) === true) {
       updateRequestReceived(e, { [e.target.id]: null });
-      updateRequestSent(e, { [props.userDatabaseKey]: null });
+      updateRequestSent(e, { [user.userDatabaseKey]: null });
 
       const requestToUpdate = { ...requests };
       delete requestToUpdate[e.target.id];
@@ -63,10 +63,10 @@ export default function FriendManager(props) {
       "Are you sure? Your friend will not be notified that you unfriended them.";
     if (window.confirm(message) === true) {
       updateRequestReceived(e, { [e.target.id]: null });
-      updateRequestSent(e, { [props.userDatabaseKey]: null });
+      updateRequestSent(e, { [user.userDatabaseKey]: null });
       const receiverFriendRef = ref(
         database,
-        `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/friends`
+        `${USERS_DATABASE_KEY}/${user.userDatabaseKey}/friends`
       );
       update(receiverFriendRef, { [e.target.id]: null });
 
@@ -74,7 +74,7 @@ export default function FriendManager(props) {
         database,
         `${USERS_DATABASE_KEY}/${e.target.id}/friends`
       );
-      update(requestorFriendRef, { [props.userDatabaseKey]: null });
+      update(requestorFriendRef, { [user.userDatabaseKey]: null });
 
       const friendsToUpdate = { ...friends };
       delete friendsToUpdate[e.target.id];
@@ -92,7 +92,7 @@ export default function FriendManager(props) {
     updateRequestReceived(e, updatedRequestReceived);
 
     const updatedRequestSent = {
-      [props.userDatabaseKey]: { email: user.email, status: true },
+      [user.userDatabaseKey]: { email: user.email, status: true },
     };
     updateRequestSent(e, updatedRequestSent);
 
@@ -112,7 +112,7 @@ export default function FriendManager(props) {
   const updateRequestReceived = (e, data) => {
     const requestsReceivedRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsReceived`
+      `${USERS_DATABASE_KEY}/${user.userDatabaseKey}/requestsReceived`
     );
     update(requestsReceivedRef, data);
   };
@@ -128,13 +128,13 @@ export default function FriendManager(props) {
   const updateFriends = (e, receiverData, requestorData) => {
     const receiverFriendRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/friends/${e.target.id}`
+      `${USERS_DATABASE_KEY}/${user.userDatabaseKey}/friends/${e.target.id}`
     );
     set(receiverFriendRef, receiverData);
 
     const requestorFriendRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${e.target.id}/friends/${props.userDatabaseKey}`
+      `${USERS_DATABASE_KEY}/${e.target.id}/friends/${user.userDatabaseKey}`
     );
     set(requestorFriendRef, requestorData);
   };

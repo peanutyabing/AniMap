@@ -24,7 +24,6 @@ export const USERS_DATABASE_KEY = "users";
 function App() {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
-  const [userDatabaseKey, setUserDatabaseKey] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [filterStatus, setFilterStatus] = useState(false);
@@ -52,7 +51,9 @@ function App() {
     const usersRef = ref(database, USERS_DATABASE_KEY);
     onChildAdded(usersRef, (data) => {
       if (user.email === data.val().email) {
-        setUserDatabaseKey(data.key);
+        let userToUpdate = { ...user };
+        userToUpdate.userDatabaseKey = data.key;
+        setUser(userToUpdate);
       }
     });
   }, [user.email]);
@@ -131,7 +132,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <UserContext.Provider value={user}>
-          <NavBar signOutUser={signOutUser} userDatabaseKey={userDatabaseKey} />
+          <NavBar signOutUser={signOutUser} />
           <Routes>
             <Route
               path="/"
@@ -165,14 +166,8 @@ function App() {
                   />
                 }
               />
-              <Route
-                path="friend-finder"
-                element={<FriendFinder userDatabaseKey={userDatabaseKey} />}
-              />
-              <Route
-                path="friend-manager"
-                element={<FriendManager userDatabaseKey={userDatabaseKey} />}
-              />
+              <Route path="friend-finder" element={<FriendFinder />} />
+              <Route path="friend-manager" element={<FriendManager />} />
             </Route>
           </Routes>
         </UserContext.Provider>

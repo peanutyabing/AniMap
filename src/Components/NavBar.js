@@ -17,25 +17,22 @@ export default function NavBar(props) {
   const [pendingRequests, setPendingRequests] = useState([]);
 
   useEffect(() => {
-    const userRef = ref(
-      database,
-      `${USERS_DATABASE_KEY}/${props.userDatabaseKey}`
-    );
-    onValue(userRef, (snapshot) => {
-      // console.log(
-      //   Object.values(snapshot.val().requestsReceived).filter(
-      //     (req) => req.status === false
-      //   )
-      // );
-      if (snapshot.val().requestsReceived) {
-        setPendingRequests(
-          Object.values(snapshot.val().requestsReceived).filter(
-            (req) => req.status === false
-          )
-        );
-      }
-    });
-  }, [props]);
+    if (user.userDatabaseKey) {
+      const userRef = ref(
+        database,
+        `${USERS_DATABASE_KEY}/${user.userDatabaseKey}`
+      );
+      onValue(userRef, (snapshot) => {
+        if (snapshot.val().requestsReceived) {
+          setPendingRequests(
+            Object.values(snapshot.val().requestsReceived).filter(
+              (req) => req.status === false
+            )
+          );
+        }
+      });
+    }
+  }, [user]);
 
   return (
     <Navbar bg="light" variant="light" sticky="top">

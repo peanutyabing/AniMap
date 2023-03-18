@@ -6,7 +6,7 @@ import { onChildAdded, ref, set } from "firebase/database";
 import { UserContext } from "../App.js";
 import { Modal, Form, CloseButton, Button } from "react-bootstrap";
 
-export default function FriendFinder(props) {
+export default function FriendFinder() {
   const user = useContext(UserContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -61,7 +61,7 @@ export default function FriendFinder(props) {
   const sendFriendRequest = (e) => {
     const requestsReceivedRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${e.target.id}/requestsReceived/${props.userDatabaseKey}`
+      `${USERS_DATABASE_KEY}/${e.target.id}/requestsReceived/${user.userDatabaseKey}`
     );
     set(requestsReceivedRef, {
       email: user.email,
@@ -70,7 +70,7 @@ export default function FriendFinder(props) {
 
     const requestsSentRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsSent/${e.target.id}`
+      `${USERS_DATABASE_KEY}/${user.userDatabaseKey}/requestsSent/${e.target.id}`
     );
     set(requestsSentRef, {
       email: searchResults.filter(
