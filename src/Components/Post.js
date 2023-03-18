@@ -152,14 +152,18 @@ export default function Post(props) {
     setEditCommentKey("");
   };
 
-  const renderLocation = () => {
-    if (
+  const hasViewAccess = () => {
+    return (
       publicPost ||
       Object.values(friends)
         .map((friend) => friend.email)
         .includes(authorEmail) ||
       user.email === authorEmail
-    ) {
+    );
+  };
+
+  const renderLocation = () => {
+    if (hasViewAccess()) {
       return address ? (
         <div className="grey-smaller bold">📍 {address}</div>
       ) : (
@@ -175,13 +179,7 @@ export default function Post(props) {
   };
 
   const renderImage = () => {
-    if (
-      publicPost ||
-      Object.values(friends)
-        .map((friend) => friend.email)
-        .includes(authorEmail) ||
-      user.email === authorEmail
-    ) {
+    if (hasViewAccess()) {
       return (
         <div className="post-image">
           <img src={url} alt={content} />
@@ -205,16 +203,7 @@ export default function Post(props) {
   };
 
   const renderReactionButtons = () => {
-    if (
-      !publicPost &&
-      !Object.values(friends)
-        .map((friend) => friend.email)
-        .includes(authorEmail) &&
-      user.email !== authorEmail
-    ) {
-      return;
-    }
-
+    if (!hasViewAccess()) return;
     if (reactions.love && reactions.funny && reactions.shook && reactions.sad) {
       return (
         <ButtonGroup>
@@ -256,15 +245,7 @@ export default function Post(props) {
   };
 
   const renderComments = (len = 5) => {
-    if (
-      !publicPost &&
-      !Object.values(friends)
-        .map((friend) => friend.email)
-        .includes(authorEmail) &&
-      user.email !== authorEmail
-    ) {
-      return;
-    }
+    if (!hasViewAccess()) return;
     let comments = [];
     if (postComments) {
       Object.keys(postComments)
@@ -306,20 +287,12 @@ export default function Post(props) {
             </div>,
           ];
         });
+      return comments.slice(0, len);
     }
-    return comments.slice(0, len);
   };
 
   const renderCommentForm = () => {
-    if (
-      !publicPost &&
-      !Object.values(friends)
-        .map((friend) => friend.email)
-        .includes(authorEmail) &&
-      user.email !== authorEmail
-    ) {
-      return;
-    }
+    if (!hasViewAccess()) return;
     return (
       <Modal.Footer>
         {user.email ? (
