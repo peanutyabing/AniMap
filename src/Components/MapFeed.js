@@ -94,14 +94,18 @@ export default function MapFeed(props) {
       // happydog: { url: dogIconG },
       // unhappydog: { url: dogIconR },
     };
-    Object.keys(icons).forEach(
+    setMarkerSize(icons);
+    return icons[`${encounter}${animal}`];
+  };
+
+  const setMarkerSize = (markers) => {
+    Object.keys(markers).forEach(
       (key) =>
-        (icons[key].scaledSize = new window.google.maps.Size(
+        (markers[key].scaledSize = new window.google.maps.Size(
           Math.pow(zoom / 15, 2) * 40,
           Math.pow(zoom / 15, 2) * 55
         ))
     );
-    return icons[`${encounter}${animal}`];
   };
 
   const filterFeature = (data, userFilterVal) => {
@@ -125,38 +129,42 @@ export default function MapFeed(props) {
     return filteredData;
   };
 
-  const renderMarkers = (data) => {
+  const renderMarkers = (postsData) => {
     const userFilterVal = props.userFilterVal;
 
     if (props.filterStatus === false) {
-      let markers = data.map((item) => (
+      let markers = postsData.map((item) => (
         <AnimalMarker
           key={item.id}
           id={item.id}
-          location={
-            item.publicPost ||
-            Object.values(friends)
-              .map((friend) => friend.email)
-              .includes(item.authorEmail) ||
-            user.email === item.authorEmail
-              ? item.location
-              : item.maskedLocation
-          }
+          location={hasViewAccess(item) ? item.location : item.maskedLocation}
           icon={setMarkerParams(item.animal, item.encounter)}
         />
       ));
       return markers;
     } else {
-      let filteredMarkers = filterFeature(data, userFilterVal).map((item) => (
-        <AnimalMarker
-          key={item.id}
-          id={item.id}
-          location={item.location}
-          icon={setMarkerParams(item.animal, item.encounter)}
-        />
-      ));
+      let filteredMarkers = filterFeature(postsData, userFilterVal).map(
+        (item) => (
+          <AnimalMarker
+            key={item.id}
+            id={item.id}
+            location={item.location}
+            icon={setMarkerParams(item.animal, item.encounter)}
+          />
+        )
+      );
       return filteredMarkers;
     }
+  };
+
+  const hasViewAccess = (post) => {
+    return (
+      post.publicPost ||
+      Object.values(friends)
+        .map((friend) => friend.email)
+        .includes(post.authorEmail) ||
+      user.email === post.authorEmail
+    );
   };
 
   const maskLocation = (coordinates) => {
