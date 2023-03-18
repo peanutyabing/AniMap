@@ -91,7 +91,7 @@
   cursor: pointer;
 }
 
-#forgot-password:hover {
+.forgot-password:hover {
   color: #8779ee;
   text-decoration: underline 0.5px;
 }
