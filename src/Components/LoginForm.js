@@ -1,7 +1,4 @@
-import CloseButton from "react-bootstrap/CloseButton";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
+import { CloseButton, Button, Form, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginForm(props) {

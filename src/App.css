@@ -26,7 +26,7 @@
 }
 
 .smallest {
-  font-size: calc(8px + 0.5vmin) !important;
+  font-size: calc(8px + 0.5vmin);
   font-weight: 300;
 }
 
@@ -62,10 +62,6 @@
   margin-left: 2vmin;
 }
 
-.modal {
-  padding-left: 0 !important;
-}
-
 .modal-header {
   display: flex;
 }
@@ -92,7 +88,7 @@
 }
 
 .dropdown-item {
-  display: flex !important;
+  display: flex;
   justify-content: space-between;
 }
 
@@ -114,7 +110,7 @@
 /* Post Form */
 .form-label {
   font-weight: 600;
-  margin-bottom: 0 !important;
+  margin-bottom: 0;
 }
 
 .form-group {

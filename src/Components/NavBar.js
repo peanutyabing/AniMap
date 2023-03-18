@@ -1,8 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../App";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../Icons/AniMap-2.png";
 import { database } from "../Firebase.js";

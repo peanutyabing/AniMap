@@ -279,7 +279,7 @@ export default function Post(props) {
                 </div>
                 <div className="info-status">
                   <div className="comment-info smallest">
-                    {postComments[commentKey].user}
+                    {postComments[commentKey].user}{" "}
                     {postComments[commentKey].userCommentDate}
                   </div>
                   <div className="comment-status grey-italics smallest">
