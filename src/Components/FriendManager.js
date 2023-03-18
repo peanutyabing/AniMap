@@ -2,13 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { database } from "../Firebase.js";
 import { USERS_DATABASE_KEY } from "../App.js";
-import {
-  onChildAdded,
-  onChildChanged,
-  ref,
-  set,
-  update,
-} from "firebase/database";
+import { onChildAdded, onChildChanged, ref, update } from "firebase/database";
 import { UserContext } from "../App.js";
 import { Modal, CloseButton, Button, ButtonGroup } from "react-bootstrap";
 
@@ -130,10 +124,10 @@ export default function FriendManager() {
   };
 
   const renderPendingRequests = () => {
-    const requestsRender = [];
+    const pendingRequestsRender = [];
     for (const key in requests) {
       if (requests[key].status === false) {
-        requestsRender.push(
+        pendingRequestsRender.push(
           <div key={key} className="friend">
             {requests[key].email}
             <ButtonGroup>
@@ -158,33 +152,43 @@ export default function FriendManager() {
         );
       }
     }
-    return requestsRender;
+    if (pendingRequestsRender.length) {
+      return pendingRequestsRender;
+    } else {
+      return (
+        <div className="grey-italics">
+          No pending friend requests at the moment
+        </div>
+      );
+    }
   };
 
   const renderMyFriends = () => {
-    const friendsRender = [];
-    for (const key in friends) {
-      if (friends[key].email !== "") {
-        friendsRender.push(
-          <div className="friend" key={friends[key].email}>
-            <div>{friends[key].email}</div>
-            <Button
-              id={key}
-              variant="danger"
-              size="sm"
-              onClick={handleUnfriend}
-            >
-              Unfriend
-            </Button>
-          </div>
-        );
+    if (Object.keys(friends).length > 1) {
+      const friendsRender = [];
+      for (const key in friends) {
+        if (friends[key].email !== "") {
+          friendsRender.push(
+            <div className="friend" key={friends[key].email}>
+              <div>{friends[key].email}</div>
+              <Button
+                id={key}
+                variant="danger"
+                size="sm"
+                onClick={handleUnfriend}
+              >
+                Unfriend
+              </Button>
+            </div>
+          );
+        }
       }
+      return friendsRender;
+    } else {
+      return (
+        <div className="grey-italics">You don't have any friends yet!</div>
+      );
     }
-    return friendsRender.length > 0 ? (
-      friendsRender
-    ) : (
-      <div className="grey-italics">You don't have any friends yet!</div>
-    );
   };
 
   const navigate = useNavigate();
@@ -196,16 +200,7 @@ export default function FriendManager() {
       </Modal.Header>
       <Modal.Body>
         <div className="friends-container" id="friend-requests">
-          {renderPendingRequests().length > 0 ? (
-            <>
-              <div className="header">Pending requests:</div>
-              {renderPendingRequests()}
-            </>
-          ) : (
-            <div className="grey-italics">
-              No pending friend requests at the moment
-            </div>
-          )}
+          {renderPendingRequests()}
         </div>
       </Modal.Body>
       <Modal.Body>
