@@ -10,6 +10,7 @@ export default function FriendManager() {
   const user = useContext(UserContext);
   const [requests, setRequests] = useState({});
   const [friends, setFriends] = useState({});
+  const [userAvatarURLs, setUserAvatarURLs] = useState({});
 
   useEffect(() => {
     const usersRef = ref(database, USERS_DATABASE_KEY);
@@ -30,6 +31,17 @@ export default function FriendManager() {
       }
     });
   }, [user.email]);
+
+  useEffect(() => {
+    const usersRef = ref(database, USERS_DATABASE_KEY);
+    onChildAdded(usersRef, (data) => {
+      if (!Object.keys(userAvatarURLs).includes(data.key)) {
+        setUserAvatarURLs((prevState) => {
+          return { ...prevState, [data.key]: data.val().avatar };
+        });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     renderPendingRequests();
@@ -129,7 +141,12 @@ export default function FriendManager() {
       if (requests[key].status === false) {
         pendingRequestsRender.push(
           <div key={key} className="friend">
-            {requests[key].email}
+            <div className="flex-align-center">
+              <div className="avatar">
+                <img src={userAvatarURLs[key]} alt="avatar" />
+              </div>
+              <div className="friend-email">{requests[key].email}</div>
+            </div>
             <ButtonGroup>
               <Button
                 id={key}
@@ -170,7 +187,12 @@ export default function FriendManager() {
         if (friends[key].email !== "") {
           friendsRender.push(
             <div className="friend" key={friends[key].email}>
-              <div>{friends[key].email}</div>
+              <div className="flex-align-center">
+                <div className="avatar">
+                  <img src={userAvatarURLs[key]} alt="avatar" />
+                </div>
+                <div className="friend-email">{friends[key].email}</div>
+              </div>
               <Button
                 id={key}
                 variant="danger"

@@ -80,7 +80,7 @@ export default function AvatarPicker() {
 
   const renderAvatar = () => {
     return (
-      <div className="avatar">
+      <div className="large-avatar">
         <img src={getAvatarFromState()} alt={`${animal}-${bgColor}`} />
       </div>
     );
