@@ -114,7 +114,8 @@
   word-wrap: break-word;
 }
 
-.flex-header .avatar {
+.flex-header .avatar,
+.post-comment .avatar {
   height: calc(25px + 2vmin);
   margin: 0 0 0 0.5vmin;
 }
@@ -311,6 +312,11 @@
   font-weight: 400;
   margin: 0.5vmin 0;
   border-radius: 0.5vmin;
+}
+
+.post-comments .post-comment .comment-content {
+  display: flex;
+  align-items: center;
 }
 
 .post-comments .post-comment .comment-info,
