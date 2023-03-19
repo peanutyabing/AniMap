@@ -111,26 +111,30 @@ export default function MapFeed(props) {
     userFilterDateVal
   ) => {
     if (props.filterStatus === true) {
-      let filteredData = data.filter(
-        (item) => item["date"] >= userFilterDateVal[0]
-      );
-      if (userFilterEncounterVal.length >= 0) {
-        let updatedFilteredData = filteredData.filter(
-          (item) =>
-            item["encounter"] === userFilterEncounterVal[0] ||
-            item["encounter"] === userFilterEncounterVal[1]
-        );
-        if (userFilterAnimalVal.length >= 0) {
-          let finalFilteredData = updatedFilteredData.filter(
-            (item) =>
-              item["animal"] === userFilterAnimalVal[0] ||
-              item["animal"] === userFilterAnimalVal[1] ||
-              item["animal"] === userFilterAnimalVal[2] ||
-              item["animal"] === userFilterAnimalVal[3]
-          );
-          return finalFilteredData;
+      const filteredData = data.filter((item) => {
+        if (item["date"] <= userFilterDateVal[0]) {
+          return false;
         }
-      }
+        if (
+          userFilterEncounterVal.length > 0 &&
+          item["encounter"] !== userFilterEncounterVal[0] &&
+          item["encounter"] !== userFilterEncounterVal[1]
+        ) {
+          return false;
+        }
+        if (
+          userFilterAnimalVal.length > 0 &&
+          item["animal"] !== userFilterAnimalVal[0] &&
+          item["animal"] !== userFilterAnimalVal[1] &&
+          item["animal"] !== userFilterAnimalVal[2] &&
+          item["animal"] !== userFilterAnimalVal[3]
+        ) {
+          return false;
+        }
+        return true;
+      });
+      console.log("filteredData", filteredData);
+      return filteredData;
     }
   };
 
@@ -138,7 +142,6 @@ export default function MapFeed(props) {
     const userFilterAnimalVal = props.userFilterAnimalVal;
     const userFilterEncounterVal = props.userFilterEncounterVal;
     const userFilterDateVal = props.userFilterDateVal;
-
     if (props.filterStatus === false) {
       let markers = data.map((item) => (
         <AnimalMarker
