@@ -170,7 +170,7 @@ export default function PostForm() {
             <Form.Label className="compact-label">
               What animal did you see?
             </Form.Label>
-            <Form.Select id="select-animal" size="sm">
+            <Form.Select className="narrow-select" size="sm">
               <option></option>
               {/* <option value="bird">Bird</option> */}
               <option value="cat">Cat</option>
@@ -291,7 +291,7 @@ export default function PostForm() {
                 ?
               </div>
             </OverlayTrigger>
-            <Form.Select id="select-privacy" size="sm">
+            <Form.Select className="narrow-select" size="sm">
               <option value={true}>Everyone</option>
               <option value={false}>Only my friends</option>
             </Form.Select>

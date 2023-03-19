@@ -140,7 +140,7 @@ export default function FriendFinder() {
   };
 
   return (
-    <Modal show={true}>
+    <Modal show={true} backdrop="static" centered>
       <Modal.Header>
         <Modal.Title>Find Friends</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />

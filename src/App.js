@@ -18,6 +18,7 @@ import FriendManager from "./Components/FriendManager.js";
 import PasswordReset from "./Components/PasswordReset.js";
 import "./App.css";
 import Filter from "./Components/Filter.js";
+import AvatarPicker from "./Components/AvatarPicker.js";
 
 export const UserContext = React.createContext({ email: null });
 export const USERS_DATABASE_KEY = "users";
@@ -169,6 +170,7 @@ function App() {
               />
               <Route path="friend-finder" element={<FriendFinder />} />
               <Route path="friend-manager" element={<FriendManager />} />
+              <Route path="choose-avatar" element={<AvatarPicker />} />
               <Route path="reset-password" element={<PasswordReset />} />
             </Route>
           </Routes>

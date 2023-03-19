@@ -193,7 +193,7 @@ export default function FriendManager() {
 
   const navigate = useNavigate();
   return (
-    <Modal show={true}>
+    <Modal show={true} backdrop="static" centered>
       <Modal.Header>
         <Modal.Title>Friends</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />
