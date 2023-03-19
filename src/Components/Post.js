@@ -14,7 +14,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../App.js";
 import { Modal, ButtonGroup, Button, CloseButton, Form } from "react-bootstrap";
 import Geocode from "react-geocode";
-import userAvatar from "../Icons/user-avatar-bear.png";
 
 const POSTS_DATABASE_KEY = "posts";
 const COMMENTS_DATABASE_KEY = "comments";
@@ -33,6 +32,7 @@ export default function Post(props) {
   const [url, setUrl] = useState("");
   const [date, setDate] = useState("");
   const [authorEmail, setAuthorEmail] = useState("");
+  const [authorAvatar, setAuthorAvatar] = useState("");
   const [comment, setComment] = useState("");
   const [encounter, setEncounter] = useState("");
   const [reactions, setReactions] = useState({});
@@ -52,6 +52,7 @@ export default function Post(props) {
       setUrl(snapshot.val().url);
       setDate(snapshot.val().date);
       setAuthorEmail(snapshot.val().authorEmail);
+      setAuthorAvatar(snapshot.val().authorAvatar);
       setEncounter(snapshot.val().encounter);
       setReactions(snapshot.val().reactions);
       setPostComments(snapshot.val().comments);
@@ -343,7 +344,7 @@ export default function Post(props) {
     >
       <Modal.Header>
         <div className="user-avatar">
-          <img src={userAvatar} alt={authorEmail} />
+          <img src={authorAvatar} alt="avatar" />
         </div>
         <div className="post-info">
           <div className="author">{authorEmail}</div>

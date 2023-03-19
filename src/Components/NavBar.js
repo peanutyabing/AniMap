@@ -32,6 +32,16 @@ export default function NavBar(props) {
     }
   }, [user]);
 
+  const renderUserAvatar = () => {
+    if (auth.currentUser && auth.currentUser.photoURL) {
+      return (
+        <div className="avatar">
+          <img src={auth.currentUser.photoURL} alt="avatar" />
+        </div>
+      );
+    }
+  };
+
   return (
     <Navbar bg="light" variant="light" sticky="top">
       <Navbar.Brand>
@@ -45,11 +55,7 @@ export default function NavBar(props) {
                 Welcome, <br />
                 {`${user.email.split("@")[0]}!`}
               </div>
-              {auth.currentUser.photoURL && (
-                <div className="avatar">
-                  <img src={auth.currentUser.photoURL} alt="avatar" />
-                </div>
-              )}
+              {renderUserAvatar()}
             </NavDropdown.Header>
             <NavDropdown.Divider />
             <NavDropdown.Item

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { database, storage } from "../Firebase.js";
+import { database, storage, auth } from "../Firebase.js";
 import { ref as databaseRef, push, set } from "firebase/database";
 import {
   ref as storageRef,
@@ -53,6 +53,7 @@ export default function PostForm() {
     set(newPostRef, {
       animal: userSelectedAnimal,
       authorEmail: user.email,
+      authorAvatar: auth.currentUser.photoURL,
       content: userMessage,
       date: postDate,
       encounter: encounter,

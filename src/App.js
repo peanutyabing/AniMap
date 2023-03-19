@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import MapFeed from "./Components/MapFeed.js";
 import Post from "./Components/Post.js";
@@ -73,13 +74,23 @@ function App() {
       signInUser(emailInput, passwordInput);
       navigate("/");
     } else if (e.target.id === "sign-up") {
-      signUpUser(emailInput, passwordInput).then((userCredential) => {
-        if (userCredential) {
-          addUserToDatabase(userCredential.user);
-        }
-      });
+      signUpUser(emailInput, passwordInput)
+        .then((userCredential) => {
+          if (userCredential) {
+            addUserToDatabase(userCredential.user);
+          }
+        })
+        .then(() => setDefaultAvatar());
       navigate("/");
     }
+  };
+
+  const signInUser = (email, password) => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => setDefaultAvatar())
+      .catch((error) => {
+        showAlert(error);
+      });
   };
 
   const signUpUser = (email, password) => {
@@ -102,10 +113,13 @@ function App() {
     });
   };
 
-  const signInUser = (email, password) => {
-    signInWithEmailAndPassword(auth, email, password).catch((error) => {
-      showAlert(error);
-    });
+  const setDefaultAvatar = () => {
+    if (auth.currentUser && !auth.currentUser.photoURL) {
+      updateProfile(auth.currentUser, {
+        photoURL:
+          "https://firebasestorage.googleapis.com/v0/b/animap-2deae.appspot.com/o/profiles%2Fbear-profile-green.png?alt=media&token=65716337-7289-4f92-9409-32a11c43e666",
+      });
+    }
   };
 
   const signOutUser = () => {
