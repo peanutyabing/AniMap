@@ -107,6 +107,8 @@ function App() {
     set(newUserRef, {
       uid: user.uid,
       email: user.email,
+      avatar:
+        "https://firebasestorage.googleapis.com/v0/b/animap-2deae.appspot.com/o/profiles%2Fbear-profile-green.png?alt=media&token=65716337-7289-4f92-9409-32a11c43e666",
       requestsReceived: { userKey: { email: "", status: null } },
       requestsSent: { userKey: { email: "", status: null } },
       friends: { userKey: { email: "", status: null } },

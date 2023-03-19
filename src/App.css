@@ -370,6 +370,17 @@
   border-radius: 4px;
 }
 
+.search-result .avatar {
+  display: flex;
+  align-items: center;
+  height: calc(25px + 2vmin);
+  margin: 0 0.5vmin;
+}
+
+.search-result .avatar img {
+  margin-right: 1vmin;
+}
+
 .search-result .friend-btn {
   width: 32%;
   font-size: calc(8px + 0.7vmin);

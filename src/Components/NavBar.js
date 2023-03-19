@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { UserContext } from "../App";
+import { UserContext } from "../App.js";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../Icons/AniMap-2.png";

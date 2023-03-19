@@ -27,6 +27,7 @@ export default function FriendFinder() {
           ...users,
           {
             userDatabaseKey: data.key,
+            avatar: data.val().avatar,
             email: data.val().email,
             friended: Object.values(data.val().friends)
               .map((friend) => friend.email)
@@ -95,7 +96,10 @@ export default function FriendFinder() {
   const renderSearchResults = () => {
     return searchResults.map((result) => (
       <div key={result.userDatabaseKey} className="search-result">
-        <div className="search-result-email">{result.email}</div>
+        <div className="avatar">
+          <img src={result.avatar} alt="avatar" />
+          <div className="search-result-email">{result.email}</div>
+        </div>
         {renderFriendRequestBtn(result)}
       </div>
     ));

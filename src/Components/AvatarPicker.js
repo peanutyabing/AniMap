@@ -1,12 +1,16 @@
-import { useState, useEffect } from "react";
-import { auth, storage } from "../Firebase.js";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "../App.js";
+import { database, auth, storage } from "../Firebase.js";
 import { ref as stRef, listAll, getDownloadURL } from "firebase/storage";
+import { ref as dbRef, update } from "firebase/database";
+import { USERS_DATABASE_KEY } from "../App.js";
 import { updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { Modal, CloseButton, Form, Button } from "react-bootstrap";
 import { colorPalette } from "../ColorPalette.js";
 
 export default function AvatarPicker() {
+  const user = useContext(UserContext);
   const navigate = useNavigate();
   const [avatarURLs, setAvatarURLs] = useState({});
   const [animal, setAnimal] = useState("bear");
@@ -47,9 +51,20 @@ export default function AvatarPicker() {
         alert("You have updated your avatar!");
         navigate("/");
       })
+      .then(() => {
+        updateUsersDatabase();
+      })
       .catch((error) => {
         alert(`Something went wrong! Please try again later. ${error.message}`);
       });
+  };
+
+  const updateUsersDatabase = () => {
+    const currentUserRef = dbRef(
+      database,
+      `${USERS_DATABASE_KEY}/${user.userDatabaseKey}`
+    );
+    update(currentUserRef, { avatar: auth.currentUser.photoURL });
   };
 
   const renderBackgroundPicker = (color) => {
