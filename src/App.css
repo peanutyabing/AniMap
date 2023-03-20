@@ -326,6 +326,7 @@
 .post-comments .post-comment .post-comment-data {
   display: block;
   padding: 0.5vmin;
+  max-width: 85%;
 }
 .post-comments .post-comment .post-comment-data .user-comment {
   margin-bottom: 0.7vh;
