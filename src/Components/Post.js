@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { database } from "../Firebase.js";
+import { database, auth } from "../Firebase.js";
 import {
   ref,
   onValue,
@@ -14,7 +14,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../App.js";
 import { Modal, ButtonGroup, Button, CloseButton, Form } from "react-bootstrap";
 import Geocode from "react-geocode";
-import userAvatar from "../Icons/user-avatar-bear.png";
 
 const POSTS_DATABASE_KEY = "posts";
 const COMMENTS_DATABASE_KEY = "comments";
@@ -33,6 +32,7 @@ export default function Post(props) {
   const [url, setUrl] = useState("");
   const [date, setDate] = useState("");
   const [authorEmail, setAuthorEmail] = useState("");
+  const [authorAvatar, setAuthorAvatar] = useState("");
   const [comment, setComment] = useState("");
   const [encounter, setEncounter] = useState("");
   const [reactions, setReactions] = useState({});
@@ -52,6 +52,7 @@ export default function Post(props) {
       setUrl(snapshot.val().url);
       setDate(snapshot.val().date);
       setAuthorEmail(snapshot.val().authorEmail);
+      setAuthorAvatar(snapshot.val().authorAvatar);
       setEncounter(snapshot.val().encounter);
       setReactions(snapshot.val().reactions);
       setPostComments(snapshot.val().comments);
@@ -97,9 +98,10 @@ export default function Post(props) {
     );
     const newCommentRef = push(postsCommentsRef);
     set(newCommentRef, {
-      userComment: comment,
-      userCommentDate: commentDate,
-      user: user.email,
+      comment: comment,
+      commentDate: commentDate,
+      commenter: user.email,
+      commenterAvatar: auth.currentUser.photoURL,
     });
   };
 
@@ -126,8 +128,8 @@ export default function Post(props) {
 
   const handleEdit = (e) => {
     let commentKey = e.target.id;
-    if (user.email === postComments[commentKey].user) {
-      setComment(postComments[commentKey].userComment);
+    if (user.email === postComments[commentKey].commenter) {
+      setComment(postComments[commentKey].comment);
       setEditComment(true);
       setEditCommentKey(commentKey);
     }
@@ -135,7 +137,7 @@ export default function Post(props) {
 
   const handleEditComment = (e) => {
     e.preventDefault();
-    const editDate = new Date().toLocaleString();
+    // const editDate = new Date().toLocaleString();
     const edited = "edited";
     const postsCommentsRef = ref(
       database,
@@ -143,23 +145,27 @@ export default function Post(props) {
     );
     update(postsCommentsRef, {
       status: edited,
-      user: user.email,
-      userComment: comment,
-      userCommentDate: editDate,
+      commenter: user.email,
+      comment: comment,
+      // commentDate: editDate,
     });
     setEditComment(false);
     setComment("");
     setEditCommentKey("");
   };
 
-  const renderLocation = () => {
-    if (
+  const hasViewAccess = () => {
+    return (
       publicPost ||
       Object.values(friends)
         .map((friend) => friend.email)
         .includes(authorEmail) ||
       user.email === authorEmail
-    ) {
+    );
+  };
+
+  const renderLocation = () => {
+    if (hasViewAccess()) {
       return address ? (
         <div className="grey-smaller bold">📍 {address}</div>
       ) : (
@@ -175,13 +181,7 @@ export default function Post(props) {
   };
 
   const renderImage = () => {
-    if (
-      publicPost ||
-      Object.values(friends)
-        .map((friend) => friend.email)
-        .includes(authorEmail) ||
-      user.email === authorEmail
-    ) {
+    if (hasViewAccess()) {
       return (
         <div className="post-image">
           <img src={url} alt={content} />
@@ -205,16 +205,7 @@ export default function Post(props) {
   };
 
   const renderReactionButtons = () => {
-    if (
-      !publicPost &&
-      !Object.values(friends)
-        .map((friend) => friend.email)
-        .includes(authorEmail) &&
-      user.email !== authorEmail
-    ) {
-      return;
-    }
-
+    if (!hasViewAccess()) return;
     if (reactions.love && reactions.funny && reactions.shook && reactions.sad) {
       return (
         <ButtonGroup>
@@ -256,15 +247,7 @@ export default function Post(props) {
   };
 
   const renderComments = (len = 5) => {
-    if (
-      !publicPost &&
-      !Object.values(friends)
-        .map((friend) => friend.email)
-        .includes(authorEmail) &&
-      user.email !== authorEmail
-    ) {
-      return;
-    }
+    if (!hasViewAccess()) return;
     let comments = [];
     if (postComments) {
       Object.keys(postComments)
@@ -273,24 +256,32 @@ export default function Post(props) {
           comments = [
             ...comments,
             <div className="post-comment" key={commentKey}>
-              <div className="post-comment-data">
-                <div className="user-comment">
-                  {postComments[commentKey].userComment}
+              <div className="comment-content">
+                <div className="avatar">
+                  <img
+                    src={postComments[commentKey].commenterAvatar}
+                    alt="avatar"
+                  />
                 </div>
-                <div className="info-status">
-                  <div className="comment-info smallest">
-                    {postComments[commentKey].user}
-                    {postComments[commentKey].userCommentDate}
+                <div className="post-comment-data">
+                  <div className="user-comment">
+                    {postComments[commentKey].comment}
                   </div>
-                  <div className="comment-status grey-italics smallest">
-                    {postComments[commentKey].status
-                      ? postComments[commentKey].status
-                      : null}
+                  <div className="info-status">
+                    <div className="comment-info smallest">
+                      {postComments[commentKey].commenter}{" "}
+                      {postComments[commentKey].commentDate}
+                    </div>
+                    <div className="comment-status grey-italics smallest">
+                      {postComments[commentKey].status
+                        ? postComments[commentKey].status
+                        : null}
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="comment-section-btns">
-                {user.email === postComments[commentKey].user ? (
+                {user.email === postComments[commentKey].commenter ? (
                   <Button
                     variant="contained"
                     size="sm"
@@ -306,20 +297,12 @@ export default function Post(props) {
             </div>,
           ];
         });
+      return comments.slice(0, len);
     }
-    return comments.slice(0, len);
   };
 
   const renderCommentForm = () => {
-    if (
-      !publicPost &&
-      !Object.values(friends)
-        .map((friend) => friend.email)
-        .includes(authorEmail) &&
-      user.email !== authorEmail
-    ) {
-      return;
-    }
+    if (!hasViewAccess()) return;
     return (
       <Modal.Footer>
         {user.email ? (
@@ -370,7 +353,7 @@ export default function Post(props) {
     >
       <Modal.Header>
         <div className="user-avatar">
-          <img src={userAvatar} alt={authorEmail} />
+          <img src={authorAvatar} alt="avatar" />
         </div>
         <div className="post-info">
           <div className="author">{authorEmail}</div>

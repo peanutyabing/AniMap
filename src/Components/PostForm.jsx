@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { database, storage } from "../Firebase.js";
+import { database, storage, auth } from "../Firebase.js";
 import { ref as databaseRef, push, set } from "firebase/database";
 import {
   ref as storageRef,
@@ -53,6 +53,7 @@ export default function PostForm() {
     set(newPostRef, {
       animal: userSelectedAnimal,
       authorEmail: user.email,
+      authorAvatar: auth.currentUser.photoURL,
       content: userMessage,
       date: postDate,
       encounter: encounter,
@@ -167,12 +168,14 @@ export default function PostForm() {
             controlId="animal-type-input"
             onChange={handleSelectAnimal}
           >
-            <Form.Label>What animal did you see?</Form.Label>
-            <Form.Select id="select-animal" size="sm">
+            <Form.Label className="compact-label">
+              What animal did you see?
+            </Form.Label>
+            <Form.Select className="narrow-select" size="sm">
               <option></option>
-              {/* <option value="bird">Bird</option> */}
+              <option value="bird">Bird</option>
               <option value="cat">Cat</option>
-              {/* <option value="dog">Dog</option> */}
+              <option value="dog">Dog</option>
               <option value="otter">Otter</option>
             </Form.Select>
           </Form.Group>
@@ -180,13 +183,17 @@ export default function PostForm() {
             className="form-group flex-form"
             controlId="encounter-input"
           >
-            <Form.Label>How was the encounter?</Form.Label>
+            <Form.Label className="compact-label">
+              How was the encounter?
+            </Form.Label>
             <div id="encounter-btns">
               {goodEncounter} {badEncounter}
             </div>
           </Form.Group>
           <Form.Group className="form-group" controlId="message-input">
-            <Form.Label>Tell us more about the encounter</Form.Label>
+            <Form.Label className="compact-label">
+              Tell us more about the encounter
+            </Form.Label>
             <Form.Control
               as="textarea"
               rows={2}
@@ -195,7 +202,9 @@ export default function PostForm() {
             />
           </Form.Group>
           <Form.Group className="form-group">
-            <Form.Label>Where was the encounter?</Form.Label>
+            <Form.Label className="compact-label">
+              Where was the encounter?
+            </Form.Label>
 
             {lat && lng ? (
               <div className="coordinates-display green">
@@ -246,7 +255,7 @@ export default function PostForm() {
             </div>
           </Form.Group>
           <Form.Group className="form-group">
-            <Form.Label>
+            <Form.Label className="compact-label">
               Upload a photo
               <span className="grey-italics">{" (optional)"}</span>
             </Form.Label>
@@ -266,7 +275,9 @@ export default function PostForm() {
             controlId="privacy-input"
             onChange={handleSelectPrivacy}
           >
-            <Form.Label>Who can see this post?</Form.Label>
+            <Form.Label className="compact-label">
+              Who can see this post?
+            </Form.Label>
             <OverlayTrigger
               trigger={["hover", "focus"]}
               placement="bottom"
@@ -281,7 +292,7 @@ export default function PostForm() {
                 ?
               </div>
             </OverlayTrigger>
-            <Form.Select id="select-privacy" size="sm">
+            <Form.Select className="narrow-select" size="sm">
               <option value={true}>Everyone</option>
               <option value={false}>Only my friends</option>
             </Form.Select>

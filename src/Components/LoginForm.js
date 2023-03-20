@@ -1,7 +1,10 @@
-import CloseButton from "react-bootstrap/CloseButton";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
+import {
+  CloseButton,
+  Button,
+  Form,
+  Modal,
+  FloatingLabel,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginForm(props) {
@@ -14,29 +17,32 @@ export default function LoginForm(props) {
   return (
     <Modal {...props} backdrop="static" centered>
       <Modal.Header>
-        <Modal.Title>LOGIN / SIGN UP</Modal.Title>
+        <Modal.Title>Log in / sign up</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />
       </Modal.Header>
       <Modal.Body>
         <Form className="login-form">
           <Form.Group className="login-input">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              name="email"
-              type="email"
-              value={props.email}
-              onChange={handleChange}
-              autoFocus
-            />
+            <FloatingLabel label="Email">
+              <Form.Control
+                name="email"
+                type="email"
+                value={props.email}
+                onChange={handleChange}
+                placeholder="my@email.com"
+              />
+            </FloatingLabel>
           </Form.Group>
           <Form.Group className="login-input">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              name="password"
-              type="password"
-              value={props.password}
-              onChange={handleChange}
-            />
+            <FloatingLabel label="Password">
+              <Form.Control
+                name="password"
+                type="password"
+                value={props.password}
+                placeholder="12345"
+                onChange={handleChange}
+              />
+            </FloatingLabel>
           </Form.Group>
           <Form.Group className="side-by-side-btns">
             <Button variant="primary" id="login" onClick={props.onClick}>
@@ -45,6 +51,16 @@ export default function LoginForm(props) {
             <Button variant="primary" id="sign-up" onClick={props.onClick}>
               New user | sign up
             </Button>
+          </Form.Group>
+          <Form.Group>
+            <div
+              className="grey-smaller prevent-select forgot-password"
+              onClick={() => {
+                navigate("../reset-password");
+              }}
+            >
+              Forgot your password? Reset via email
+            </div>
           </Form.Group>
         </Form>
       </Modal.Body>

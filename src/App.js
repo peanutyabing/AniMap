@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import MapFeed from "./Components/MapFeed.js";
 import Post from "./Components/Post.js";
@@ -15,8 +16,10 @@ import NavBar from "./Components/NavBar.js";
 import PostForm from "./Components/PostForm.jsx";
 import FriendFinder from "./Components/FriendFinder.js";
 import FriendManager from "./Components/FriendManager.js";
+import PasswordReset from "./Components/PasswordReset.js";
 import "./App.css";
 import Filter from "./Components/Filter.js";
+import AvatarPicker from "./Components/AvatarPicker.js";
 
 export const UserContext = React.createContext({ email: null });
 export const USERS_DATABASE_KEY = "users";
@@ -24,7 +27,6 @@ export const USERS_DATABASE_KEY = "users";
 function App() {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
-  const [userDatabaseKey, setUserDatabaseKey] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [filterStatus, setFilterStatus] = useState(false);
@@ -53,7 +55,9 @@ function App() {
     const usersRef = ref(database, USERS_DATABASE_KEY);
     onChildAdded(usersRef, (data) => {
       if (user.email === data.val().email) {
-        setUserDatabaseKey(data.key);
+        let userToUpdate = { ...user };
+        userToUpdate.userDatabaseKey = data.key;
+        setUser(userToUpdate);
       }
     });
   }, [user.email]);
@@ -71,13 +75,23 @@ function App() {
       signInUser(emailInput, passwordInput);
       navigate("/");
     } else if (e.target.id === "sign-up") {
-      signUpUser(emailInput, passwordInput).then((userCredential) => {
-        if (userCredential) {
-          addUserToDatabase(userCredential.user);
-        }
-      });
+      signUpUser(emailInput, passwordInput)
+        .then((userCredential) => {
+          if (userCredential) {
+            addUserToDatabase(userCredential.user);
+          }
+        })
+        .then(() => setDefaultAvatar());
       navigate("/");
     }
+  };
+
+  const signInUser = (email, password) => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => setDefaultAvatar())
+      .catch((error) => {
+        showAlert(error);
+      });
   };
 
   const signUpUser = (email, password) => {
@@ -94,16 +108,21 @@ function App() {
     set(newUserRef, {
       uid: user.uid,
       email: user.email,
+      avatar:
+        "https://firebasestorage.googleapis.com/v0/b/animap-2deae.appspot.com/o/profiles%2Fbear-profile-green.png?alt=media&token=65716337-7289-4f92-9409-32a11c43e666",
       requestsReceived: { userKey: { email: "", status: null } },
       requestsSent: { userKey: { email: "", status: null } },
       friends: { userKey: { email: "", status: null } },
     });
   };
 
-  const signInUser = (email, password) => {
-    signInWithEmailAndPassword(auth, email, password).catch((error) => {
-      showAlert(error);
-    });
+  const setDefaultAvatar = () => {
+    if (auth.currentUser && !auth.currentUser.photoURL) {
+      updateProfile(auth.currentUser, {
+        photoURL:
+          "https://firebasestorage.googleapis.com/v0/b/animap-2deae.appspot.com/o/profiles%2Fbear-profile-green.png?alt=media&token=65716337-7289-4f92-9409-32a11c43e666",
+      });
+    }
   };
 
   const signOutUser = () => {
@@ -137,7 +156,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <UserContext.Provider value={user}>
-          <NavBar signOutUser={signOutUser} userDatabaseKey={userDatabaseKey} />
+          <NavBar signOutUser={signOutUser} />
           <Routes>
             <Route
               path="/"
@@ -173,14 +192,10 @@ function App() {
                   />
                 }
               />
-              <Route
-                path="friend-finder"
-                element={<FriendFinder userDatabaseKey={userDatabaseKey} />}
-              />
-              <Route
-                path="friend-manager"
-                element={<FriendManager userDatabaseKey={userDatabaseKey} />}
-              />
+              <Route path="friend-finder" element={<FriendFinder />} />
+              <Route path="friend-manager" element={<FriendManager />} />
+              <Route path="choose-avatar" element={<AvatarPicker />} />
+              <Route path="reset-password" element={<PasswordReset />} />
             </Route>
           </Routes>
         </UserContext.Provider>

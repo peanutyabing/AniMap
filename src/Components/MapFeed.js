@@ -8,10 +8,10 @@ import catIconG from "../Icons/cat-pin-green.png";
 import catIconR from "../Icons/cat-pin-red.png";
 import otterIconG from "../Icons/otter-pin-green.png";
 import otterIconR from "../Icons/otter-pin-red.png";
-// import birdIconG from "../Icons/bird-pin-green.png";
-// import birdIconR from "../Icons/bird-pin-red.png";
-// import dogIconG from "../Icons/dog-pin-green.png";
-// import dogIconR from "../Icons/dog-pin-red.png";
+import birdIconG from "../Icons/bird-pin-green.png";
+import birdIconR from "../Icons/bird-pin-red.png";
+import dogIconG from "../Icons/dog-pin-green.png";
+import dogIconR from "../Icons/dog-pin-red.png";
 import { AnimalMarker } from "./AnimalMarker.js";
 import { Outlet } from "react-router-dom";
 
@@ -89,19 +89,23 @@ export default function MapFeed(props) {
       unhappycat: { url: catIconR },
       happyotter: { url: otterIconG },
       unhappyotter: { url: otterIconR },
-      // happybird: { url: birdIconG },
-      // unhappybird: { url: birdIconR },
-      // happydog: { url: dogIconG },
-      // unhappydog: { url: dogIconR },
+      happybird: { url: birdIconG },
+      unhappybird: { url: birdIconR },
+      happydog: { url: dogIconG },
+      unhappydog: { url: dogIconR },
     };
-    Object.keys(icons).forEach(
+    setMarkerSize(icons);
+    return icons[`${encounter}${animal}`];
+  };
+
+  const setMarkerSize = (markers) => {
+    Object.keys(markers).forEach(
       (key) =>
-        (icons[key].scaledSize = new window.google.maps.Size(
+        (markers[key].scaledSize = new window.google.maps.Size(
           Math.pow(zoom / 15, 2) * 40,
           Math.pow(zoom / 15, 2) * 55
         ))
     );
-    return icons[`${encounter}${animal}`];
   };
 
   const filterFeature = (
@@ -137,31 +141,23 @@ export default function MapFeed(props) {
     }
   };
 
-  const renderMarkers = (data) => {
+  const renderMarkers = (postsData) => {
     const userFilterAnimalVal = props.userFilterAnimalVal;
     const userFilterEncounterVal = props.userFilterEncounterVal;
     const userFilterDateVal = props.userFilterDateVal;
     if (props.filterStatus === false) {
-      let markers = data.map((item) => (
+      let markers = postsData.map((item) => (
         <AnimalMarker
           key={item.id}
           id={item.id}
-          location={
-            item.publicPost ||
-            Object.values(friends)
-              .map((friend) => friend.email)
-              .includes(item.authorEmail) ||
-            user.email === item.authorEmail
-              ? item.location
-              : item.maskedLocation
-          }
+          location={hasViewAccess(item) ? item.location : item.maskedLocation}
           icon={setMarkerParams(item.animal, item.encounter)}
         />
       ));
       return markers;
     } else {
       let filteredMarkers = filterFeature(
-        data,
+        postsData,
         userFilterAnimalVal,
         userFilterEncounterVal,
         userFilterDateVal
@@ -175,6 +171,16 @@ export default function MapFeed(props) {
       ));
       return filteredMarkers;
     }
+  };
+
+  const hasViewAccess = (post) => {
+    return (
+      post.publicPost ||
+      Object.values(friends)
+        .map((friend) => friend.email)
+        .includes(post.authorEmail) ||
+      user.email === post.authorEmail
+    );
   };
 
   const maskLocation = (coordinates) => {

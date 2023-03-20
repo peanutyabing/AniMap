@@ -6,7 +6,7 @@ import { onChildAdded, ref, set } from "firebase/database";
 import { UserContext } from "../App.js";
 import { Modal, Form, CloseButton, Button } from "react-bootstrap";
 
-export default function FriendFinder(props) {
+export default function FriendFinder() {
   const user = useContext(UserContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -27,6 +27,7 @@ export default function FriendFinder(props) {
           ...users,
           {
             userDatabaseKey: data.key,
+            avatar: data.val().avatar,
             email: data.val().email,
             friended: Object.values(data.val().friends)
               .map((friend) => friend.email)
@@ -61,7 +62,7 @@ export default function FriendFinder(props) {
   const sendFriendRequest = (e) => {
     const requestsReceivedRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${e.target.id}/requestsReceived/${props.userDatabaseKey}`
+      `${USERS_DATABASE_KEY}/${e.target.id}/requestsReceived/${user.userDatabaseKey}`
     );
     set(requestsReceivedRef, {
       email: user.email,
@@ -70,7 +71,7 @@ export default function FriendFinder(props) {
 
     const requestsSentRef = ref(
       database,
-      `${USERS_DATABASE_KEY}/${props.userDatabaseKey}/requestsSent/${e.target.id}`
+      `${USERS_DATABASE_KEY}/${user.userDatabaseKey}/requestsSent/${e.target.id}`
     );
     set(requestsSentRef, {
       email: searchResults.filter(
@@ -95,7 +96,10 @@ export default function FriendFinder(props) {
   const renderSearchResults = () => {
     return searchResults.map((result) => (
       <div key={result.userDatabaseKey} className="search-result">
-        <div className="search-result-email">{result.email}</div>
+        <div className="avatar">
+          <img src={result.avatar} alt="avatar" />
+          <div className="search-result-email">{result.email}</div>
+        </div>
         {renderFriendRequestBtn(result)}
       </div>
     ));
@@ -140,7 +144,7 @@ export default function FriendFinder(props) {
   };
 
   return (
-    <Modal show={true}>
+    <Modal show={true} backdrop="static" centered>
       <Modal.Header>
         <Modal.Title>Find Friends</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />
