@@ -12,7 +12,15 @@ import {
 import { USERS_DATABASE_KEY } from "../App.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../App.js";
-import { Modal, ButtonGroup, Button, CloseButton, Form } from "react-bootstrap";
+import {
+  Modal,
+  ButtonGroup,
+  Button,
+  CloseButton,
+  Form,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import Geocode from "react-geocode";
 
 const POSTS_DATABASE_KEY = "posts";
@@ -167,9 +175,22 @@ export default function Post(props) {
   const renderLocation = () => {
     if (hasViewAccess()) {
       return address ? (
-        <div className="grey-smaller bold">📍 {address}</div>
+        <div className="post-location">
+          <div className="grey-smaller bold">📍 {address} </div>
+          <OverlayTrigger
+            trigger={["hover", "focus"]}
+            placement="bottom"
+            overlay={
+              <Tooltip>
+                This location is generated from the poster's input
+              </Tooltip>
+            }
+          >
+            <div className="grey-smaller prevent-select help">?</div>
+          </OverlayTrigger>
+        </div>
       ) : (
-        <div>Loading location...</div>
+        <div className="post-location">Loading location...</div>
       );
     } else {
       return (

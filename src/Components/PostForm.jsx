@@ -290,9 +290,7 @@ export default function PostForm() {
                 </Tooltip>
               }
             >
-              <div id="help" className="grey-smaller prevent-select">
-                ?
-              </div>
+              <div className="grey-smaller prevent-select help">?</div>
             </OverlayTrigger>
             <Form.Select className="narrow-select" size="sm">
               <option value={true}>Everyone</option>

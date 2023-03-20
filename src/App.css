@@ -234,7 +234,7 @@
   margin-left: 0.5vmin;
 }
 
-#help {
+.help {
   background-color: #e7e7e7;
   padding: 0 calc(3px + 0.5vmin);
   border-radius: 100%;
@@ -268,6 +268,17 @@
 
 .post-info .timestamp {
   font-size: calc(10px + 0.5vmin);
+}
+
+.post-location {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 0.5vmin;
+}
+
+.post-location .help {
+  margin-left: 1vmin;
 }
 
 .post-body {
