@@ -8,10 +8,10 @@ import catIconG from "../Icons/cat-pin-green.png";
 import catIconR from "../Icons/cat-pin-red.png";
 import otterIconG from "../Icons/otter-pin-green.png";
 import otterIconR from "../Icons/otter-pin-red.png";
-// import birdIconG from "../Icons/bird-pin-green.png";
-// import birdIconR from "../Icons/bird-pin-red.png";
-// import dogIconG from "../Icons/dog-pin-green.png";
-// import dogIconR from "../Icons/dog-pin-red.png";
+import birdIconG from "../Icons/bird-pin-green.png";
+import birdIconR from "../Icons/bird-pin-red.png";
+import dogIconG from "../Icons/dog-pin-green.png";
+import dogIconR from "../Icons/dog-pin-red.png";
 import { AnimalMarker } from "./AnimalMarker.js";
 import { Outlet } from "react-router-dom";
 
@@ -89,10 +89,10 @@ export default function MapFeed(props) {
       unhappycat: { url: catIconR },
       happyotter: { url: otterIconG },
       unhappyotter: { url: otterIconR },
-      // happybird: { url: birdIconG },
-      // unhappybird: { url: birdIconR },
-      // happydog: { url: dogIconG },
-      // unhappydog: { url: dogIconR },
+      happybird: { url: birdIconG },
+      unhappybird: { url: birdIconR },
+      happydog: { url: dogIconG },
+      unhappydog: { url: dogIconR },
     };
     setMarkerSize(icons);
     return icons[`${encounter}${animal}`];
@@ -108,30 +108,43 @@ export default function MapFeed(props) {
     );
   };
 
-  const filterFeature = (data, userFilterVal) => {
-    if (userFilterVal.length <= 2) {
-      let filteredData = data.filter(
-        (item) =>
-          (item["animal"] === userFilterVal[0] &&
-            item["date"] >= userFilterVal[1]) ||
-          (item["encounter"] === userFilterVal[0] &&
-            item["date"] >= userFilterVal[1]) ||
-          item["date"] >= userFilterVal[0]
-      );
+  const filterFeature = (
+    data,
+    userFilterAnimalVal,
+    userFilterEncounterVal,
+    userFilterDateVal
+  ) => {
+    if (props.filterStatus === true) {
+      const filteredData = data.filter((item) => {
+        if (item["date"] <= userFilterDateVal[0]) {
+          return false;
+        }
+        if (
+          userFilterEncounterVal.length > 0 &&
+          item["encounter"] !== userFilterEncounterVal[0] &&
+          item["encounter"] !== userFilterEncounterVal[1]
+        ) {
+          return false;
+        }
+        if (
+          userFilterAnimalVal.length > 0 &&
+          item["animal"] !== userFilterAnimalVal[0] &&
+          item["animal"] !== userFilterAnimalVal[1] &&
+          item["animal"] !== userFilterAnimalVal[2] &&
+          item["animal"] !== userFilterAnimalVal[3]
+        ) {
+          return false;
+        }
+        return true;
+      });
       return filteredData;
     }
-    let filteredData = data.filter(
-      (item) =>
-        item["animal"] === userFilterVal[0] &&
-        item["encounter"] === userFilterVal[1] &&
-        item["date"] >= userFilterVal[2]
-    );
-    return filteredData;
   };
 
   const renderMarkers = (postsData) => {
-    const userFilterVal = props.userFilterVal;
-
+    const userFilterAnimalVal = props.userFilterAnimalVal;
+    const userFilterEncounterVal = props.userFilterEncounterVal;
+    const userFilterDateVal = props.userFilterDateVal;
     if (props.filterStatus === false) {
       let markers = postsData.map((item) => (
         <AnimalMarker
@@ -143,16 +156,19 @@ export default function MapFeed(props) {
       ));
       return markers;
     } else {
-      let filteredMarkers = filterFeature(postsData, userFilterVal).map(
-        (item) => (
-          <AnimalMarker
-            key={item.id}
-            id={item.id}
-            location={item.location}
-            icon={setMarkerParams(item.animal, item.encounter)}
-          />
-        )
-      );
+      let filteredMarkers = filterFeature(
+        postsData,
+        userFilterAnimalVal,
+        userFilterEncounterVal,
+        userFilterDateVal
+      ).map((item) => (
+        <AnimalMarker
+          key={item.id}
+          id={item.id}
+          location={item.location}
+          icon={setMarkerParams(item.animal, item.encounter)}
+        />
+      ));
       return filteredMarkers;
     }
   };

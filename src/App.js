@@ -30,8 +30,9 @@ function App() {
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [filterStatus, setFilterStatus] = useState(false);
-  const [userFilterVal, setUserFilterVal] = useState("");
-
+  const [userFilterAnimalVal, setUserFilterAnimalVal] = useState("");
+  const [userFilterEncounterVal, setUserFilterEncounterVal] = useState("");
+  const [userFilterDateVal, setUserFilterDateVal] = useState("");
   useEffect(() => {
     if (!user.email) {
       navigate("/login-signup");
@@ -140,9 +141,14 @@ function App() {
     setFilterStatus(boolean);
   };
 
-  const handleDataFromFilter = (filterVal) => {
-    let filterValFromFilter = filterVal;
-    setUserFilterVal(filterValFromFilter);
+  const handleDataFromFilter = (
+    filterAnimalVal,
+    filterEncounterVal,
+    filterDateVal
+  ) => {
+    setUserFilterAnimalVal(filterAnimalVal);
+    setUserFilterEncounterVal(filterEncounterVal);
+    setUserFilterDateVal(filterDateVal);
     setFilterStatus(true);
   };
 
@@ -156,7 +162,9 @@ function App() {
               path="/"
               element={
                 <MapFeed
-                  userFilterVal={userFilterVal}
+                  userFilterAnimalVal={userFilterAnimalVal}
+                  userFilterEncounterVal={userFilterEncounterVal}
+                  userFilterDateVal={userFilterDateVal}
                   filterStatus={filterStatus}
                 />
               }

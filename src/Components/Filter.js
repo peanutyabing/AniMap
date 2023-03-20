@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CloseButton, Form } from "react-bootstrap";
+import { CloseButton, Form, FormCheck } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { useNavigate } from "react-router-dom";
@@ -7,20 +7,26 @@ import RangeSlider from "react-bootstrap-range-slider";
 
 export default function Filter(props) {
   const navigate = useNavigate();
-  const [userFilterDays, setUserFilterDays] = useState(0);
-  const [filter, setFilter] = useState({
+  const [userFilterDays, setUserFilterDays] = useState(100);
+  const [filterData, setFilterData] = useState({
     tags: {
-      animal: { cat: false, otter: false },
+      animal: { cat: false, otter: false, bird: false, dog: false },
       encounter: { happy: false, unhappy: false },
     },
   });
-  const filterVal = [];
+  const filterAnimalVal = [];
+  const filterEncounterVal = [];
+  const filterDateVal = [];
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    filterFunction(filter);
+    filterFunction(filterData);
     filterDates(userFilterDays);
-    props.handleDataFromFilter(filterVal);
+    props.handleDataFromFilter(
+      filterAnimalVal,
+      filterEncounterVal,
+      filterDateVal
+    );
     navigate("/");
   };
 
@@ -32,7 +38,7 @@ export default function Filter(props) {
 
   const allFilterClickListener = (e, filterProp) => {
     const name = e.target.value;
-    setFilter((prevState) => ({
+    setFilterData((prevState) => ({
       tags: {
         ...prevState.tags,
         [filterProp]: {
@@ -53,20 +59,20 @@ export default function Filter(props) {
       ([key, value]) => value === true
     );
 
-    if (animalFilterVal.length > 0) {
-      filterVal.push(animalFilterVal[0][0]);
+    for (let i = 0; i < animalFilterVal.length; i++) {
+      filterAnimalVal.push(animalFilterVal[i][0]);
     }
-
-    if (encounterFilterVal.length > 0) {
-      filterVal.push(encounterFilterVal[0][0]);
+    for (let j = 0; j < encounterFilterVal.length; j++) {
+      filterEncounterVal.push(encounterFilterVal[j][0]);
     }
+    return;
   };
 
   const filterDates = (userFilterDays) => {
     const startDate = new Date();
     const endDate = startDate.setDate(startDate.getDate() - userFilterDays);
     const newEndDate = new Date(endDate).toLocaleString();
-    filterVal.push(newEndDate);
+    filterDateVal.push(newEndDate);
   };
 
   return (
@@ -82,51 +88,67 @@ export default function Filter(props) {
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="form-group" controlId="filter-input">
-              <Form.Label>By animal:</Form.Label>
-              <div className="radioButtons">
-                <Button
+            <Form.Group className="form-filter-group" controlId="filter-input">
+              <Form.Label>Animal</Form.Label>
+              <div className="checkBoxes">
+                <FormCheck
+                  id="animal"
+                  type="checkbox"
                   value="cat"
-                  variant={filter.tags.animal.cat ? "dark" : "light"}
-                  onClick={(e) => allFilterClickListener(e, "animal")}
-                  disabled={filter.tags.animal.otter}
-                >
-                  cat
-                </Button>
-                <Button
+                  label="cat"
+                  onClick={(e) => allFilterClickListener(e, `${e.target.id}`)}
+                />
+                <FormCheck
+                  id="animal"
+                  type="checkbox"
                   value="otter"
-                  variant={filter.tags.animal.otter ? "dark" : "light"}
-                  onClick={(e) => allFilterClickListener(e, "animal")}
-                  disabled={filter.tags.animal.cat}
-                >
-                  otter
-                </Button>
+                  label="otter"
+                  onClick={(e) => allFilterClickListener(e, `${e.target.id}`)}
+                />
+                <FormCheck
+                  id="animal"
+                  type="checkbox"
+                  value="bird"
+                  label="bird"
+                  onClick={(e) => allFilterClickListener(e, `${e.target.id}`)}
+                />
+                <FormCheck
+                  id="animal"
+                  type="checkbox"
+                  value="dog"
+                  label="dog"
+                  onClick={(e) => allFilterClickListener(e, `${e.target.id}`)}
+                />
                 <br />
-                <Form.Label>By encounter:</Form.Label>
-                <br />
-                <Button
+                <Form.Label>Encounter</Form.Label>
+                <FormCheck
+                  id="encounter"
+                  type="checkbox"
                   value="happy"
-                  variant={filter.tags.encounter.happy ? "dark" : "light"}
-                  onClick={(e) => allFilterClickListener(e, "encounter")}
-                  disabled={filter.tags.encounter.unhappy}
-                >
-                  happy
-                </Button>
-                <Button
+                  label="happy"
+                  onClick={(e) => allFilterClickListener(e, `${e.target.id}`)}
+                />
+                <FormCheck
+                  id="encounter"
+                  type="checkbox"
                   value="unhappy"
-                  variant={filter.tags.encounter.unhappy ? "dark" : "light"}
-                  onClick={(e) => allFilterClickListener(e, "encounter")}
-                  disabled={filter.tags.encounter.happy}
-                >
-                  unhappy
-                </Button>
+                  label="unhappy"
+                  onClick={(e) => allFilterClickListener(e, `${e.target.id}`)}
+                />
                 <br />
-                <Form.Label>Filter Posts By Days</Form.Label>
+                <Form.Label>Date Posted</Form.Label>
                 <RangeSlider
+                  className="range-slider"
                   value={userFilterDays}
                   onChange={(e) => setUserFilterDays(e.target.value)}
-                  min={0}
-                  max={7}
+                  min={1}
+                  max={100}
+                  tooltipLabel={(currentValue) =>
+                    currentValue === 1
+                      ? `Last 24hr`
+                      : `Last ${currentValue} days`
+                  }
+                  tooltip="on"
                 />
               </div>
             </Form.Group>

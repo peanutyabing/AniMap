@@ -405,3 +405,9 @@
 .friend-email {
   margin: 0 1vmin;
 }
+
+/* Filter */
+.range-slider__wrap {
+  width: 80%;
+  margin: auto;
+}
