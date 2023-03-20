@@ -21,8 +21,8 @@ const COMMENTS_DATABASE_KEY = "comments";
 export default function Post(props) {
   const user = useContext(UserContext);
   const navigate = useNavigate();
-  let location = useLocation();
-  let postId = location.pathname.split("/").slice(-1);
+  let currentRoute = useLocation();
+  let postId = currentRoute.pathname.split("/").slice(-1);
 
   const [publicPost, setPublicPost] = useState(false);
   const [lng, setLng] = useState(0);

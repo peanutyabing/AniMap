@@ -16,7 +16,6 @@ export function AnimalMarker(props) {
       className="animal-marker"
       position={props.location}
       icon={props.icon}
-      // onLoad={onLoad}
       onClick={handleClick(props.id)}
     />
   );

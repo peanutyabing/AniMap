@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { database, auth } from "./Firebase.js";
 import { ref, push, set, onChildAdded } from "firebase/database";
 import {
@@ -20,12 +20,14 @@ import PasswordReset from "./Components/PasswordReset.js";
 import "./App.css";
 import Filter from "./Components/Filter.js";
 import AvatarPicker from "./Components/AvatarPicker.js";
+import Help from "./Components/Help.js";
 
 export const UserContext = React.createContext({ email: null });
 export const USERS_DATABASE_KEY = "users";
 
 function App() {
   const navigate = useNavigate();
+  const currentRoute = useLocation();
   const [user, setUser] = useState({});
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -36,6 +38,8 @@ function App() {
   useEffect(() => {
     if (!user.email) {
       navigate("/login-signup");
+    } else if (currentRoute.pathname === "/help") {
+      return;
     } else {
       navigate("/");
     }
@@ -90,7 +94,7 @@ function App() {
       })
       .then(() => setDefaultAvatar())
       .then(() => {
-        navigate("/");
+        navigate("../help");
       })
       .catch((error) => {
         showAlert(error);
@@ -191,6 +195,7 @@ function App() {
               <Route path="friend-manager" element={<FriendManager />} />
               <Route path="choose-avatar" element={<AvatarPicker />} />
               <Route path="reset-password" element={<PasswordReset />} />
+              <Route path="help" element={<Help />} />
             </Route>
           </Routes>
         </UserContext.Provider>

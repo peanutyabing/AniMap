@@ -99,6 +99,14 @@ export default function NavBar(props) {
           >
             Filter
           </Nav.Link>
+          <Nav.Link
+            className="flex-align-center"
+            onClick={() => {
+              navigate("help");
+            }}
+          >
+            <div className="circle transluscent">?</div>
+          </Nav.Link>
         </Nav>
       )}
       {!user.email && location !== "/login-signup" && (

@@ -25,6 +25,14 @@
   color: rgb(130, 130, 130);
 }
 
+.transluscent {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.smaller {
+  font-size: calc(8px + 0.8vmin);
+}
+
 .smallest {
   font-size: calc(8px + 0.5vmin);
   font-weight: 300;
@@ -132,6 +140,15 @@
 
 #no-pending-requests {
   background-color: rgb(210, 210, 210);
+}
+
+.circle {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: calc(18px + 0.4vmin);
+  height: calc(18px + 0.4vmin);
+  font-size: calc(10pt + 0.3vmin);
+  font-weight: 700;
 }
 
 /* Choose avatar */
@@ -408,6 +425,16 @@
 
 /* Filter */
 .range-slider__wrap {
-  width: 80%;
-  margin: auto;
+  width: 87%;
+  margin: 0 auto calc(25px + 2vmin) auto;
+}
+
+/* Help */
+.example {
+  margin: 0.5vmin 0;
+}
+
+.icon-example {
+  height: calc(20px + 2vmin);
+  margin-right: 1vmin;
 }

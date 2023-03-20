@@ -211,7 +211,9 @@ export default function PostForm() {
                 {lat}, {lng}
               </div>
             ) : (
-              <div className="coordinates-display red">Address not found</div>
+              <div className="coordinates-display grey-italics">
+                Location not found
+              </div>
             )}
             <div id="address-look-up">
               <Form.Control
