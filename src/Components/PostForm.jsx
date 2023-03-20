@@ -173,9 +173,9 @@ export default function PostForm() {
             </Form.Label>
             <Form.Select className="narrow-select" size="sm">
               <option></option>
-              {/* <option value="bird">Bird</option> */}
+              <option value="bird">Bird</option>
               <option value="cat">Cat</option>
-              {/* <option value="dog">Dog</option> */}
+              <option value="dog">Dog</option>
               <option value="otter">Otter</option>
             </Form.Select>
           </Form.Group>
