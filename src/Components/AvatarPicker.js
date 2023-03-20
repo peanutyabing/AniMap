@@ -21,7 +21,7 @@ export default function AvatarPicker() {
     listAll(avatarsRef)
       .then((res) => Promise.all(res.items.map((item) => getDownloadURL(item))))
       .then((urls) => {
-        urls.forEach((url, index) => {
+        urls.forEach((url) => {
           setAvatarURLs((prevState) => {
             return { ...prevState, [getAvatarKeyFromURL(url)]: url };
           });
@@ -36,10 +36,6 @@ export default function AvatarPicker() {
 
   const getAvatarKeyFromURL = (downloadURL) => {
     return downloadURL.split("%2F")[1].split("?")[0];
-  };
-
-  const getAvatarFromState = () => {
-    return avatarURLs[`${animal}-profile-${bgColor}.png`];
   };
 
   const handleSubmit = (e) => {
@@ -57,6 +53,10 @@ export default function AvatarPicker() {
       .catch((error) => {
         alert(`Something went wrong! Please try again later. ${error.message}`);
       });
+  };
+
+  const getAvatarFromState = () => {
+    return avatarURLs[`${animal}-profile-${bgColor}.png`];
   };
 
   const updateUsersDatabase = () => {
@@ -155,7 +155,9 @@ export default function AvatarPicker() {
           </Form.Group>
           <Form.Group className="flex-center">
             {renderAvatar()}
-            <Button type="submit">Confirm</Button>
+            <Button type="submit" variant="dark">
+              Confirm
+            </Button>
           </Form.Group>
         </Form>
       </Modal.Body>

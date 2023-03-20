@@ -224,7 +224,7 @@ export default function PostForm() {
                 onChange={(e) => setAddress(e.target.value)}
               />
               <Button
-                variant="secondary"
+                variant="outline-secondary"
                 size="sm"
                 id="look-up-btn"
                 onClick={getLatLng}
@@ -297,7 +297,11 @@ export default function PostForm() {
               <option value={false}>Only my friends</option>
             </Form.Select>
           </Form.Group>
-          <Button type="submit">Submit ⏎</Button>
+          <Form.Group className="form-group">
+            <Button type="submit" variant="dark">
+              Submit ⏎
+            </Button>
+          </Form.Group>
         </Form>
       </Modal.Body>
     </Modal>

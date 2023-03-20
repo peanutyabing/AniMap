@@ -55,6 +55,17 @@ export default function MapFeed(props) {
     });
   }, []);
 
+  const maskLocation = (coordinates) => {
+    let maskedLat = coordinates.lat + getRandom();
+    let maskedLng = coordinates.lng + getRandom();
+    return { lat: maskedLat, lng: maskedLng };
+  };
+
+  const getRandom = () => {
+    let randomDecimal = Math.random() * 0.002;
+    return Math.random() > 0.5 ? randomDecimal : randomDecimal * -1;
+  };
+
   useEffect(() => {
     const usersRef = ref(database, USERS_DATABASE_KEY);
     onChildAdded(usersRef, (userData) => {
@@ -181,17 +192,6 @@ export default function MapFeed(props) {
         .includes(post.authorEmail) ||
       user.email === post.authorEmail
     );
-  };
-
-  const maskLocation = (coordinates) => {
-    let maskedLat = coordinates.lat + getRandom();
-    let maskedLng = coordinates.lng + getRandom();
-    return { lat: maskedLat, lng: maskedLng };
-  };
-
-  const getRandom = () => {
-    let randomDecimal = Math.random() * 0.002;
-    return Math.random() > 0.5 ? randomDecimal : randomDecimal * -1;
   };
 
   return (

@@ -45,10 +45,10 @@ export default function LoginForm(props) {
             </FloatingLabel>
           </Form.Group>
           <Form.Group className="side-by-side-btns">
-            <Button variant="primary" id="login" onClick={props.login}>
+            <Button variant="dark" id="login" onClick={props.login}>
               Existing user | log in
             </Button>
-            <Button variant="primary" id="sign-up" onClick={props.signup}>
+            <Button variant="dark" id="sign-up" onClick={props.signup}>
               New user | sign up
             </Button>
           </Form.Group>

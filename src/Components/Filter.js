@@ -152,8 +152,10 @@ export default function Filter(props) {
                 />
               </div>
             </Form.Group>
-            <Button type="submit">Filter</Button>{" "}
-            <Button type="reset" onClick={handleReset}>
+            <Button type="submit" variant="dark">
+              Filter
+            </Button>{" "}
+            <Button type="reset" variant="dark" onClick={handleReset}>
               Remove filter
             </Button>
           </Form>

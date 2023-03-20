@@ -410,7 +410,7 @@
 }
 
 .search-result .friend-btn {
-  width: 32%;
+  width: 31%;
   font-size: calc(8px + 0.7vmin);
 }
 
@@ -436,7 +436,7 @@
 
 /* Filter */
 .range-slider__wrap {
-  width: 87%;
+  width: 80%;
   margin: 0 auto calc(25px + 2vmin) auto;
 }
 

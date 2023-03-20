@@ -98,21 +98,6 @@ export default function Post(props) {
     }
   }, [lat, lng]);
 
-  const writeData = () => {
-    const commentDate = new Date().toLocaleString();
-    const postsCommentsRef = ref(
-      database,
-      `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}`
-    );
-    const newCommentRef = push(postsCommentsRef);
-    set(newCommentRef, {
-      comment: comment,
-      commentDate: commentDate,
-      commenter: user.email,
-      commenterAvatar: auth.currentUser.photoURL,
-    });
-  };
-
   const handleReaction = (e) => {
     let emotion = e.target.name;
     const reactionsToUpdate = { ...reactions };
@@ -128,10 +113,25 @@ export default function Post(props) {
     update(postRef, { reactions: reactionsToUpdate });
   };
 
-  const handleSendComment = (e) => {
+  const handleSubmitComment = (e) => {
     e.preventDefault();
     writeData();
     setComment("");
+  };
+
+  const writeData = () => {
+    const commentDate = new Date().toLocaleString();
+    const postsCommentsRef = ref(
+      database,
+      `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}`
+    );
+    const newCommentRef = push(postsCommentsRef);
+    set(newCommentRef, {
+      comment: comment,
+      commentDate: commentDate,
+      commenter: user.email,
+      commenterAvatar: auth.currentUser.photoURL,
+    });
   };
 
   const handleEdit = (e) => {
@@ -143,7 +143,7 @@ export default function Post(props) {
     }
   };
 
-  const handleEditComment = (e) => {
+  const handleSubmitEdit = (e) => {
     e.preventDefault();
     // const editDate = new Date().toLocaleString();
     const edited = "edited";
@@ -160,16 +160,6 @@ export default function Post(props) {
     setEditComment(false);
     setComment("");
     setEditCommentKey("");
-  };
-
-  const hasViewAccess = () => {
-    return (
-      publicPost ||
-      Object.values(friends)
-        .map((friend) => friend.email)
-        .includes(authorEmail) ||
-      user.email === authorEmail
-    );
   };
 
   const renderLocation = () => {
@@ -329,7 +319,7 @@ export default function Post(props) {
         {user.email ? (
           <Form
             id="comment-form"
-            onSubmit={editComment ? handleEditComment : handleSendComment}
+            onSubmit={editComment ? handleSubmitEdit : handleSubmitComment}
           >
             <Form.Control
               as="textarea"
@@ -362,6 +352,16 @@ export default function Post(props) {
           </div>
         )}
       </Modal.Footer>
+    );
+  };
+
+  const hasViewAccess = () => {
+    return (
+      publicPost ||
+      Object.values(friends)
+        .map((friend) => friend.email)
+        .includes(authorEmail) ||
+      user.email === authorEmail
     );
   };
 
