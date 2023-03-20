@@ -318,3 +318,7 @@
   justify-content: space-between;
   margin: 1vmin;
 }
+.range-slider__wrap {
+  width: 80%;
+  margin: auto;
+}

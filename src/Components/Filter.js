@@ -7,7 +7,7 @@ import RangeSlider from "react-bootstrap-range-slider";
 
 export default function Filter(props) {
   const navigate = useNavigate();
-  const [userFilterDays, setUserFilterDays] = useState(0);
+  const [userFilterDays, setUserFilterDays] = useState(100);
   const [filterData, setFilterData] = useState({
     tags: {
       animal: { cat: false, otter: false, bird: false, dog: false },
@@ -142,7 +142,7 @@ export default function Filter(props) {
                   value={userFilterDays}
                   onChange={(e) => setUserFilterDays(e.target.value)}
                   min={1}
-                  max={7}
+                  max={100}
                   tooltipLabel={(currentValue) =>
                     currentValue === 1
                       ? `Last 24hr`
