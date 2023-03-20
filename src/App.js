@@ -70,36 +70,31 @@ function App() {
     }
   };
 
-  const handleLoginOrSignUp = (e) => {
-    if (e.target.id === "login") {
-      signInUser(emailInput, passwordInput);
-      navigate("/");
-    } else if (e.target.id === "sign-up") {
-      signUpUser(emailInput, passwordInput)
-        .then((userCredential) => {
-          if (userCredential) {
-            addUserToDatabase(userCredential.user);
-          }
-        })
-        .then(() => setDefaultAvatar());
-      navigate("/");
-    }
-  };
-
-  const signInUser = (email, password) => {
-    signInWithEmailAndPassword(auth, email, password)
+  const signIn = () => {
+    signInWithEmailAndPassword(auth, emailInput, passwordInput)
       .then(() => setDefaultAvatar())
+      .then(() => {
+        navigate("/");
+      })
       .catch((error) => {
         showAlert(error);
       });
   };
 
-  const signUpUser = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password).catch(
-      (error) => {
+  const signUp = () => {
+    createUserWithEmailAndPassword(auth, emailInput, passwordInput)
+      .then((userCredential) => {
+        if (userCredential) {
+          addUserToDatabase(userCredential.user);
+        }
+      })
+      .then(() => setDefaultAvatar())
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
         showAlert(error);
-      }
-    );
+      });
   };
 
   const addUserToDatabase = (user) => {
@@ -173,11 +168,11 @@ function App() {
                 path="login-signup"
                 element={
                   <LoginForm
-                    show={true}
                     onChange={handleLoginInput}
                     email={emailInput}
                     password={passwordInput}
-                    onClick={handleLoginOrSignUp}
+                    login={signIn}
+                    signup={signUp}
                   />
                 }
               />
