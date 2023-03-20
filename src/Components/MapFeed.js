@@ -133,7 +133,6 @@ export default function MapFeed(props) {
         }
         return true;
       });
-      console.log("filteredData", filteredData);
       return filteredData;
     }
   };
