@@ -104,30 +104,43 @@ export default function MapFeed(props) {
     return icons[`${encounter}${animal}`];
   };
 
-  const filterFeature = (data, userFilterVal) => {
-    if (userFilterVal.length <= 2) {
-      let filteredData = data.filter(
-        (item) =>
-          (item["animal"] === userFilterVal[0] &&
-            item["date"] >= userFilterVal[1]) ||
-          (item["encounter"] === userFilterVal[0] &&
-            item["date"] >= userFilterVal[1]) ||
-          item["date"] >= userFilterVal[0]
-      );
+  const filterFeature = (
+    data,
+    userFilterAnimalVal,
+    userFilterEncounterVal,
+    userFilterDateVal
+  ) => {
+    if (props.filterStatus === true) {
+      const filteredData = data.filter((item) => {
+        if (item["date"] <= userFilterDateVal[0]) {
+          return false;
+        }
+        if (
+          userFilterEncounterVal.length > 0 &&
+          item["encounter"] !== userFilterEncounterVal[0] &&
+          item["encounter"] !== userFilterEncounterVal[1]
+        ) {
+          return false;
+        }
+        if (
+          userFilterAnimalVal.length > 0 &&
+          item["animal"] !== userFilterAnimalVal[0] &&
+          item["animal"] !== userFilterAnimalVal[1] &&
+          item["animal"] !== userFilterAnimalVal[2] &&
+          item["animal"] !== userFilterAnimalVal[3]
+        ) {
+          return false;
+        }
+        return true;
+      });
       return filteredData;
     }
-    let filteredData = data.filter(
-      (item) =>
-        item["animal"] === userFilterVal[0] &&
-        item["encounter"] === userFilterVal[1] &&
-        item["date"] >= userFilterVal[2]
-    );
-    return filteredData;
   };
 
   const renderMarkers = (data) => {
-    const userFilterVal = props.userFilterVal;
-
+    const userFilterAnimalVal = props.userFilterAnimalVal;
+    const userFilterEncounterVal = props.userFilterEncounterVal;
+    const userFilterDateVal = props.userFilterDateVal;
     if (props.filterStatus === false) {
       let markers = data.map((item) => (
         <AnimalMarker
@@ -147,7 +160,12 @@ export default function MapFeed(props) {
       ));
       return markers;
     } else {
-      let filteredMarkers = filterFeature(data, userFilterVal).map((item) => (
+      let filteredMarkers = filterFeature(
+        data,
+        userFilterAnimalVal,
+        userFilterEncounterVal,
+        userFilterDateVal
+      ).map((item) => (
         <AnimalMarker
           key={item.id}
           id={item.id}
