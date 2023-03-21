@@ -143,9 +143,23 @@ export default function Post(props) {
     }
   };
 
+  const handleDelete = (e) => {
+    setComment("");
+    if (editComment) {
+      const postsCommentsRef = ref(
+        database,
+        `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}/${editCommentKey}`
+      );
+      update(postsCommentsRef, {
+        status: "deleted",
+        comment: "",
+      });
+    }
+    setEditComment(false);
+  };
+
   const handleSubmitEdit = (e) => {
     e.preventDefault();
-    // const editDate = new Date().toLocaleString();
     const edited = "edited";
     const postsCommentsRef = ref(
       database,
@@ -155,7 +169,6 @@ export default function Post(props) {
       status: edited,
       commenter: user.email,
       comment: comment,
-      // commentDate: editDate,
     });
     setEditComment(false);
     setComment("");
@@ -299,9 +312,9 @@ export default function Post(props) {
                     id={commentKey}
                     className="smallest"
                     name="edit"
-                    onClick={handleEdit}
+                    onClick={editComment ? handleDelete : handleEdit}
                   >
-                    Edit
+                    {editComment ? `Delete` : `Edit`}
                   </Button>
                 ) : null}
               </div>
