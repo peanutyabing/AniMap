@@ -343,7 +343,7 @@ export default function Post(props) {
             />
             <div className="side-by-side-btns">
               <Button type="submit" variant="primary">
-                Send comment
+                {editComment ? `Edit comment` : `Send comment`}
               </Button>
               <Button
                 type={null}
