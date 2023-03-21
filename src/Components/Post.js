@@ -143,9 +143,25 @@ export default function Post(props) {
     }
   };
 
+  const handleDelete = (e) => {
+    let commentKey = e.target.id;
+    setComment("");
+    if (editComment) {
+      setEditCommentKey(commentKey);
+      const postsCommentsRef = ref(
+        database,
+        `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}/${editCommentKey}`
+      );
+      update(postsCommentsRef, {
+        status: "deleted",
+        comment: "",
+      });
+    }
+    setEditComment(false);
+  };
+
   const handleSubmitEdit = (e) => {
     e.preventDefault();
-    // const editDate = new Date().toLocaleString();
     const edited = "edited";
     const postsCommentsRef = ref(
       database,
@@ -155,7 +171,6 @@ export default function Post(props) {
       status: edited,
       commenter: user.email,
       comment: comment,
-      // commentDate: editDate,
     });
     setEditComment(false);
     setComment("");
@@ -299,9 +314,11 @@ export default function Post(props) {
                     id={commentKey}
                     className="smallest"
                     name="edit"
-                    onClick={handleEdit}
+                    onClick={editComment ? handleDelete : handleEdit}
                   >
-                    Edit
+                    {editComment && editCommentKey === commentKey
+                      ? `Delete`
+                      : `Edit`}
                   </Button>
                 ) : null}
               </div>
@@ -330,7 +347,7 @@ export default function Post(props) {
             />
             <div className="side-by-side-btns">
               <Button type="submit" variant="primary">
-                Send comment
+                {editComment ? `Edit comment` : `Send comment`}
               </Button>
               <Button
                 type={null}
