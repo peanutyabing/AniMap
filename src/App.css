@@ -138,10 +138,6 @@
   color: #ffffff;
 }
 
-#no-pending-requests {
-  background-color: rgb(210, 210, 210);
-}
-
 .circle {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 50%;

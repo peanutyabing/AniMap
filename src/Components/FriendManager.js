@@ -43,61 +43,36 @@ export default function FriendManager() {
     });
   }, []);
 
-  const handleReject = (e) => {
-    let message =
-      "Are you sure? The requestor will not be notified that you rejected their friend request.";
-    if (window.confirm(message) === true) {
-      updateRequestReceived(e, { [e.target.id]: null });
-      updateRequestSent(e, { [user.userDatabaseKey]: null });
-
-      const requestToUpdate = { ...requests };
-      delete requestToUpdate[e.target.id];
-      setRequests(requestToUpdate);
-    }
-  };
-
-  const handleUnfriend = (e) => {
-    let message =
-      "Are you sure? Your friend will not be notified that you unfriended them.";
-    if (window.confirm(message) === true) {
-      updateRequestReceived(e, { [e.target.id]: null });
-      updateRequestSent(e, { [user.userDatabaseKey]: null });
-      updateFriends(e, null, null);
-
-      const friendsToUpdate = { ...friends };
-      delete friendsToUpdate[e.target.id];
-      setFriends(friendsToUpdate);
-    }
-  };
-
   const handleAccept = (e) => {
-    const updatedRequestReceived = {
-      [e.target.id]: {
-        email: requests[e.target.id].email,
-        status: true,
-      },
-    };
-    updateRequestReceived(e, updatedRequestReceived);
-
-    const updatedRequestSent = {
-      [user.userDatabaseKey]: { email: user.email, status: true },
-    };
-    updateRequestSent(e, updatedRequestSent);
-
-    const requestToUpdate = { ...requests };
-    requestToUpdate[e.target.id].status = true;
-    setRequests(requestToUpdate);
+    removeFriendRequests(e);
 
     const receiverData = { email: requests[e.target.id].email };
     const requestorData = { email: user.email };
-    updateFriends(e, receiverData, requestorData);
+    updateFriendsInDb(e, receiverData, requestorData);
 
     const friendsToUpdate = { ...friends };
     friendsToUpdate[e.target.id] = { email: requests[e.target.id].email };
     setFriends(friendsToUpdate);
   };
 
-  const updateRequestReceived = (e, data) => {
+  const handleReject = (e) => {
+    let message =
+      "Are you sure? The requestor will not be notified that you rejected their friend request.";
+    if (window.confirm(message) === true) {
+      removeFriendRequests(e);
+    }
+  };
+
+  const removeFriendRequests = (e) => {
+    updateRequestsReceivedInDb(e, { [e.target.id]: null });
+    updateRequestsSentInDb(e, { [user.userDatabaseKey]: null });
+
+    const requestToUpdate = { ...requests };
+    delete requestToUpdate[e.target.id];
+    setRequests(requestToUpdate);
+  };
+
+  const updateRequestsReceivedInDb = (e, data) => {
     const requestsReceivedRef = ref(
       database,
       `${USERS_DATABASE_KEY}/${user.userDatabaseKey}/requestsReceived`
@@ -105,7 +80,7 @@ export default function FriendManager() {
     update(requestsReceivedRef, data);
   };
 
-  const updateRequestSent = (e, data) => {
+  const updateRequestsSentInDb = (e, data) => {
     const requestsSentRef = ref(
       database,
       `${USERS_DATABASE_KEY}/${e.target.id}/requestsSent`
@@ -113,7 +88,19 @@ export default function FriendManager() {
     update(requestsSentRef, data);
   };
 
-  const updateFriends = (e, receiverData, requestorData) => {
+  const handleUnfriend = (e) => {
+    let message =
+      "Are you sure? Your friend will not be notified that you unfriended them.";
+    if (window.confirm(message) === true) {
+      updateFriendsInDb(e, null, null);
+
+      const friendsToUpdate = { ...friends };
+      delete friendsToUpdate[e.target.id];
+      setFriends(friendsToUpdate);
+    }
+  };
+
+  const updateFriendsInDb = (e, receiverData, requestorData) => {
     const receiverFriendRef = ref(
       database,
       `${USERS_DATABASE_KEY}/${user.userDatabaseKey}/friends/`
@@ -130,7 +117,7 @@ export default function FriendManager() {
   const renderPendingRequests = () => {
     const pendingRequestsRender = [];
     for (const key in requests) {
-      if (requests[key].status === false) {
+      if (requests[key].email !== "") {
         pendingRequestsRender.push(
           <div key={key} className="friend">
             <div className="flex-align-center">
