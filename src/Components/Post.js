@@ -144,8 +144,10 @@ export default function Post(props) {
   };
 
   const handleDelete = (e) => {
+    let commentKey = e.target.id;
     setComment("");
     if (editComment) {
+      setEditCommentKey(commentKey);
       const postsCommentsRef = ref(
         database,
         `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}/${editCommentKey}`
@@ -314,7 +316,9 @@ export default function Post(props) {
                     name="edit"
                     onClick={editComment ? handleDelete : handleEdit}
                   >
-                    {editComment ? `Delete` : `Edit`}
+                    {editComment && editCommentKey === commentKey
+                      ? `Delete`
+                      : `Edit`}
                   </Button>
                 ) : null}
               </div>
