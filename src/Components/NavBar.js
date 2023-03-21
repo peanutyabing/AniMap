@@ -24,7 +24,7 @@ export default function NavBar(props) {
         if (snapshot.val().requestsReceived) {
           setPendingRequests(
             Object.values(snapshot.val().requestsReceived).filter(
-              (req) => req.status === false
+              (req) => req.email !== ""
             )
           );
         }
@@ -63,15 +63,11 @@ export default function NavBar(props) {
                 navigate("friend-manager");
               }}
             >
-              <div>My friends</div>
-              {pendingRequests.length > 0 ? (
+              <div>View friends</div>
+              {pendingRequests.length > 0 && (
                 <div className="num-of-requests" id="pending-requests">
                   {pendingRequests.length}
                 </div>
-              ) : (
-                <span className="num-of-requests" id="no-pending-requests">
-                  0
-                </span>
               )}
             </NavDropdown.Item>
             <NavDropdown.Item
