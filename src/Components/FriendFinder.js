@@ -14,12 +14,6 @@ export default function FriendFinder() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user.email) {
-      navigate("../login-signup");
-    }
-  });
-
-  useEffect(() => {
     const usersRef = ref(database, USERS_DATABASE_KEY);
     onChildAdded(usersRef, (data) => {
       if (!users.map((user) => user.userDatabaseKey).includes(data.key)) {
@@ -43,7 +37,7 @@ export default function FriendFinder() {
         ]);
       }
     });
-  }, [user.email]);
+  }, []);
 
   const handleChange = (e) => {
     setSearchTerm(e.target.value);
@@ -161,7 +155,7 @@ export default function FriendFinder() {
                 onChange={handleChange}
                 autoFocus
               />
-              <Button variant="secondary" type="submit" onClick={null}>
+              <Button variant="outline-secondary" type="submit" onClick={null}>
                 Search
               </Button>
             </Form.Group>

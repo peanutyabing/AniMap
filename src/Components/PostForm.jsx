@@ -211,7 +211,9 @@ export default function PostForm() {
                 {lat}, {lng}
               </div>
             ) : (
-              <div className="coordinates-display red">Address not found</div>
+              <div className="coordinates-display grey-italics">
+                Location not found
+              </div>
             )}
             <div id="address-look-up">
               <Form.Control
@@ -222,7 +224,7 @@ export default function PostForm() {
                 onChange={(e) => setAddress(e.target.value)}
               />
               <Button
-                variant="secondary"
+                variant="outline-secondary"
                 size="sm"
                 id="look-up-btn"
                 onClick={getLatLng}
@@ -288,16 +290,18 @@ export default function PostForm() {
                 </Tooltip>
               }
             >
-              <div id="help" className="grey-smaller prevent-select">
-                ?
-              </div>
+              <div className="grey-smaller prevent-select help">?</div>
             </OverlayTrigger>
             <Form.Select className="narrow-select" size="sm">
               <option value={true}>Everyone</option>
               <option value={false}>Only my friends</option>
             </Form.Select>
           </Form.Group>
-          <Button type="submit">Submit ⏎</Button>
+          <Form.Group className="form-group">
+            <Button type="submit" variant="dark">
+              Submit ⏎
+            </Button>
+          </Form.Group>
         </Form>
       </Modal.Body>
     </Modal>

@@ -43,14 +43,6 @@ export default function FriendManager() {
     });
   }, []);
 
-  useEffect(() => {
-    renderPendingRequests();
-  }, [requests]);
-
-  useEffect(() => {
-    renderMyFriends();
-  }, [friends]);
-
   const handleReject = (e) => {
     let message =
       "Are you sure? The requestor will not be notified that you rejected their friend request.";

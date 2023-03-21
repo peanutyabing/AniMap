@@ -15,7 +15,7 @@ export default function LoginForm(props) {
   };
 
   return (
-    <Modal {...props} backdrop="static" centered>
+    <Modal show={true} backdrop="static" centered>
       <Modal.Header>
         <Modal.Title>Log in / sign up</Modal.Title>
         <CloseButton onClick={() => navigate("/")} />
@@ -45,10 +45,10 @@ export default function LoginForm(props) {
             </FloatingLabel>
           </Form.Group>
           <Form.Group className="side-by-side-btns">
-            <Button variant="primary" id="login" onClick={props.onClick}>
+            <Button variant="dark" id="login" onClick={props.login}>
               Existing user | log in
             </Button>
-            <Button variant="primary" id="sign-up" onClick={props.onClick}>
+            <Button variant="dark" id="sign-up" onClick={props.signup}>
               New user | sign up
             </Button>
           </Form.Group>

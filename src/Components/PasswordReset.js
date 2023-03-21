@@ -53,7 +53,7 @@ export default function PasswordReset() {
             </FloatingLabel>
           </Form.Group>
           <Form.Group className="side-by-side-btns">
-            <Button variant="primary" onClick={sendResetPasswordEmail}>
+            <Button variant="dark" onClick={sendResetPasswordEmail}>
               Send password reset email
             </Button>
           </Form.Group>

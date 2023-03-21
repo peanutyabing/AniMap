@@ -12,7 +12,15 @@ import {
 import { USERS_DATABASE_KEY } from "../App.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../App.js";
-import { Modal, ButtonGroup, Button, CloseButton, Form } from "react-bootstrap";
+import {
+  Modal,
+  ButtonGroup,
+  Button,
+  CloseButton,
+  Form,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import Geocode from "react-geocode";
 
 const POSTS_DATABASE_KEY = "posts";
@@ -21,8 +29,8 @@ const COMMENTS_DATABASE_KEY = "comments";
 export default function Post(props) {
   const user = useContext(UserContext);
   const navigate = useNavigate();
-  let location = useLocation();
-  let postId = location.pathname.split("/").slice(-1);
+  let currentRoute = useLocation();
+  let postId = currentRoute.pathname.split("/").slice(-1);
 
   const [publicPost, setPublicPost] = useState(false);
   const [lng, setLng] = useState(0);
@@ -90,21 +98,6 @@ export default function Post(props) {
     }
   }, [lat, lng]);
 
-  const writeData = () => {
-    const commentDate = new Date().toLocaleString();
-    const postsCommentsRef = ref(
-      database,
-      `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}`
-    );
-    const newCommentRef = push(postsCommentsRef);
-    set(newCommentRef, {
-      comment: comment,
-      commentDate: commentDate,
-      commenter: user.email,
-      commenterAvatar: auth.currentUser.photoURL,
-    });
-  };
-
   const handleReaction = (e) => {
     let emotion = e.target.name;
     const reactionsToUpdate = { ...reactions };
@@ -120,10 +113,25 @@ export default function Post(props) {
     update(postRef, { reactions: reactionsToUpdate });
   };
 
-  const handleSendComment = (e) => {
+  const handleSubmitComment = (e) => {
     e.preventDefault();
     writeData();
     setComment("");
+  };
+
+  const writeData = () => {
+    const commentDate = new Date().toLocaleString();
+    const postsCommentsRef = ref(
+      database,
+      `${POSTS_DATABASE_KEY}/${postId}/${COMMENTS_DATABASE_KEY}`
+    );
+    const newCommentRef = push(postsCommentsRef);
+    set(newCommentRef, {
+      comment: comment,
+      commentDate: commentDate,
+      commenter: user.email,
+      commenterAvatar: auth.currentUser.photoURL,
+    });
   };
 
   const handleEdit = (e) => {
@@ -135,7 +143,7 @@ export default function Post(props) {
     }
   };
 
-  const handleEditComment = (e) => {
+  const handleSubmitEdit = (e) => {
     e.preventDefault();
     // const editDate = new Date().toLocaleString();
     const edited = "edited";
@@ -154,22 +162,25 @@ export default function Post(props) {
     setEditCommentKey("");
   };
 
-  const hasViewAccess = () => {
-    return (
-      publicPost ||
-      Object.values(friends)
-        .map((friend) => friend.email)
-        .includes(authorEmail) ||
-      user.email === authorEmail
-    );
-  };
-
   const renderLocation = () => {
     if (hasViewAccess()) {
       return address ? (
-        <div className="grey-smaller bold">📍 {address}</div>
+        <div className="post-location">
+          <div className="grey-smaller bold">📍 {address} </div>
+          <OverlayTrigger
+            trigger={["hover", "focus"]}
+            placement="bottom"
+            overlay={
+              <Tooltip>
+                This location is generated from the poster's input
+              </Tooltip>
+            }
+          >
+            <div className="grey-smaller prevent-select help">?</div>
+          </OverlayTrigger>
+        </div>
       ) : (
-        <div>Loading location...</div>
+        <div className="post-location">Loading location...</div>
       );
     } else {
       return (
@@ -308,7 +319,7 @@ export default function Post(props) {
         {user.email ? (
           <Form
             id="comment-form"
-            onSubmit={editComment ? handleEditComment : handleSendComment}
+            onSubmit={editComment ? handleSubmitEdit : handleSubmitComment}
           >
             <Form.Control
               as="textarea"
@@ -341,6 +352,16 @@ export default function Post(props) {
           </div>
         )}
       </Modal.Footer>
+    );
+  };
+
+  const hasViewAccess = () => {
+    return (
+      publicPost ||
+      Object.values(friends)
+        .map((friend) => friend.email)
+        .includes(authorEmail) ||
+      user.email === authorEmail
     );
   };
 

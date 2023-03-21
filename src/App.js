@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { database, auth } from "./Firebase.js";
 import { ref, push, set, onChildAdded } from "firebase/database";
 import {
@@ -20,12 +20,14 @@ import PasswordReset from "./Components/PasswordReset.js";
 import "./App.css";
 import Filter from "./Components/Filter.js";
 import AvatarPicker from "./Components/AvatarPicker.js";
+import Help from "./Components/Help.js";
 
 export const UserContext = React.createContext({ email: null });
 export const USERS_DATABASE_KEY = "users";
 
 function App() {
   const navigate = useNavigate();
+  const currentRoute = useLocation();
   const [user, setUser] = useState({});
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -36,6 +38,8 @@ function App() {
   useEffect(() => {
     if (!user.email) {
       navigate("/login-signup");
+    } else if (currentRoute.pathname === "/help") {
+      return;
     } else {
       navigate("/");
     }
@@ -70,36 +74,31 @@ function App() {
     }
   };
 
-  const handleLoginOrSignUp = (e) => {
-    if (e.target.id === "login") {
-      signInUser(emailInput, passwordInput);
-      navigate("/");
-    } else if (e.target.id === "sign-up") {
-      signUpUser(emailInput, passwordInput)
-        .then((userCredential) => {
-          if (userCredential) {
-            addUserToDatabase(userCredential.user);
-          }
-        })
-        .then(() => setDefaultAvatar());
-      navigate("/");
-    }
-  };
-
-  const signInUser = (email, password) => {
-    signInWithEmailAndPassword(auth, email, password)
+  const signIn = () => {
+    signInWithEmailAndPassword(auth, emailInput, passwordInput)
       .then(() => setDefaultAvatar())
+      .then(() => {
+        navigate("/");
+      })
       .catch((error) => {
         showAlert(error);
       });
   };
 
-  const signUpUser = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password).catch(
-      (error) => {
+  const signUp = () => {
+    createUserWithEmailAndPassword(auth, emailInput, passwordInput)
+      .then((userCredential) => {
+        if (userCredential) {
+          addUserToDatabase(userCredential.user);
+        }
+      })
+      .then(() => setDefaultAvatar())
+      .then(() => {
+        navigate("../help");
+      })
+      .catch((error) => {
         showAlert(error);
-      }
-    );
+      });
   };
 
   const addUserToDatabase = (user) => {
@@ -173,11 +172,11 @@ function App() {
                 path="login-signup"
                 element={
                   <LoginForm
-                    show={true}
                     onChange={handleLoginInput}
                     email={emailInput}
                     password={passwordInput}
-                    onClick={handleLoginOrSignUp}
+                    login={signIn}
+                    signup={signUp}
                   />
                 }
               />
@@ -196,6 +195,7 @@ function App() {
               <Route path="friend-manager" element={<FriendManager />} />
               <Route path="choose-avatar" element={<AvatarPicker />} />
               <Route path="reset-password" element={<PasswordReset />} />
+              <Route path="help" element={<Help />} />
             </Route>
           </Routes>
         </UserContext.Provider>
