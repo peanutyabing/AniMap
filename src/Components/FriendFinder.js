@@ -60,7 +60,6 @@ export default function FriendFinder() {
     );
     set(requestsReceivedRef, {
       email: user.email,
-      // status: false,
     });
 
     const requestsSentRef = ref(
@@ -71,7 +70,6 @@ export default function FriendFinder() {
       email: searchResults.filter(
         (result) => result.userDatabaseKey === e.target.id
       )[0].email,
-      // status: false,
     });
     updateSearchResults(e);
   };

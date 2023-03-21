@@ -19,7 +19,6 @@ import Geocode from "react-geocode";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { UserContext } from "../App";
 
-// This function allows user to post sightings with the input description, upload photo and the type of encounter.
 const POSTS_DATABASE_KEY = "posts";
 const POSTS_IMAGES_FOLDER_NAME = "images";
 Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
@@ -40,14 +39,9 @@ export default function PostForm() {
 
   const navigate = useNavigate();
 
-  // writing data into our database
   const writeData = (url) => {
-    // insert date into our post
     const postDate = new Date().toLocaleString();
-    // record our encounter in string status
     const encounter = happy ? "happy" : "unhappy";
-
-    // ref to direct posts into database
     const postsListRef = databaseRef(database, POSTS_DATABASE_KEY);
     const newPostRef = push(postsListRef);
     set(newPostRef, {
@@ -64,14 +58,12 @@ export default function PostForm() {
     });
   };
 
-  // reset the post form
   const resetPostForm = () => {
     setUserInputFile(null);
     setUserFileInputValue("");
     setUserMessage("");
   };
 
-  //submit will store the images and execute write data
   const handleSubmit = (e) => {
     e.preventDefault();
     let userHasSelectedEncounter = happy || unhappy;
@@ -131,7 +123,6 @@ export default function PostForm() {
         setUnhappy(false);
       }}
       variant={happy ? "success" : "light"}
-      // style={{ backgroundColor: happy ? "green" : null }}
     >{`🙂`}</Button>
   );
   const badEncounter = (
@@ -142,7 +133,6 @@ export default function PostForm() {
         setHappy(false);
       }}
       variant={unhappy ? "danger" : "light"}
-      // style={{ backgroundColor: unhappy ? "red" : null }}
     >{`🙁`}</Button>
   );
 
@@ -154,7 +144,6 @@ export default function PostForm() {
     setPublicPost(e.target.value);
   };
 
-  // [If implemented] public or friends-only
   return (
     <Modal show={true} backdrop="static" centered>
       <Modal.Header>
