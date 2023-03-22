@@ -14,4 +14,4 @@ This project was bootstrapped with Create React App. In the project directory, y
 
 The data are stored in [Firebase](https://firebase.google.com/). To work with dummy data, start a new Firebase project and follow instructions to initialize the App. Add Realtime Database, Storage, and Authentication to fully explore the App features.
 
-Our app uses API from [Google Maps Platform] (https://developers.google.com/maps/documentation/javascript) with a private API key.
+Our app uses API from [Google Maps Platform](https://developers.google.com/maps/documentation/javascript) with a private API key.
