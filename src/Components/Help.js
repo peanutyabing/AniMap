@@ -22,7 +22,7 @@ export default function Help() {
       </Modal.Body>
       <Modal.Body>
         Each pin on the map represents a post by the community. Click on the
-        pins to see more details.
+        pins to see more details. Some examples of pins:
         <div className="example smaller">
           <img className="icon-example" src={catIconG} alt="cat-icon" />
           This is a cat sighting
@@ -40,7 +40,7 @@ export default function Help() {
       <Modal.Body>
         Worried about safety and privacy? When drafting your post, place the pin
         on an approximate location, or select "only my friends" to restrict who
-        can see your post's location.
+        can see your post's exact location.
       </Modal.Body>
       <Modal.Footer className="grey-smaller">
         Designed and developed by
