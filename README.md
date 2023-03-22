@@ -1,30 +1,17 @@
-# Project2_AniMap
-The Ultimate Map For Animal Lovers
+# Rocket Academy Coding Bootcamp: Project 2 - AniMap
 
-Try out the app: https://animap-2deae.web.app/
+## About the App
 
-Our aims are to provide latest updates on animal sightings in Singapore.
+Welcome to AniMap, the Ultimate Map For Animal Lovers. This is a Rocket Bootcamp full-stack project.
 
-As the users sign in, a map will be rendered with pins on it.
+Give it a try [here](https://animap-2deae.web.app/)! Please sign up and follow the on-screen instructions.
 
-The pin represent a post by the community.
+Our aim is to provide a fun and safe environment for animal lovers to get the latest updates on animal sightings and share knowledge. As a start, we have launched AniMap in Singapore.
 
-Users can click the pin to view details of the sightings.
+## Available Scripts
 
-If the post is restricted, user can view only after added as friend. This is to provide privacy on certain sightings.
+This project was bootstrapped with Create React App. In the project directory, you can run _npm start_, to run the app in the development mode. Open http://localhost:3000 to view it in your browser. The page will reload when you make changes.
 
-Users can interact with each other via comments.
+The data are stored in [Firebase](https://firebase.google.com/). To work with dummy data, start a new Firebase project and follow instructions to initialize the App. Add Realtime Database, Storage, and Authentication to fully explore the App features.
 
-Available Scripts
-
-This project was bootstrapped with Create React App. In the project directory, you can run:
-
-npm start
-
-Runs the app in the development mode.
-
-Open http://localhost:3000 to view it in your browser.
-
-The page will reload when you make changes.
-
-You may also see any lint errors in the console.
+Our app uses API from [Google Maps Platform] (https://developers.google.com/maps/documentation/javascript) with a private API key.
