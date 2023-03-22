@@ -47,7 +47,8 @@ export default function MapFeed(props) {
             authorEmail: data.val().authorEmail,
             animal: data.val().animal,
             encounter: data.val().encounter,
-            publicPost: data.val().public === "true",
+            publicPost:
+              data.val().public === "true" || data.val().public === true,
             maskedLocation: maskLocation(data.val().location),
           },
         ]);
