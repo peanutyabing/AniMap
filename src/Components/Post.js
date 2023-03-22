@@ -222,7 +222,11 @@ export default function Post(props) {
           <div
             className="grey-smaller prevent-select text-overlay cursor-pointer"
             onClick={() => {
-              navigate("../friend-finder");
+              if (user.email) {
+                navigate("../friend-finder");
+              } else {
+                navigate("../login-signup");
+              }
             }}
           >
             Become {authorEmail}'s friend to view this post!
