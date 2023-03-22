@@ -53,7 +53,9 @@ export default function Post(props) {
   useEffect(() => {
     const postRef = ref(database, `${POSTS_DATABASE_KEY}/${postId}`);
     onValue(postRef, (snapshot) => {
-      setPublicPost(snapshot.val().public === "true");
+      setPublicPost(
+        snapshot.val().public === "true" || snapshot.val().public === true
+      );
       setLng(snapshot.val().location.lng);
       setLat(snapshot.val().location.lat);
       setContent(snapshot.val().content);
@@ -346,12 +348,12 @@ export default function Post(props) {
               onChange={(e) => setComment(e.target.value)}
             />
             <div className="side-by-side-btns">
-              <Button type="submit" variant="primary">
+              <Button type="submit" variant="dark">
                 {editComment ? `Edit comment` : `Send comment`}
               </Button>
               <Button
                 type={null}
-                variant="primary"
+                variant="dark"
                 onClick={() => {
                   navigate("/");
                 }}
