@@ -58,25 +58,11 @@ export default function PostForm() {
     });
   };
 
-  const resetPostForm = () => {
-    setUserInputFile(null);
-    setUserFileInputValue("");
-    setUserMessage("");
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    let userHasSelectedEncounter = happy || unhappy;
-    if (
-      userSelectedAnimal &&
-      userHasSelectedEncounter &&
-      userMessage &&
-      lat &&
-      lng
-    ) {
+    if (userSelectedAnimal && (happy || unhappy) && userMessage && lat && lng) {
       uploadFile()
         .then((url) => writeData(url))
-        .then(resetPostForm)
         .catch((error) => {
           console.log(error);
         });
@@ -114,7 +100,6 @@ export default function PostForm() {
       }
     );
 
-  // type of encounter: :) or :(
   const goodEncounter = (
     <Button
       onClick={(e) => {
