@@ -60,7 +60,14 @@ export default function PostForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (userSelectedAnimal && (happy || unhappy) && userMessage && lat && lng) {
+    if (
+      userSelectedAnimal &&
+      (happy || unhappy) &&
+      userMessage &&
+      lat &&
+      lng &&
+      userInputFile
+    ) {
       uploadFile()
         .then((url) => writeData(url))
         .catch((error) => {
@@ -231,10 +238,7 @@ export default function PostForm() {
             </div>
           </Form.Group>
           <Form.Group className="form-group">
-            <Form.Label className="compact-label">
-              Upload a photo
-              <span className="grey-italics">{" (optional)"}</span>
-            </Form.Label>
+            <Form.Label className="compact-label">Upload a photo</Form.Label>
             <Form.Control
               type="file"
               size="sm"
