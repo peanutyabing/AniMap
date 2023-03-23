@@ -225,6 +225,7 @@ export default function Post(props) {
               if (user.email) {
                 navigate("../friend-finder");
               } else {
+
                 navigate("../login-signup");
               }
             }}
